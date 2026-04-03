@@ -47,7 +47,7 @@ const TaxBreakup = ({ data }) => {
               )}
             </tbody>
             <tfoot>
-              <tr style={{ background: 'var(--primary)', color: 'white', fontWeight: 'bold' }}>
+              <tr style={{ background: 'var(--glass-bg)', borderTop: '2px solid var(--primary)', color: 'var(--primary)', fontWeight: 'bold' }}>
                 <td colSpan="2" style={{ padding: '1.25rem 1rem', textAlign: 'left', borderRadius: '0 0 0 var(--radius-md)' }}>TOTAL NORMAL TAX</td>
                 <td style={{ padding: '1.25rem 1rem', textAlign: 'right', fontFamily: 'monospace', fontSize: '1.15rem' }}>{results.taxableNormalIncome > 0 ? results.taxableNormalIncome.toLocaleString('en-IN') : '0'}</td>
                 <td style={{ padding: '1.25rem 1rem', textAlign: 'right', fontFamily: 'monospace', fontSize: '1.15rem', borderRadius: '0 0 var(--radius-md) 0' }}>{results.normalTax.toLocaleString('en-IN')}</td>
@@ -123,7 +123,7 @@ const TaxBreakup = ({ data }) => {
             )}
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '1.25rem', background: 'var(--primary)', color: 'white', borderRadius: 'var(--radius-lg)', marginTop: '0.5rem', boxShadow: '0 4px 12px rgba(71, 85, 105, 0.2)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '1.25rem', background: 'var(--glass-bg)', borderTop: '2px solid var(--primary)', color: 'var(--primary)', borderRadius: 'var(--radius-lg)', marginTop: '0.5rem', boxShadow: 'var(--shadow-sm)', fontWeight: 'bold' }}>
             <span style={{ fontWeight: 'bold', fontSize: '1.25rem' }}>GROSS TAX LIABILITY</span>
             <span style={{ fontWeight: 'bold', fontSize: '1.25rem' }}>₹ {results.totalTaxLiability.toLocaleString('en-IN')}</span>
           </div>
@@ -139,7 +139,7 @@ const TaxBreakup = ({ data }) => {
              </div>
           )}
 
-          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '1.25rem', background: results.netTaxPayable < 0 ? 'var(--success)' : 'var(--primary)', color: 'white', borderRadius: 'var(--radius-lg)', marginTop: '0.5rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '1.25rem', background: results.netTaxPayable < 0 ? 'rgba(16, 185, 129, 0.1)' : 'var(--glass-bg)', color: results.netTaxPayable < 0 ? 'var(--success)' : 'var(--primary)', borderRadius: 'var(--radius-lg)', marginTop: '0.5rem', fontWeight: 'bold', borderTop: `2px solid ${results.netTaxPayable < 0 ? 'var(--success)' : 'var(--primary)'}` }}>
             <span style={{ fontWeight: 'bold', fontSize: '1.25rem' }}>{results.netTaxPayable < 0 ? 'REFUND DUE' : 'FINAL NET TAX PAYABLE'}</span>
             <span style={{ fontWeight: 'bold', fontSize: '1.25rem' }}>₹ {Math.abs(results.netTaxPayable).toLocaleString('en-IN')}</span>
           </div>

@@ -56,7 +56,7 @@ const Deductions = ({ data, updateData }) => {
 
   return (
     <div className="fade-in">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
         <h2 className="text-xl font-bold">Chapter VI-A Deductions</h2>
         <div className="bg-primary-light" style={{ padding: '0.5rem 1rem', borderRadius: 'var(--radius-md)', background: 'rgba(79, 70, 229, 0.1)', color: 'var(--primary)', fontWeight: 'bold' }}>
           Total Estimated Deductions: ₹ {totalDeductions.toLocaleString('en-IN')}

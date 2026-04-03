@@ -36,7 +36,7 @@ const SmartRecommendations = ({ data }) => {
              type: 'opportunity',
              title: 'Maximize Section 80C Limit',
              desc: `You have only utilized ₹${current80C.toLocaleString('en-IN')} out of your ₹1.5L limit under Section 80C. Invest the remaining ₹${gap.toLocaleString('en-IN')} in ELSS or PPF to save an estimated ₹${potentialSavings.toLocaleString('en-IN')} in taxes under the Old Regime.`,
-             icon: <TrendingUp size={24} color="#10b981" />
+             icon: <TrendingUp size={24} color="var(--success)" />
            })
         }
       }
@@ -53,7 +53,7 @@ const SmartRecommendations = ({ data }) => {
             type: 'opportunity',
             title: 'Additional ₹50,000 NPS Deduction',
             desc: `Invest ₹${gap.toLocaleString('en-IN')} more in NPS Tier 1 to claim extra deduction under 80CCD(1B) and save up to ₹${potentialSavings.toLocaleString('en-IN')}.`,
-            icon: <ShieldCheck size={24} color="#3b82f6" />
+            icon: <ShieldCheck size={24} color="var(--primary)" />
           })
         }
     }
@@ -65,7 +65,7 @@ const SmartRecommendations = ({ data }) => {
          type: 'warning',
          title: 'No Health Insurance Declared',
          desc: `You haven't claimed any deduction under Section 80D. Buying a health insurance policy for yourself and your parents can save you up to ₹75,000 in deductions.`,
-         icon: <AlertTriangle size={24} color="#f59e0b" />
+         icon: <AlertTriangle size={24} color="var(--warning)" />
        })
     }
 
@@ -74,7 +74,7 @@ const SmartRecommendations = ({ data }) => {
          type: 'success',
          title: 'Your taxes are highly optimized!',
          desc: `We couldn't find any obvious deductions you're missing out on. Great job planning your finances!`,
-         icon: <CheckCircle size={24} color="#10b981" />
+         icon: <CheckCircle size={24} color="var(--success)" />
        })
     }
     
@@ -84,7 +84,7 @@ const SmartRecommendations = ({ data }) => {
 
   return (
     <div className="fade-in">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
         <h2 className="text-xl font-bold">Smart Tax Optimization Engine</h2>
         <div style={{ padding: '0.5rem 1rem', background: 'var(--primary-light)', color: 'var(--primary)', borderRadius: 'var(--radius-md)', fontWeight: 'bold' }}>
           AI Planner Active
@@ -96,7 +96,7 @@ const SmartRecommendations = ({ data }) => {
           <PieChart color="var(--primary)" /> Old vs New Regime Analysis
         </h3>
         
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '1.5rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem', marginBottom: '1.5rem' }}>
           <div style={{ background: 'var(--bg-color)', padding: '1.5rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--input-border)', textAlign: 'center' }}>
             <div style={{ color: 'var(--text-muted)', marginBottom: '0.5rem', fontWeight: 600 }}>Old Regime Tax Liability</div>
             <div style={{ fontSize: '2rem', fontWeight: 'bold', color: regimeComparison.best === 'Old Regime' ? 'var(--success)' : 'var(--text-main)' }}>
@@ -122,7 +122,7 @@ const SmartRecommendations = ({ data }) => {
       <h3 className="text-xl font-bold mb-4 mt-8">Personalized Investment Insights</h3>
       <div style={{ display: 'grid', gap: '1.5rem' }}>
         {insights.map((insight, idx) => (
-          <div key={idx} className="card slide-up" style={{ padding: '1.5rem', display: 'flex', gap: '1.5rem', alignItems: 'flex-start', borderLeft: `4px solid ${insight.type === 'opportunity' ? '#10b981' : insight.type === 'warning' ? '#f59e0b' : '#3b82f6'}` }}>
+          <div key={idx} className="card slide-up" style={{ padding: '1.5rem', display: 'flex', gap: '1.5rem', alignItems: 'flex-start', borderLeft: `4px solid ${insight.type === 'opportunity' ? 'var(--success)' : insight.type === 'warning' ? 'var(--warning)' : 'var(--primary)'}` }}>
              <div style={{ background: 'var(--bg-color)', padding: '1rem', borderRadius: '50%' }}>
                {insight.icon}
              </div>

@@ -76,7 +76,7 @@ const HouseProperty = ({ data, updateData }) => {
 
   return (
     <div className="fade-in">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
         <h2 className="text-xl font-bold">Income from House Property</h2>
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
           <div className="bg-primary-light" style={{ padding: '0.5rem 1rem', borderRadius: 'var(--radius-md)', background: totalNetIncome >= 0 ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)', color: totalNetIncome >= 0 ? 'var(--success)' : 'var(--danger)', fontWeight: 'bold' }}>
@@ -147,7 +147,7 @@ const HouseProperty = ({ data, updateData }) => {
               </div>
             </div>
 
-            <div style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px dashed #D1D5DB', display: 'flex', justifyContent: 'flex-end' }}>
+            <div style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px dashed var(--input-border)', display: 'flex', justifyContent: 'flex-end' }}>
               <div style={{ fontSize: '1.125rem', fontWeight: 600, color: income >= 0 ? 'var(--dark)' : 'var(--danger)' }}>
                 Income from Property {index + 1}: ₹ {income.toLocaleString('en-IN')}
               </div>
@@ -156,10 +156,10 @@ const HouseProperty = ({ data, updateData }) => {
         )
       })}
 
-      <div className="card p-6" style={{ background: 'var(--primary)', color: 'white' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h3 className="text-lg" style={{ color: 'white' }}>Income Chargeable under head 'House Property'</h3>
-          <h2 className="text-2xl" style={{ color: 'white' }}>₹ {totalNetIncome.toLocaleString('en-IN')}</h2>
+      <div className="card p-6" style={{ background: 'var(--glass-bg)', borderTop: '2px solid var(--primary)', marginTop: '0.5rem' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', justifyContent: 'space-between', alignItems: 'center' }}>
+          <h3 className="text-lg" style={{ color: 'var(--primary)', fontWeight: 'bold' }}>Income Chargeable under head 'House Property'</h3>
+          <h2 className="text-2xl" style={{ color: 'var(--primary)', fontWeight: 'bold' }}>₹ {totalNetIncome.toLocaleString('en-IN')}</h2>
         </div>
       </div>
     </div>

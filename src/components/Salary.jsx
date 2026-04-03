@@ -49,7 +49,7 @@ const Salary = ({ data, updateData }) => {
   return (
     <div className="fade-in">
       <div className="card p-6 mb-6 slide-up">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
           <h2 className="text-xl font-bold">Income from Salary</h2>
           <div className="bg-primary-light" style={{ padding: '0.5rem 1rem', borderRadius: 'var(--radius-md)', background: 'rgba(79, 70, 229, 0.1)', color: 'var(--primary)', fontWeight: 'bold' }}>
             Net Taxable Salary: ₹ {netSalary.toLocaleString('en-IN')}
@@ -117,7 +117,7 @@ const Salary = ({ data, updateData }) => {
         </div>
 
         <div style={{ marginTop: '2rem', padding: '1rem', background: 'var(--glass-bg)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--input-border)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '0.5rem', borderBottom: '1px solid #E5E7EB' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '0.5rem', borderBottom: '1px solid var(--input-border)' }}>
             <span>Gross Salary</span>
             <span style={{ fontWeight: 500 }}>₹ {grossSalary.toLocaleString('en-IN')}</span>
           </div>
@@ -125,7 +125,7 @@ const Salary = ({ data, updateData }) => {
             <span>Total Deductions</span>
             <span style={{ fontWeight: 500 }}>- ₹ {(Math.min((data?.personal?.newRegime === 'yes' && (data?.personal?.assessmentYear === '2025-26' || data?.personal?.assessmentYear === '2026-27')) ? 75000 : 50000, grossSalary) + (parseFloat(salData.pt) || 0) + (parseFloat(salData.entAllow) || 0)).toLocaleString('en-IN')}</span>
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '1rem', marginTop: '0.5rem', borderTop: '2px solid #D1D5DB', fontSize: '1.125rem', color: 'var(--primary)' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', justifyContent: 'space-between', paddingTop: '1rem', marginTop: '0.5rem', borderTop: '2px solid var(--input-border)', fontSize: '1.125rem', color: 'var(--primary)' }}>
             <strong>Income Chargeable under head 'Salaries'</strong>
             <strong>₹ {netSalary.toLocaleString('en-IN')}</strong>
           </div>

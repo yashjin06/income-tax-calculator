@@ -120,14 +120,14 @@ const PGBP = ({ data, updateData }) => {
 
   return (
     <div className="fade-in">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
         <h2 className="text-xl font-bold">Profits and Gains of Business or Profession</h2>
         <div className="bg-primary-light" style={{ padding: '0.5rem 1rem', borderRadius: 'var(--radius-md)', background: taxablePgbp >= 0 ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)', color: taxablePgbp >= 0 ? 'var(--success)' : 'var(--danger)', fontWeight: 'bold' }}>
           Taxable PGBP: ₹ {taxablePgbp.toLocaleString('en-IN')}
         </div>
       </div>
 
-      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem', borderBottom: '1px solid #E5E7EB', paddingBottom: '0.5rem', overflowX: 'auto' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '1.5rem', borderBottom: '1px solid var(--input-border)', paddingBottom: '0.5rem' }}>
         <button onClick={() => setActiveSubTab('general')} className={`btn ${activeSubTab === 'general' ? 'btn-primary' : 'btn-secondary'}`} style={{ boxShadow: 'none', whiteSpace: 'nowrap' }}><FileText size={16} /> General Info</button>
         <button onClick={() => setActiveSubTab('presumptive')} className={`btn ${activeSubTab === 'presumptive' ? 'btn-primary' : 'btn-secondary'}`} style={{ boxShadow: 'none', whiteSpace: 'nowrap' }}><Calculator size={16} /> Presumptive Tax</button>
         <button onClick={() => setActiveSubTab('pnl')} className={`btn ${activeSubTab === 'pnl' ? 'btn-primary' : 'btn-secondary'}`} style={{ boxShadow: 'none', whiteSpace: 'nowrap' }}><PieChart size={16} /> Trading & P&L</button>
@@ -136,7 +136,7 @@ const PGBP = ({ data, updateData }) => {
       </div>
 
       {auditWarning && (
-        <div className="mb-6 p-4 rounded-md slide-up" style={{ background: '#FEF2F2', color: '#B91C1C', borderLeft: '4px solid #DC2626', display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+        <div className="mb-6 p-4 rounded-md slide-up" style={{ background: 'rgba(239, 68, 68, 0.1)', color: 'var(--danger)', borderLeft: '4px solid var(--danger)', display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
            <AlertTriangle size={24} />
            <div>
              <strong>Statutory Compliance Warning (Tax Audit):</strong> {auditWarning}
@@ -240,7 +240,7 @@ const PGBP = ({ data, updateData }) => {
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
                 <div className="input-group"><label className="input-label">Revenue from Operations (Sales/Gross Receipts)</label><input type="number" className="input-field" value={pgbp.pnl.revenueOperations || ''} onChange={(e) => deepUpdate('pnl', 'revenueOperations', e.target.value)} /></div>
               {(parseFloat(pgbp.pnl.revenueOperations) || 0) > 10000000 && (
-                <div style={{ padding: '0.75rem 1rem', background: 'rgba(245, 158, 11, 0.1)', color: '#b45309', borderRadius: 'var(--radius-sm)', border: '1px solid rgba(245, 158, 11, 0.3)', marginTop: '0.5rem', fontSize: '0.9rem' }}>
+                <div style={{ padding: '0.75rem 1rem', background: 'rgba(245, 158, 11, 0.1)', color: 'var(--warning)', borderRadius: 'var(--radius-sm)', border: '1px solid rgba(245, 158, 11, 0.3)', marginTop: '0.5rem', fontSize: '0.9rem' }}>
                   <strong>⚠️ Statutory Audit Alert (Sec 44AB):</strong> Your gross receipts exceed ₹1 Crore. You may be liable for a Tax Audit by a Chartered Accountant unless your cash receipts are less than 5% of total receipts (in which case threshold is ₹10 Cr).
                 </div>
               )}
@@ -345,10 +345,10 @@ const PGBP = ({ data, updateData }) => {
         <div className="card p-6 slide-up">
           <h3 className="text-lg font-bold mb-4">Adjustments to Net Profit (As per IT Act)</h3>
           
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
             {/* Additions */}
             <div>
-              <h4 style={{ marginBottom: '1rem', color: 'var(--danger)', borderBottom: '1px solid #E5E7EB', paddingBottom: '0.5rem' }}>Additions (Inadmissible Expenses)</h4>
+              <h4 style={{ marginBottom: '1rem', color: 'var(--danger)', borderBottom: '1px solid var(--input-border)', paddingBottom: '0.5rem' }}>Additions (Inadmissible Expenses)</h4>
               <div className="input-group"><label className="input-label">Depreciation as per Companies Act (debited in P&L)</label><input type="number" className="input-field" value={pgbp.adjustments.depreciationCompanies || ''} onChange={(e) => deepUpdate('adjustments', 'depreciationCompanies', e.target.value)} /></div>
               <div className="input-group"><label className="input-label">Disallowances u/s 40(a), 43B, etc.</label><input type="number" className="input-field" value={pgbp.adjustments.disallowances || ''} onChange={(e) => deepUpdate('adjustments', 'disallowances', e.target.value)} /></div>
               <div className="input-group"><label className="input-label">Personal / Other Inadmissible Expenses</label><input type="number" className="input-field" value={pgbp.adjustments.personalExpenses || ''} onChange={(e) => deepUpdate('adjustments', 'personalExpenses', e.target.value)} /></div>
@@ -357,15 +357,15 @@ const PGBP = ({ data, updateData }) => {
 
             {/* Deductions */}
             <div>
-              <h4 style={{ marginBottom: '1rem', color: 'var(--success)', borderBottom: '1px solid #E5E7EB', paddingBottom: '0.5rem' }}>Deductions (Allowed under IT Act)</h4>
+              <h4 style={{ marginBottom: '1rem', color: 'var(--success)', borderBottom: '1px solid var(--input-border)', paddingBottom: '0.5rem' }}>Deductions (Allowed under IT Act)</h4>
               <div className="input-group"><label className="input-label">Depreciation allowable u/s 32</label><input type="number" className="input-field" value={pgbp.adjustments.depreciationIT || ''} onChange={(e) => deepUpdate('adjustments', 'depreciationIT', e.target.value)} /></div>
               <div className="input-group"><label className="input-label">Any Other Deductions / Income considered under other heads</label><input type="number" className="input-field" value={pgbp.adjustments.otherDeductions || ''} onChange={(e) => deepUpdate('adjustments', 'otherDeductions', e.target.value)} /></div>
             </div>
           </div>
 
-          <div style={{ marginTop: '1.5rem', background: 'var(--primary)', color: 'white', padding: '1rem', borderRadius: 'var(--radius-md)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontWeight: 600 }}>Adjusted Taxable PGBP:</span>
-            <span style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>₹ {taxablePgbp.toLocaleString('en-IN')}</span>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', justifyContent: 'space-between', paddingTop: '1rem', marginTop: '1.5rem', borderTop: '2px solid var(--input-border)', fontSize: '1.125rem', color: 'var(--primary)' }}>
+            <strong>Adjusted Taxable PGBP:</strong>
+            <strong style={{ fontSize: '1.25rem' }}>₹ {taxablePgbp.toLocaleString('en-IN')}</strong>
           </div>
         </div>
       )}

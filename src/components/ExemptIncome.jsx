@@ -39,7 +39,7 @@ const ExemptIncome = ({ data, updateData }) => {
 
   return (
     <div className="fade-in">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
         <h2 className="text-xl font-bold">Exempt Incomes (For Reporting Purposes Only)</h2>
         <div className="bg-primary-light" style={{ padding: '0.5rem 1rem', borderRadius: 'var(--radius-md)', background: 'rgba(16, 185, 129, 0.1)', color: 'var(--success)', fontWeight: 'bold' }}>
           Total Exempt Income: ₹ {totalExempt.toLocaleString('en-IN')}
@@ -64,7 +64,7 @@ const ExemptIncome = ({ data, updateData }) => {
         ) : (
           <div>
             <div style={{ border: '1px solid var(--input-border)', borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
-              <div style={{ display: 'flex', background: 'var(--primary)', color: 'white', padding: '1rem', fontWeight: 'bold', borderBottom: '1px solid var(--input-border)', fontSize: '0.85rem', textTransform: 'uppercase', borderRadius: 'var(--radius-md) var(--radius-md) 0 0' }}>
+              <div style={{ display: 'flex', background: 'var(--glass-bg)', color: 'var(--primary)', padding: '1rem', fontWeight: 'bold', borderBottom: '2px solid var(--primary)', fontSize: '0.85rem', textTransform: 'uppercase', borderRadius: 'var(--radius-md) var(--radius-md) 0 0' }}>
                 <div style={{ flex: '1 1 40%' }}>Section Code</div>
                 <div style={{ flex: '1 1 30%' }}>Description / Remark</div>
                 <div style={{ flex: '0 0 150px' }}>Amount (₹)</div>

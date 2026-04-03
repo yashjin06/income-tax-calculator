@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Calculator, User, Briefcase, Home, FileText, Download, Activity, FileSpreadsheet, Percent, Moon, Sun, ShieldCheck, UploadCloud, Lightbulb, Calendar } from 'lucide-react'
+import { Calculator, User, Briefcase, Home, FileText, Download, Activity, FileSpreadsheet, Percent, Moon, Sun, ShieldCheck, UploadCloud, Lightbulb, Calendar, Menu, X } from 'lucide-react'
 import PersonalInfo from './components/PersonalInfo'
 import Salary from './components/Salary'
 import HouseProperty from './components/HouseProperty'
@@ -20,6 +20,7 @@ import './App.css'
 
 function App() {
   const [activeTab, setActiveTab] = useState('personal')
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isDarkMode, setIsDarkMode] = useState(false)
   const [taxData, setTaxData] = useState({
     personal: {
@@ -90,10 +91,33 @@ function App() {
     }
   }
 
+  const handleNavSelect = (tabId) => {
+    setActiveTab(tabId)
+    setIsMobileMenuOpen(false)
+  }
+
   return (
     <div className="app-container">
+      {/* Mobile Topbar */}
+      <div className="mobile-topbar">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <div className="sidebar-logo" style={{ width: '32px', height: '32px', boxShadow: 'none' }}>
+            <Calculator size={18} />
+          </div>
+          <div className="sidebar-title" style={{ fontSize: '1.2rem', margin: 0 }}>TaxNova Pro</div>
+        </div>
+        <button className="btn mobile-menu-btn" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} style={{ padding: '0.5rem', background: 'transparent', border: 'none', color: 'var(--text-main)', boxShadow: 'none' }}>
+          {isMobileMenuOpen ? <X size={26} /> : <Menu size={26} />}
+        </button>
+      </div>
+
+      {/* Mobile Overlay Backdrop */}
+      {isMobileMenuOpen && (
+        <div className="mobile-overlay fade-in" onClick={() => setIsMobileMenuOpen(false)}></div>
+      )}
+
       {/* Sidebar Navigation */}
-      <aside className="sidebar">
+      <aside className={`sidebar ${isMobileMenuOpen ? 'open' : ''}`}>
         <div className="sidebar-header">
           <div className="sidebar-logo">
             <Calculator size={20} />
@@ -102,73 +126,73 @@ function App() {
         </div>
         
         <nav className="sidebar-nav">
-          <button className={`nav-item ${activeTab === 'personal' ? 'active' : ''}`} onClick={() => setActiveTab('personal')}>
+          <button className={`nav-item ${activeTab === 'personal' ? 'active' : ''}`} onClick={() => handleNavSelect('personal')}>
             <User size={20} />
             <span>Profile & Regime</span>
           </button>
           
           <div className="nav-section-title">Income Heads</div>
-          <button className={`nav-item ${activeTab === 'salary' ? 'active' : ''}`} onClick={() => setActiveTab('salary')}>
-            <FileText size={18} />
+          <button className={`nav-item ${activeTab === 'salary' ? 'active' : ''}`} onClick={() => handleNavSelect('salary')}>
+            <FileText size={20} />
             <span>Salary</span>
           </button>
           
-          <button className={`nav-item ${activeTab === 'house' ? 'active' : ''}`} onClick={() => setActiveTab('house')}>
-            <Home size={18} />
+          <button className={`nav-item ${activeTab === 'house' ? 'active' : ''}`} onClick={() => handleNavSelect('house')}>
+            <Home size={20} />
             <span>House Property</span>
           </button>
           
-          <button className={`nav-item ${activeTab === 'business' ? 'active' : ''}`} onClick={() => setActiveTab('business')}>
-            <Briefcase size={18} />
+          <button className={`nav-item ${activeTab === 'business' ? 'active' : ''}`} onClick={() => handleNavSelect('business')}>
+            <Briefcase size={20} />
             <span>Business / PGBP</span>
           </button>
           
-          <button className={`nav-item ${activeTab === 'capital' ? 'active' : ''}`} onClick={() => setActiveTab('capital')}>
-            <Activity size={18} />
+          <button className={`nav-item ${activeTab === 'capital' ? 'active' : ''}`} onClick={() => handleNavSelect('capital')}>
+            <Activity size={20} />
             <span>Capital Gains</span>
           </button>
           
-          <button className={`nav-item ${activeTab === 'otherSources' ? 'active' : ''}`} onClick={() => setActiveTab('otherSources')}>
-            <FileSpreadsheet size={18} />
+          <button className={`nav-item ${activeTab === 'otherSources' ? 'active' : ''}`} onClick={() => handleNavSelect('otherSources')}>
+            <FileSpreadsheet size={20} />
             <span>Other Sources</span>
           </button>
           
-          <button className={`nav-item ${activeTab === 'bfl' ? 'active' : ''}`} onClick={() => setActiveTab('bfl')} style={{ color: 'var(--danger)' }}>
-            <Activity size={18} />
+          <button className={`nav-item ${activeTab === 'bfl' ? 'active' : ''}`} onClick={() => handleNavSelect('bfl')}>
+            <Activity size={20} />
             <span>B/F Losses</span>
           </button>
 
           <div className="nav-section-title">Tax & Regimes</div>
           <div className="nav-group">
-            <button className={`nav-item ${activeTab === 'taxes-paid' ? 'active' : ''}`} onClick={() => setActiveTab('taxes-paid')}>
+            <button className={`nav-item ${activeTab === 'taxes-paid' ? 'active' : ''}`} onClick={() => handleNavSelect('taxes-paid')}>
               <ShieldCheck size={20} />
               <span>Taxes Paid (TDS/TCS)</span>
             </button>
-            <button className={`nav-item ${activeTab === 'deductions' ? 'active' : ''}`} onClick={() => setActiveTab('deductions')}>
+            <button className={`nav-item ${activeTab === 'deductions' ? 'active' : ''}`} onClick={() => handleNavSelect('deductions')}>
               <ShieldCheck size={20} />
               <span>Deductions</span>
             </button>
-            <button className={`nav-item ${activeTab === 'exemptIncome' ? 'active' : ''}`} onClick={() => setActiveTab('exemptIncome')}>
+            <button className={`nav-item ${activeTab === 'exemptIncome' ? 'active' : ''}`} onClick={() => handleNavSelect('exemptIncome')}>
               <Percent size={20} />
               <span>Exempt Income u/s 10</span>
             </button>
-            <button className={`nav-item ${activeTab === 'summary' ? 'active' : ''}`} onClick={() => setActiveTab('summary')}>
-              <FileText size={18} />
+            <button className={`nav-item ${activeTab === 'summary' ? 'active' : ''}`} onClick={() => handleNavSelect('summary')}>
+              <FileText size={20} />
               <span>Income Summary</span>
             </button>
           </div>
 
           <h3 className="nav-section-title">Reports & Analysis</h3>
           <div className="nav-group">
-            <button className={`nav-item ${activeTab === 'computation' ? 'active' : ''}`} onClick={() => setActiveTab('computation')}>
+            <button className={`nav-item ${activeTab === 'computation' ? 'active' : ''}`} onClick={() => handleNavSelect('computation')}>
               <Calculator size={20} />
               <span>Tax Computation</span>
             </button>
-            <button className={`nav-item ${activeTab === 'advance-tax' ? 'active' : ''}`} onClick={() => setActiveTab('advance-tax')}>
+            <button className={`nav-item ${activeTab === 'advance-tax' ? 'active' : ''}`} onClick={() => handleNavSelect('advance-tax')}>
               <Calendar size={20} />
               <span>Advance Tax & Penalties</span>
             </button>
-            <button className={`nav-item ${activeTab === 'tax-breakup' ? 'active' : ''}`} onClick={() => setActiveTab('tax-breakup')}>
+            <button className={`nav-item ${activeTab === 'tax-breakup' ? 'active' : ''}`} onClick={() => handleNavSelect('tax-breakup')}>
               <FileText size={20} />
               <span>Tax Breakup Details</span>
             </button>

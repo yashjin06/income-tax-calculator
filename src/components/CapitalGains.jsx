@@ -175,7 +175,7 @@ const CapitalGains = ({ data, updateData }) => {
 
   return (
     <div className="fade-in">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
         <h2 className="text-xl font-bold">Capital Gains</h2>
         <div className="bg-primary-light" style={{ padding: '0.5rem 1rem', borderRadius: 'var(--radius-md)', background: totalCg >= 0 ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)', color: totalCg >= 0 ? 'var(--success)' : 'var(--danger)', fontWeight: 'bold' }}>
           Total Capital Gains: ₹ {totalCg.toLocaleString('en-IN')}
@@ -282,7 +282,7 @@ const CapitalGains = ({ data, updateData }) => {
             {propCalc.result && !propCalc.result.isChoiceApplicable && !propCalc.result.flatOption && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', background: 'var(--bg-color)', padding: '1rem', borderRadius: 'var(--radius-sm)' }}>
                  <p>{propCalc.result.message}</p>
-                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem', marginBottom: '1rem' }}>
                     <div>Type: <strong>{propCalc.result.type || propCalc.result.beneficialOption?.type}</strong></div>
                     <div>Gross Gain: <strong>₹ {Math.round(propCalc.result.gross || propCalc.result.beneficialOption?.gross).toLocaleString('en-IN')}</strong></div>
                     <div>Exemptions: <strong style={{ color: 'var(--danger)'}}>- ₹ {Math.round(propCalc.result.exemptions || propCalc.result.beneficialOption?.exemptions).toLocaleString('en-IN')}</strong></div>
@@ -297,7 +297,7 @@ const CapitalGains = ({ data, updateData }) => {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', background: 'var(--bg-color)', padding: '1rem', borderRadius: 'var(--radius-sm)' }}>
                  <p className="font-bold text-primary">{propCalc.result.message}</p>
                  
-                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem' }}>
                     {/* Flat Option Card */}
                     <div style={{ padding: '1.25rem', borderRadius: 'var(--radius-sm)', border: propCalc.result.beneficialOption.option === 'flat' ? '2px solid var(--success)' : '1px solid var(--border-color)', background: propCalc.result.beneficialOption.option === 'flat' ? 'rgba(16, 185, 129, 0.05)' : 'transparent', display: 'flex', flexDirection: 'column' }}>
                        <h4 className="font-bold mb-3">Option 1: 12.5% Flat Rate</h4>
@@ -373,7 +373,7 @@ const CapitalGains = ({ data, updateData }) => {
                 <input type="number" className="input-field" name="sale" value={gfCalc.sale} onChange={handleGfChange} />
               </div>
             </div>
-            <button className="btn btn-primary" style={{ background: '#3b82f6' }} onClick={calculateGrandfathering}>Calculate Grandfathered Gain</button>
+            <button className="btn btn-primary" onClick={calculateGrandfathering}>Calculate Grandfathered Gain</button>
             {gfCalc.result && (
               <div style={{ display: 'flex', gap: '2rem', alignItems: 'center', background: 'var(--bg-color)', padding: '1rem', borderRadius: 'var(--radius-sm)', marginTop: '1rem' }}>
                  <div>Acquisition Cost to consider: <strong>₹ {Math.round(gfCalc.result.acqCost).toLocaleString('en-IN')}</strong></div>

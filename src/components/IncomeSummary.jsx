@@ -26,7 +26,7 @@ const IncomeSummary = ({ data }) => {
 
       {/* 1. Profile */}
       <h3 style={{ fontSize: '1.125rem', fontWeight: 'bold', marginBottom: '0.75rem', color: 'var(--text-main)' }}>Assessee Profile</h3>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', background: 'var(--glass-bg)', padding: '1.5rem', borderRadius: 'var(--radius-md)', marginBottom: '2.5rem', border: '1px dashed var(--primary)' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem', background: 'var(--glass-bg)', padding: '1.5rem', borderRadius: 'var(--radius-md)', marginBottom: '2.5rem', border: '1px dashed var(--primary)' }}>
          <div style={{ fontSize: '1.05rem' }}><span style={{ color: 'var(--text-muted)' }}>Name:</span> <strong style={{ color: 'var(--text-main)' }}>{data.personal?.name || '________________'}</strong></div>
          <div style={{ fontSize: '1.05rem' }}><span style={{ color: 'var(--text-muted)' }}>PAN:</span> <strong style={{ color: 'var(--text-main)' }}>{(data.personal?.pan || '__________').toUpperCase()}</strong></div>
          <div style={{ fontSize: '1.05rem' }}><span style={{ color: 'var(--text-muted)' }}>Status:</span> <strong style={{ color: 'var(--text-main)' }}>{data.personal?.category || 'Individual'}</strong></div>
@@ -102,9 +102,9 @@ const IncomeSummary = ({ data }) => {
              <td style={{ ...tdStyle, paddingLeft: '1.5rem' }}>Total Section 80 Deductions (80C, 80D, 80G, etc.)</td>
              <td style={{ ...tdRight, fontWeight: 'bold', fontSize: '1.125rem', color: 'var(--danger)' }}>({fmt(results.totalDeductions)})</td>
            </tr>
-           <tr style={{ background: 'var(--primary)' }}>
-             <td style={{ padding: '1rem', fontWeight: 'bold', fontSize: '1.25rem', textTransform: 'uppercase', borderRadius: '0.375rem 0 0 0.375rem', color: 'white' }}>Total Taxable Income (Rounded off u/s 288A)</td>
-             <td style={{ padding: '1rem', textAlign: 'right', fontWeight: 'bold', fontSize: '1.5rem', borderRadius: '0 0.375rem 0.375rem 0', color: 'white' }}>{fmt(results.totalTaxableIncome)}</td>
+           <tr style={{ background: 'var(--glass-bg)', borderTop: '2px solid var(--primary)' }}>
+             <td style={{ padding: '1rem', fontWeight: 'bold', fontSize: '1.25rem', textTransform: 'uppercase', borderRadius: '0.375rem 0 0 0.375rem', color: 'var(--primary)' }}>Total Taxable Income (Rounded off u/s 288A)</td>
+             <td style={{ padding: '1rem', textAlign: 'right', fontWeight: 'bold', fontSize: '1.5rem', borderRadius: '0 0.375rem 0.375rem 0', color: 'var(--primary)' }}>{fmt(results.totalTaxableIncome)}</td>
            </tr>
         </tbody>
       </table>

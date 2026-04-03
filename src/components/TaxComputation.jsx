@@ -26,7 +26,7 @@ const TaxComputation = ({ data }) => {
       <div className="card slide-up" style={{ padding: '2.5rem 1.5rem', textAlign: 'center', marginBottom: '2.5rem', maxWidth: '600px', margin: '0 auto 2.5rem auto' }}>
         <h2 className="text-2xl font-bold mb-6" style={{ color: 'var(--text-main)' }}>Tax Liability Summary</h2>
         
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '3rem', marginBottom: '2rem' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', gap: '3rem', marginBottom: '2rem' }}>
           <div style={{ textAlign: 'center' }}>
             <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', marginBottom: '0.5rem', fontWeight: 500 }}>Old Regime</p>
             <p style={{ fontWeight: 800, fontSize: '1.75rem', color: 'var(--text-main)' }}>₹ {oldTax.toLocaleString('en-IN')}</p>
@@ -41,8 +41,8 @@ const TaxComputation = ({ data }) => {
         </div>
 
         <div style={{ 
-          background: isSame ? 'var(--glass-bg)' : '#E8F5E9', 
-          color: isSame ? 'var(--text-main)' : '#059669', 
+          background: isSame ? 'var(--glass-bg)' : 'rgba(16, 185, 129, 0.1)', 
+          color: isSame ? 'var(--text-main)' : 'var(--success)', 
           padding: '1.25rem 2rem', 
           borderRadius: 'var(--radius-lg)', 
           display: 'inline-block',
@@ -89,7 +89,7 @@ const TaxComputation = ({ data }) => {
 
           {isNewRegime && (parseFloat(data.deductions?.sec80ccd2) || 0) === 0 && (parseFloat(data.salary?.basic) > 0) && (
              <div style={{ background: 'rgba(245, 158, 11, 0.1)', padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid rgba(245, 158, 11, 0.2)' }}>
-                <p style={{ color: '#d97706', fontSize: '0.9rem', marginBottom: '0.5rem', fontWeight: 600 }}>Pro Tip: NPS u/s 80CCD(2)</p>
+                <p style={{ color: 'var(--warning)', fontSize: '0.9rem', marginBottom: '0.5rem', fontWeight: 600 }}>Pro Tip: NPS u/s 80CCD(2)</p>
                 <p style={{ fontSize: '0.95rem', color: 'var(--text-main)', lineHeight: '1.4' }}>
                    Even in the New Regime, Employer contributions to NPS are fully deductible up to 10% (or 14%) of Basic Salary. Restructure your CTC to utilize this loophole!
                 </p>
@@ -108,7 +108,7 @@ const TaxComputation = ({ data }) => {
         </div>
       </div>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
         <h2 className="text-xl font-bold">Detailed Computation ({isNewRegime ? 'New' : 'Old'} Regime)</h2>
         <div style={{ display: 'flex', gap: '0.5rem' }}>
            <span className="badge" style={{ padding: '0.25rem 0.75rem', borderRadius: '1rem', background: isNewRegime ? 'var(--primary)' : 'var(--warning)', color: 'white', fontSize: '0.875rem' }}>
@@ -117,7 +117,7 @@ const TaxComputation = ({ data }) => {
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.5fr) minmax(0, 1fr)', gap: '2rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem' }}>
         
         {/* Income Sources Summary */}
         <div className="card p-6 slide-up" style={{ animationDelay: '0.1s' }}>
@@ -207,8 +207,8 @@ const TaxComputation = ({ data }) => {
       
       {/* High Income Schedule AL Disclosure Warning */}
       {results.totalTaxableIncome > 5000000 && (
-        <div className="card p-6 slide-up" style={{ marginTop: '2rem', borderLeft: '4px solid #d97706', animationDelay: '0.3s' }}>
-          <h3 className="text-lg font-bold mb-3" style={{ color: '#b45309', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        <div className="card p-6 slide-up" style={{ marginTop: '2rem', borderLeft: '4px solid var(--warning)', animationDelay: '0.3s' }}>
+          <h3 className="text-lg font-bold mb-3" style={{ color: 'var(--warning)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             ⚠️ Mandatory AL Schedule Disclosure
           </h3>
           <p style={{ color: 'var(--text-main)', fontSize: '0.95rem', lineHeight: '1.5' }}>

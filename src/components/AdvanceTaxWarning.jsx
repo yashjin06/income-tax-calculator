@@ -86,7 +86,7 @@ const AdvanceTaxWarning = ({ data }) => {
         {isApplicable ? (
           <div>
             <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', padding: '1rem', background: 'rgba(59, 130, 246, 0.1)', color: 'var(--text-main)', borderRadius: 'var(--radius-md)', marginBottom: '1.5rem' }}>
-               <AlertCircle size={24} color="#3b82f6" style={{ minWidth: '24px' }} />
+               <AlertCircle size={24} color="var(--primary)" style={{ minWidth: '24px' }} />
                <p style={{ margin: 0 }}><strong>Advance Tax is Applicable.</strong> Since your tax liability exceeds ₹10,000, you are required to pay tax in installments during the financial year to avoid 1% per month interest under Section 234B and 234C.{isEligiblePresumptive ? " As a presumptive taxpayer (44AD/44ADA), the tax on your presumptive income is due completely by 15th March, while normal installments apply to other incomes." : ""}</p>
             </div>
 
