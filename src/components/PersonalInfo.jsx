@@ -1,4 +1,6 @@
 import React from 'react'
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
 
 const PersonalInfo = ({ data, updateData }) => {
   const handleChange = (e) => {
@@ -38,14 +40,61 @@ const PersonalInfo = ({ data, updateData }) => {
           </div>
 
           <div className="input-group">
-            <label className="input-label">Date of Birth</label>
+            <label className="input-label">Aadhaar Number</label>
             <input 
               type="text" 
-              name="dob" 
+              name="aadhaar" 
               className="input-field" 
-              placeholder="DD/MM/YYYY" 
-              value={data?.personal?.dob || ''} 
+              placeholder="12-digit Aadhaar" 
+              value={data?.personal?.aadhaar || ''} 
               onChange={handleChange} 
+            />
+          </div>
+
+          <div className="input-group">
+            <label className="input-label">Email Address</label>
+            <input 
+              type="email" 
+              name="email" 
+              className="input-field" 
+              placeholder="your@email.com" 
+              value={data?.personal?.email || ''} 
+              onChange={handleChange} 
+            />
+          </div>
+
+          <div className="input-group">
+            <label className="input-label">Mobile Number</label>
+            <input 
+              type="tel" 
+              name="mobile" 
+              className="input-field" 
+              placeholder="10-digit Mobile Number" 
+              value={data?.personal?.mobile || ''} 
+              onChange={handleChange} 
+            />
+          </div>
+
+          <div className="input-group">
+            <label className="input-label">Date of Birth</label>
+            <DatePicker
+              selected={data?.personal?.dob ? new Date(data.personal.dob) : null}
+              onChange={(date) => {
+                if(date) {
+                   const offsetDate = new Date(date.getTime() - (date.getTimezoneOffset() * 60000));
+                   updateData({...data, personal: {...data.personal, dob: offsetDate.toISOString().split('T')[0]}});
+                } else {
+                   updateData({...data, personal: {...data.personal, dob: ''}});
+                }
+              }}
+              dateFormat="dd/MM/yyyy"
+              className="input-field w-full"
+              placeholderText="Select your birth date"
+              showYearDropdown
+              scrollableYearDropdown
+              yearDropdownItemNumber={100}
+              maxDate={new Date()}
+              portalId="root-portal"
             />
           </div>
 
@@ -152,6 +201,58 @@ const PersonalInfo = ({ data, updateData }) => {
           <div className="input-group">
             <label className="input-label">PIN Code</label>
             <input type="text" name="pincode" className="input-field" value={data?.personal?.pincode || ''} onChange={handleChange} />
+          </div>
+        </div>
+      </div>
+
+      <div className="card p-6 slide-up" style={{ animationDelay: '0.3s' }}>
+        <h2 className="text-xl font-bold mb-4" style={{ marginBottom: '1.5rem' }}>Bank Account Details</h2>
+        <p className="text-sm text-gray-500 mb-4">Required for tax refund processing. Please provide at least one active account.</p>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
+          <div className="input-group">
+            <label className="input-label">Bank Name</label>
+            <input 
+              type="text" 
+              name="bankName" 
+              className="input-field" 
+              placeholder="e.g. State Bank of India" 
+              value={data?.personal?.bankName || ''} 
+              onChange={handleChange} 
+            />
+          </div>
+          <div className="input-group">
+            <label className="input-label">Account Number</label>
+            <input 
+              type="text" 
+              name="accountNumber" 
+              className="input-field" 
+              placeholder="Enter Account Number" 
+              value={data?.personal?.accountNumber || ''} 
+              onChange={handleChange} 
+            />
+          </div>
+          <div className="input-group">
+            <label className="input-label">IFSC Code</label>
+            <input 
+              type="text" 
+              name="ifscCode" 
+              className="input-field" 
+              placeholder="e.g. SBIN0001234" 
+              style={{ textTransform: 'uppercase' }}
+              value={data?.personal?.ifscCode || ''} 
+              onChange={handleChange} 
+            />
+          </div>
+          <div className="input-group" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '1.5rem' }}>
+            <input 
+              type="checkbox" 
+              id="isPrimaryAccount" 
+              name="isPrimaryAccount" 
+              style={{ width: '20px', height: '20px' }}
+              checked={data?.personal?.isPrimaryAccount !== false} 
+              onChange={(e) => updateData({ ...data, personal: { ...data.personal, isPrimaryAccount: e.target.checked } })} 
+            />
+            <label htmlFor="isPrimaryAccount" className="font-bold cursor-pointer" style={{ userSelect: 'none' }}>Select for Refund Claim?</label>
           </div>
         </div>
       </div>

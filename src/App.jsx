@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Calculator, User, Briefcase, Home, FileText, Download, Activity, FileSpreadsheet, Percent, Moon, Sun, ShieldCheck, UploadCloud, Lightbulb, Calendar, Menu, X } from 'lucide-react'
+import { Calculator, User, Briefcase, Home, FileText, Download, Activity, FileSpreadsheet, Percent, Moon, Sun, ShieldCheck, UploadCloud, Lightbulb, Calendar, Menu, X, PlayCircle, BarChart2 } from 'lucide-react'
 import PersonalInfo from './components/PersonalInfo'
 import Salary from './components/Salary'
 import HouseProperty from './components/HouseProperty'
@@ -14,14 +14,20 @@ import TaxBreakup from './components/TaxBreakup'
 import BroughtForwardLosses from './components/BroughtForwardLosses'
 import TaxesPaid from './components/TaxesPaid'
 import AdvanceTaxWarning from './components/AdvanceTaxWarning'
+import CryptoVDA from './components/CryptoVDA'
+import BrokerImport from './components/BrokerImport'
+import RegimeComparison from './components/RegimeComparison'
+import GuidedMode from './components/GuidedMode'
 import { generatePDF } from './exports/pdfExport'
 import { generateWord } from './exports/wordExport'
+import { generateItrJson } from './exports/itrJsonExport'
 import './App.css'
 
 function App() {
   const [activeTab, setActiveTab] = useState('personal')
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isDarkMode, setIsDarkMode] = useState(false)
+  const [isGuidedMode, setIsGuidedMode] = useState(false)
   const [taxData, setTaxData] = useState({
     personal: {
       name: '',
@@ -96,6 +102,12 @@ function App() {
         return <TaxBreakup data={taxData} />
       case 'advance-tax':
         return <AdvanceTaxWarning data={taxData} />
+      case 'broker':
+        return <BrokerImport data={taxData} updateData={updateData} />
+      case 'crypto':
+        return <CryptoVDA data={taxData} updateData={updateData} />
+      case 'regime-compare':
+        return <RegimeComparison data={taxData} />
       default:
         return <div className="glass-panel p-6 slide-up"><h2>Module coming soon</h2></div>
     }
@@ -104,6 +116,10 @@ function App() {
   const handleNavSelect = (tabId) => {
     setActiveTab(tabId)
     setIsMobileMenuOpen(false)
+  }
+
+  if (isGuidedMode) {
+    return <GuidedMode data={taxData} updateData={updateData} exitGuidedMode={() => setIsGuidedMode(false)} />
   }
 
   return (
@@ -194,10 +210,20 @@ function App() {
             <Activity size={20} />
             <span>Capital Gains</span>
           </button>
+
+          <button className={`nav-item ${activeTab === 'crypto' ? 'active' : ''}`} onClick={() => handleNavSelect('crypto')}>
+            <Activity size={20} />
+            <span>Crypto / VDA</span>
+          </button>
           
           <button className={`nav-item ${activeTab === 'otherSources' ? 'active' : ''}`} onClick={() => handleNavSelect('otherSources')}>
             <FileSpreadsheet size={20} />
             <span>Other Sources</span>
+          </button>
+
+          <button className={`nav-item ${activeTab === 'broker' ? 'active' : ''}`} onClick={() => handleNavSelect('broker')}>
+            <UploadCloud size={20} />
+            <span>Broker Trade Import</span>
           </button>
           
           <button className={`nav-item ${activeTab === 'bfl' ? 'active' : ''}`} onClick={() => handleNavSelect('bfl')}>
@@ -231,6 +257,10 @@ function App() {
               <Calculator size={20} />
               <span>Tax Computation</span>
             </button>
+            <button className={`nav-item ${activeTab === 'regime-compare' ? 'active' : ''}`} onClick={() => handleNavSelect('regime-compare')}>
+              <BarChart2 size={20} />
+              <span>Regime Comparison</span>
+            </button>
             <button className={`nav-item ${activeTab === 'advance-tax' ? 'active' : ''}`} onClick={() => handleNavSelect('advance-tax')}>
               <Calendar size={20} />
               <span>Advance Tax & Penalties</span>
@@ -250,9 +280,13 @@ function App() {
             <h1>Comprehensive Tax Calculator</h1>
             <p>Assessment Year: {taxData.personal.assessmentYear} | Assessee: {taxData.personal.name || 'Not provided'}</p>
           </div>
-          <div style={{display: 'flex', gap: '0.75rem', alignItems: 'center'}}>
+          <div style={{display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap'}}>
              <button className="btn btn-secondary" onClick={toggleDarkMode} style={{ padding: '0.625rem', borderRadius: '50%' }} title="Toggle Dark Mode">
                {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
+             </button>
+             <button className="btn btn-primary" onClick={() => setIsGuidedMode(true)} style={{ background: '#ec4899', border: 'none' }}>
+               <PlayCircle size={16} />
+               Guided Setup
              </button>
              <button className="btn btn-secondary" onClick={() => generateWord(taxData)}>
                <FileText size={16} />
@@ -262,6 +296,11 @@ function App() {
              <button className="btn btn-primary" onClick={() => generatePDF(taxData)}>
                <Download size={16} />
                Export PDF
+             </button>
+
+             <button className="btn btn-primary" onClick={() => generateItrJson(taxData)} style={{ background: 'var(--success)', border: 'none', color: '#fff' }}>
+               <Download size={16} />
+               Export ITR JSON
              </button>
           </div>
         </header>

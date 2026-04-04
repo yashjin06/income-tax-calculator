@@ -56,6 +56,27 @@ const Salary = ({ data, updateData }) => {
           </div>
         </div>
 
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', marginBottom: '2rem', paddingBottom: '1.5rem', borderBottom: '1px solid var(--input-border)' }}>
+          <div className="input-group">
+            <label className="input-label">Employer Name</label>
+            <input type="text" name="employerName" className="input-field" value={salData.employerName || ''} onChange={handleChange} placeholder="Company Name" />
+          </div>
+          <div className="input-group">
+            <label className="input-label">Employer TAN</label>
+            <input type="text" name="employerTan" className="input-field" value={salData.employerTan || ''} onChange={handleChange} placeholder="e.g. DELC12345F" style={{ textTransform: 'uppercase' }} />
+          </div>
+          <div className="input-group">
+            <label className="input-label">Employer Type</label>
+            <select name="employerType" className="input-field" value={salData.employerType || 'private'} onChange={handleChange}>
+              <option value="private">Private Sector</option>
+              <option value="govt">Central / State Government</option>
+              <option value="psu">Public Sector Undertaking (PSU)</option>
+              <option value="pensioners">Pensioners</option>
+              <option value="other">Others</option>
+            </select>
+          </div>
+        </div>
+
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
           <div className="input-group">
             <label className="input-label">Basic Salary</label>

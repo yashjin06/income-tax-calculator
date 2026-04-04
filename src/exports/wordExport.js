@@ -142,7 +142,12 @@ export const generateWord = async (data) => {
             ] : []),
             createRow("   Total Taxable Capital Gains", results.stcg + results.ltcg),
 
-            createRow("5. Income from Other Sources", "", true),
+            ...((parseFloat(data.crypto?.totalTaxableGain) || 0) > 0 ? [
+               createRow("5. Income from Virtual Digital Assets", "", true),
+               createRow("   Net Taxable VDA (Crypto) Income", parseFloat(data.crypto.totalTaxableGain))
+            ] : []),
+
+            createRow(((parseFloat(data.crypto?.totalTaxableGain) || 0) > 0 ? "6. " : "5. ") + "Income from Other Sources", "", true),
             createRow("   Net Taxable Other Sources", results.netOtherSources),
             
             createRow("GROSS TOTAL INCOME (A)", results.grossTotalIncome, true, "₹ ")

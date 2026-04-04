@@ -135,7 +135,13 @@ export const generatePDF = (data) => {
   }
 
   // Other Sources
-  incomeBody.push([{ content: '5. Income from Other Sources', colSpan: 2, styles: { fontStyle: 'bold', fillColor: [241, 245, 249], textColor: [15, 23, 42] } }])
+  const vda = parseFloat(data.crypto?.totalTaxableGain) || 0;
+  if (vda > 0) {
+      incomeBody.push([{ content: '5. Income from Virtual Digital Assets (Crypto)', colSpan: 2, styles: { fontStyle: 'bold', fillColor: [241, 245, 249], textColor: [15, 23, 42] } }])
+      incomeBody.push([{ content: '   Net Taxable VDA Income (Sec 115BBH)', styles: { fontStyle: 'bold' } }, { content: vda.toLocaleString('en-IN'), styles: { fontStyle: 'bold' } }])
+  }
+
+  incomeBody.push([{ content: (vda > 0 ? '6.' : '5.') + ' Income from Other Sources', colSpan: 2, styles: { fontStyle: 'bold', fillColor: [241, 245, 249], textColor: [15, 23, 42] } }])
   incomeBody.push([{ content: '   Net Income from Other Sources', styles: { fontStyle: 'bold' } }, { content: results.netOtherSources.toLocaleString('en-IN'), styles: { fontStyle: 'bold' } }])
 
   // GTI

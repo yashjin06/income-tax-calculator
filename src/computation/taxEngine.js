@@ -129,6 +129,10 @@ export const computeTax = (data) => {
   let netOtherSources = (parseFloat(os.savingsInterest) || 0) + (parseFloat(os.fdInterest) || 0) + (parseFloat(os.dividend) || 0) + (parseFloat(os.winnings) || 0) + (parseFloat(os.gifts) || 0) + (parseFloat(os.otherIncome) || 0) - (parseFloat(os.expenses) || 0)
   netOtherSources = Math.max(0, netOtherSources)
 
+  // 6. Virtual Digital Assets (Crypto)
+  const crypto = data.crypto || {}
+  const vdaIncome = parseFloat(crypto.totalTaxableGain) || 0
+
   // Gross Total Income
   let totalNormalIncome = netSalary + netHouseProperty + netPGBP + stcgNormal + netOtherSources - (parseFloat(os.winnings) || 0) // Special rate for winnings
   
@@ -137,7 +141,7 @@ export const computeTax = (data) => {
     totalNormalIncome = Math.max(0, totalNormalIncome - housePropertyLossToSetOff)
   }
 
-  const grossTotalIncome = totalNormalIncome + stcg20 + taxableLtcg125Equity + ltcg125Other + ltcg20 + (parseFloat(os.winnings) || 0)
+  const grossTotalIncome = totalNormalIncome + stcg20 + taxableLtcg125Equity + ltcg125Other + ltcg20 + (parseFloat(os.winnings) || 0) + vdaIncome
 
   // Deductions Chapter VI-A
   let totalDeductions = 0
@@ -170,7 +174,7 @@ export const computeTax = (data) => {
   totalDeductions = Math.min(totalDeductions, totalNormalIncome)
   let taxableNormalIncome = Math.max(0, totalNormalIncome - totalDeductions)
 
-  const totalTaxableIncome = taxableNormalIncome + stcg20 + taxableLtcg125Equity + ltcg125Other + ltcg20 + (parseFloat(os.winnings) || 0)
+  const totalTaxableIncome = taxableNormalIncome + stcg20 + taxableLtcg125Equity + ltcg125Other + ltcg20 + (parseFloat(os.winnings) || 0) + vdaIncome
 
   // --- HELPER FOR TAX ON SPECIFIED INCOME (For Marginal Relief) ---
   const getNormalTaxOn = (inc) => {
@@ -265,8 +269,9 @@ export const computeTax = (data) => {
   if (ltcg20 > 0) specialTaxBreakup.push({ label: 'LTCG u/s 112 @ 20%', amount: ltcg20, tax: ltcg20 * 0.20 })
   const winAmt = parseFloat(os.winnings) || 0;
   if (winAmt > 0) specialTaxBreakup.push({ label: 'Winnings @ 30%', amount: winAmt, tax: winAmt * 0.3 })
+  if (vdaIncome > 0) specialTaxBreakup.push({ label: 'VDA (Crypto) @ 30%', amount: vdaIncome, tax: vdaIncome * 0.3 })
 
-  const specialTax = (stcg20 * 0.20) + (taxableLtcg125Equity * 0.125) + (ltcg125Other * 0.125) + (ltcg20 * 0.2) + (winAmt * 0.3)
+  const specialTax = (stcg20 * 0.20) + (taxableLtcg125Equity * 0.125) + (ltcg125Other * 0.125) + (ltcg20 * 0.2) + (winAmt * 0.3) + (vdaIncome * 0.3)
 
   let totalTaxBeforeRebate = normalTax + specialTax
 
