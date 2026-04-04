@@ -18,7 +18,7 @@ const IncomeSummary = ({ data }) => {
   const tdRight = { padding: '0.75rem 1rem', textAlign: 'right' }
 
   return (
-    <div className="fade-in max-w-4xl mx-auto" style={{ background: 'var(--card-bg)', padding: '2.5rem', borderRadius: 'var(--radius-lg)', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)', border: '1px solid var(--input-border)' }}>
+    <div className="fade-in" style={{ background: 'var(--card-bg)', padding: '2.5rem', borderRadius: 'var(--radius-lg)', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)', border: '1px solid var(--input-border)' }}>
       <div style={{ textAlign: 'center', marginBottom: '2rem', borderBottom: '3px solid var(--primary)', paddingBottom: '1.5rem' }}>
         <h2 style={{ fontSize: '1.875rem', fontWeight: 'bold', marginBottom: '0.5rem', color: 'var(--text-main)', textTransform: 'uppercase', letterSpacing: '1px' }}>Statement of Total Income</h2>
         <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', fontWeight: 500 }}>Assessment Year {data.personal?.assessmentYear || '2024-25'} | {isNewRegime ? 'New Regime (115BAC)' : 'Old Tax Regime'}</p>
@@ -53,7 +53,7 @@ const IncomeSummary = ({ data }) => {
                <td style={{ ...tdRight, color: 'var(--danger)' }}>({fmt(pt)})</td>
              </tr>
           )}
-          <tr style={{ background: 'rgba(0,0,0,0.02)', borderTop: '1px dashed var(--input-border)', borderBottom: '1px solid var(--input-border)' }}>
+          <tr style={{ background: 'var(--row-alt-bg)', borderTop: '1px dashed var(--input-border)', borderBottom: '1px solid var(--input-border)' }}>
              <td style={{ ...tdStyle, paddingLeft: '1.5rem', fontWeight: 600 }}>Net Income from Salaries</td>
              <td style={{ ...tdRight, fontWeight: 'bold', fontSize: '1.125rem' }}>{fmt(results.netSalary)}</td>
           </tr>
@@ -87,9 +87,9 @@ const IncomeSummary = ({ data }) => {
           </tr>
 
           {/* GTI */}
-          <tr style={{ background: 'rgba(79, 70, 229, 0.1)' }}>
-             <td style={{ padding: '1rem', fontWeight: 'bold', fontSize: '1.25rem', textTransform: 'uppercase', color: 'var(--primary)' }}>Gross Total Income (Sum of 1 to 5)</td>
-             <td style={{ padding: '1rem', textAlign: 'right', fontWeight: 'bold', fontSize: '1.5rem', color: 'var(--primary)' }}>{fmt(results.grossTotalIncome)}</td>
+          <tr style={{ background: 'var(--row-highlight-bg)' }}>
+             <td style={{ padding: '1rem', fontWeight: 'bold', fontSize: '1.25rem', textTransform: 'uppercase', color: 'var(--primary)', WebkitTextFillColor: 'var(--primary)' }}>Gross Total Income (Sum of 1 to 5)</td>
+             <td style={{ padding: '1rem', textAlign: 'right', fontWeight: 'bold', fontSize: '1.5rem', color: 'var(--primary)', WebkitTextFillColor: 'var(--primary)' }}>{fmt(results.grossTotalIncome)}</td>
           </tr>
         </tbody>
       </table>
@@ -102,7 +102,7 @@ const IncomeSummary = ({ data }) => {
              <td style={{ ...tdStyle, paddingLeft: '1.5rem' }}>Total Section 80 Deductions (80C, 80D, 80G, etc.)</td>
              <td style={{ ...tdRight, fontWeight: 'bold', fontSize: '1.125rem', color: 'var(--danger)' }}>({fmt(results.totalDeductions)})</td>
            </tr>
-           <tr style={{ background: 'var(--glass-bg)', borderTop: '2px solid var(--primary)' }}>
+           <tr style={{ background: 'var(--row-highlight-bg)', borderTop: '2px solid var(--primary)' }}>
              <td style={{ padding: '1rem', fontWeight: 'bold', fontSize: '1.25rem', textTransform: 'uppercase', borderRadius: '0.375rem 0 0 0.375rem', color: 'var(--primary)' }}>Total Taxable Income (Rounded off u/s 288A)</td>
              <td style={{ padding: '1rem', textAlign: 'right', fontWeight: 'bold', fontSize: '1.5rem', borderRadius: '0 0.375rem 0.375rem 0', color: 'var(--primary)' }}>{fmt(results.totalTaxableIncome)}</td>
            </tr>

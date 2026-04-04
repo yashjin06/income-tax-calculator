@@ -24,7 +24,7 @@ const TaxComputation = ({ data }) => {
     <div className="fade-in">
       {/* Comparative Summary Widget */}
       <div className="card slide-up" style={{ padding: '2.5rem 1.5rem', textAlign: 'center', marginBottom: '2.5rem', maxWidth: '600px', margin: '0 auto 2.5rem auto' }}>
-        <h2 className="text-2xl font-bold mb-6" style={{ color: 'var(--text-main)' }}>Tax Liability Summary</h2>
+        <h2 className="text-2xl font-bold mb-6" style={{ color: 'var(--dark)', WebkitTextFillColor: 'var(--dark)', background: 'none', WebkitBackgroundClip: 'unset', backgroundClip: 'unset' }}>Tax Liability Summary</h2>
         
         <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', gap: '3rem', marginBottom: '2rem' }}>
           <div style={{ textAlign: 'center' }}>
@@ -70,12 +70,12 @@ const TaxComputation = ({ data }) => {
         </h3>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem' }}>
           
-          <div style={{ background: 'rgba(79, 70, 229, 0.1)', padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid rgba(79, 70, 229, 0.2)' }}>
-             <p style={{ color: 'var(--primary)', fontSize: '0.9rem', marginBottom: '0.25rem', fontWeight: 600 }}>Effective Tax Rate</p>
-             <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--text-main)' }}>
+          <div style={{ background: 'var(--row-alt-bg)', padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--glass-border)' }}>
+             <p style={{ color: 'var(--primary)', fontSize: '0.9rem', marginBottom: '0.25rem', fontWeight: 600, WebkitTextFillColor: 'var(--primary)' }}>Effective Tax Rate</p>
+             <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--dark)', WebkitTextFillColor: 'var(--dark)' }}>
                 {results.grossTotalIncome > 0 ? ((results.totalTaxLiability / results.grossTotalIncome) * 100).toFixed(2) : 0}%
              </p>
-             <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem', marginTop: '0.25rem' }}>Percentage of gross income paid in tax.</p>
+             <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem', marginTop: '0.25rem', WebkitTextFillColor: 'var(--text-muted)' }}>Percentage of gross income paid in tax.</p>
           </div>
 
           {!isNewRegime && (parseFloat(data.deductions?.sec80c) || 0) < 150000 && (
@@ -164,7 +164,7 @@ const TaxComputation = ({ data }) => {
         </div>
 
         {/* Tax Liability Summary */}
-        <div className="card p-6 slide-up" style={{ animationDelay: '0.2s', background: 'var(--bg-gradient-start)' }}>
+        <div className="card p-6 slide-up" style={{ animationDelay: '0.2s', background: 'var(--card-bg)' }}>
           <h3 className="text-lg font-bold mb-4" style={{ borderBottom: '2px solid rgba(79, 70, 229, 0.2)', paddingBottom: '0.5rem', color: 'var(--primary-hover)' }}>Tax Liability Computation</h3>
           
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -197,7 +197,7 @@ const TaxComputation = ({ data }) => {
               <span style={{ fontWeight: 500, whiteSpace: 'nowrap', flexShrink: 0 }}>₹ {Math.round(results.cess).toLocaleString('en-IN')}</span>
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1rem', paddingTop: '1rem', paddingBottom: '0.5rem', borderTop: '2px solid var(--primary)', fontWeight: 'bold', fontSize: '1.5rem', color: 'var(--dark)', background: 'var(--glass-bg)', borderRadius: 'var(--radius-md)', padding: '1rem', boxShadow: 'var(--shadow-sm)', alignItems: 'flex-start' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1rem', borderTop: '2px solid var(--primary)', fontWeight: 'bold', fontSize: '1.5rem', color: 'var(--dark)', background: 'var(--row-highlight-bg)', borderRadius: 'var(--radius-md)', padding: '1rem', boxShadow: 'var(--shadow-sm)', alignItems: 'flex-start' }}>
               <span style={{ flex: 1, paddingRight: '1rem' }}>Net Tax Payable</span>
               <span style={{ whiteSpace: 'nowrap', flexShrink: 0 }}>₹ {Math.round(results.totalTaxLiability).toLocaleString('en-IN')}</span>
             </div>

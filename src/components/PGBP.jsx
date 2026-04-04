@@ -122,7 +122,7 @@ const PGBP = ({ data, updateData }) => {
     <div className="fade-in">
       <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
         <h2 className="text-xl font-bold">Profits and Gains of Business or Profession</h2>
-        <div className="bg-primary-light" style={{ padding: '0.5rem 1rem', borderRadius: 'var(--radius-md)', background: taxablePgbp >= 0 ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)', color: taxablePgbp >= 0 ? 'var(--success)' : 'var(--danger)', fontWeight: 'bold' }}>
+        <div style={{ padding: '0.5rem 1rem', borderRadius: 'var(--radius-md)', background: 'rgba(79, 70, 229, 0.1)', color: 'var(--primary)', fontWeight: 'bold', fontSize: '0.9rem', whiteSpace: 'nowrap' }}>
           Taxable PGBP: ₹ {taxablePgbp.toLocaleString('en-IN')}
         </div>
       </div>
@@ -306,7 +306,7 @@ const PGBP = ({ data, updateData }) => {
                 <div className="input-group"><label className="input-label">Short-Term Provisions</label><input type="number" className="input-field" value={pgbp.balanceSheet.shortTermProvisions || ''} onChange={(e) => deepUpdate('balanceSheet', 'shortTermProvisions', e.target.value)} /></div>
               </div>
 
-              <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'flex-end', fontWeight: 'bold', fontSize: '1.1rem', background: 'rgba(79, 70, 229, 0.1)', padding: '1rem', borderRadius: 'var(--radius-sm)' }}>
+              <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'flex-end', fontWeight: 'bold', fontSize: '1.1rem', background: 'var(--row-highlight-bg)', padding: '1rem', borderRadius: 'var(--radius-sm)' }}>
                  TOTAL EQUITY & LIABILITIES = ₹ {((parseFloat(pgbp.balanceSheet.partnerCapital)||0) + (parseFloat(pgbp.balanceSheet.reservesSurplus)||0) + (parseFloat(pgbp.balanceSheet.longTermBorrowings)||0) + (parseFloat(pgbp.balanceSheet.otherLongTermLiab)||0) + (parseFloat(pgbp.balanceSheet.shortTermBorrowings)||0) + (parseFloat(pgbp.balanceSheet.tradePayables)||0) + (parseFloat(pgbp.balanceSheet.otherCurrentLiab)||0) + (parseFloat(pgbp.balanceSheet.shortTermProvisions)||0)).toLocaleString('en-IN')}
               </div>
             </div>
@@ -333,7 +333,7 @@ const PGBP = ({ data, updateData }) => {
                 <div className="input-group"><label className="input-label">Other Current Assets</label><input type="number" className="input-field" value={pgbp.balanceSheet.otherCurrentAssets || ''} onChange={(e) => deepUpdate('balanceSheet', 'otherCurrentAssets', e.target.value)} /></div>
               </div>
 
-              <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'flex-end', fontWeight: 'bold', fontSize: '1.1rem', background: 'rgba(79, 70, 229, 0.1)', padding: '1rem', borderRadius: 'var(--radius-sm)' }}>
+              <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'flex-end', fontWeight: 'bold', fontSize: '1.1rem', background: 'var(--row-highlight-bg)', padding: '1rem', borderRadius: 'var(--radius-sm)' }}>
                  TOTAL ASSETS = ₹ {((parseFloat(pgbp.balanceSheet.fixedAssets)||0) + (parseFloat(pgbp.balanceSheet.intangibleAssets)||0) + (parseFloat(pgbp.balanceSheet.nonCurrentInvestments)||0) + (parseFloat(pgbp.balanceSheet.longTermLoans)||0) + (parseFloat(pgbp.balanceSheet.currentInvestments)||0) + (parseFloat(pgbp.balanceSheet.inventories)||0) + (parseFloat(pgbp.balanceSheet.tradeReceivables)||0) + (parseFloat(pgbp.balanceSheet.cashEquivalents)||0) + (parseFloat(pgbp.balanceSheet.shortTermLoans)||0) + (parseFloat(pgbp.balanceSheet.otherCurrentAssets)||0)).toLocaleString('en-IN')}
               </div>
             </div>

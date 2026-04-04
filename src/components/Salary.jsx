@@ -51,7 +51,7 @@ const Salary = ({ data, updateData }) => {
       <div className="card p-6 mb-6 slide-up">
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
           <h2 className="text-xl font-bold">Income from Salary</h2>
-          <div className="bg-primary-light" style={{ padding: '0.5rem 1rem', borderRadius: 'var(--radius-md)', background: 'rgba(79, 70, 229, 0.1)', color: 'var(--primary)', fontWeight: 'bold' }}>
+          <div style={{ padding: '0.5rem 1rem', borderRadius: 'var(--radius-md)', background: 'rgba(79, 70, 229, 0.1)', color: 'var(--primary)', fontWeight: 'bold', fontSize: '0.9rem', whiteSpace: 'nowrap' }}>
             Net Taxable Salary: ₹ {netSalary.toLocaleString('en-IN')}
           </div>
         </div>

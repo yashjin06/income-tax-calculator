@@ -79,7 +79,7 @@ const HouseProperty = ({ data, updateData }) => {
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
         <h2 className="text-xl font-bold">Income from House Property</h2>
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-          <div className="bg-primary-light" style={{ padding: '0.5rem 1rem', borderRadius: 'var(--radius-md)', background: totalNetIncome >= 0 ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)', color: totalNetIncome >= 0 ? 'var(--success)' : 'var(--danger)', fontWeight: 'bold' }}>
+          <div style={{ padding: '0.5rem 1rem', borderRadius: 'var(--radius-md)', background: 'rgba(79, 70, 229, 0.1)', color: 'var(--primary)', fontWeight: 'bold', fontSize: '0.9rem', whiteSpace: 'nowrap' }}>
             Net Income: ₹ {totalNetIncome.toLocaleString('en-IN')}
           </div>
           <button onClick={addProperty} className="btn btn-primary" style={{ padding: '0.4rem 1rem', fontSize: '0.875rem' }}>+ Add Property</button>
@@ -158,8 +158,8 @@ const HouseProperty = ({ data, updateData }) => {
 
       <div className="card p-6" style={{ background: 'var(--glass-bg)', borderTop: '2px solid var(--primary)', marginTop: '0.5rem' }}>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h3 className="text-lg" style={{ color: 'var(--primary)', fontWeight: 'bold' }}>Income Chargeable under head 'House Property'</h3>
-          <h2 className="text-2xl" style={{ color: 'var(--primary)', fontWeight: 'bold' }}>₹ {totalNetIncome.toLocaleString('en-IN')}</h2>
+          <h3 className="text-lg" style={{ color: 'var(--primary)', WebkitTextFillColor: 'var(--primary)', fontWeight: 'bold' }}>Income Chargeable under head 'House Property'</h3>
+          <span style={{ fontSize: '1.5rem', color: 'var(--primary)', WebkitTextFillColor: 'var(--primary)', fontWeight: 'bold' }}>₹ {totalNetIncome.toLocaleString('en-IN')}</span>
         </div>
       </div>
     </div>

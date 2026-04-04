@@ -44,8 +44,13 @@ function App() {
   useEffect(() => {
     if (isDarkMode) {
       document.body.classList.add('dark')
+      // Update browser chrome color for Android/iOS
+      const meta = document.querySelector('meta[name="theme-color"]')
+      if (meta) meta.setAttribute('content', '#0f172a')
     } else {
       document.body.classList.remove('dark')
+      const meta = document.querySelector('meta[name="theme-color"]')
+      if (meta) meta.setAttribute('content', '#f8fafc')
     }
   }, [isDarkMode])
 
@@ -101,14 +106,47 @@ function App() {
       {/* Mobile Topbar */}
       <div className="mobile-topbar">
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <div className="sidebar-logo" style={{ width: '32px', height: '32px', boxShadow: 'none' }}>
-            <Calculator size={18} />
+          <div className="sidebar-logo" style={{ width: '32px', height: '32px', flexShrink: 0 }}>
+            <Calculator size={18} color="#ffffff" />
           </div>
-          <div className="sidebar-title" style={{ fontSize: '1.2rem', margin: 0 }}>TaxNova Pro</div>
+          <div className="sidebar-title" style={{ fontSize: '1.1rem' }}>TaxNova <span style={{ fontSize: '0.75rem', fontWeight: 400 }}>Pro</span></div>
         </div>
-        <button className="btn mobile-menu-btn" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} style={{ padding: '0.5rem', background: 'transparent', border: 'none', color: 'var(--text-main)', boxShadow: 'none' }}>
-          {isMobileMenuOpen ? <X size={26} /> : <Menu size={26} />}
-        </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          {/* Dark mode toggle — accessible in mobile topbar */}
+          <button
+            onClick={toggleDarkMode}
+            title={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              width: '38px', height: '38px',
+              borderRadius: '10px',
+              background: 'var(--input-bg)',
+              border: '1px solid var(--glass-border)',
+              color: 'var(--text-main)',
+              cursor: 'pointer',
+              flexShrink: 0
+            }}
+          >
+            {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
+          </button>
+          {/* Hamburger menu */}
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              width: '40px', height: '40px',
+              borderRadius: '10px',
+              background: 'var(--input-bg)',
+              border: '1px solid var(--glass-border)',
+              color: 'var(--text-main)',
+              cursor: 'pointer',
+              flexShrink: 0
+            }}
+            aria-label="Toggle navigation menu"
+          >
+            {isMobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Overlay Backdrop */}

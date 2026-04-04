@@ -41,13 +41,13 @@ const ExemptIncome = ({ data, updateData }) => {
     <div className="fade-in">
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
         <h2 className="text-xl font-bold">Exempt Incomes (For Reporting Purposes Only)</h2>
-        <div className="bg-primary-light" style={{ padding: '0.5rem 1rem', borderRadius: 'var(--radius-md)', background: 'rgba(16, 185, 129, 0.1)', color: 'var(--success)', fontWeight: 'bold' }}>
+        <div style={{ padding: '0.5rem 1rem', borderRadius: 'var(--radius-md)', background: 'rgba(79, 70, 229, 0.1)', color: 'var(--primary)', fontWeight: 'bold', fontSize: '0.9rem', whiteSpace: 'nowrap' }}>
           Total Exempt Income: ₹ {totalExempt.toLocaleString('en-IN')}
         </div>
       </div>
 
       <div className="card p-6 slide-up">
-        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', marginBottom: '1.5rem', background: 'rgba(79, 70, 229, 0.05)', padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid rgba(79, 70, 229, 0.1)' }}>
+        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', marginBottom: '1.5rem', background: 'var(--glass-bg)', padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--glass-border)' }}>
            <Shield size={24} color="var(--primary)" />
            <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--text-main)', lineHeight: '1.5' }}>
              <strong>Note:</strong> Exempt incomes do not form part of your Gross Total Income and have no tax liability. However, they must be strictly disclosed in the Income Tax Return for transparency and to avoid arbitrary additions by the tax department. Agriculture income influences your tax slab rate theoretically, but we keep it simple here as purely exempt reporting.
