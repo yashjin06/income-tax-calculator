@@ -319,6 +319,9 @@ body.dark .nav-item.active {
 /* ─────────────────────────────────────────────────────────
    RESPONSIVE — Small mobile (≤ 480px)
 ───────────────────────────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────
+   RESPONSIVE — Small mobile (≤ 480px)
+───────────────────────────────────────────────────────── */
 @media (max-width: 480px) {
 
   .main-content {
@@ -352,3 +355,169 @@ body.dark .nav-item.active {
     font-size: 1.05rem;
   }
 }
+
+/* ─────────────────────────────────────────────────────────
+   MOBILE BACKGROUND & COLOR HARDENING
+   Forces pure neutral bg on mobile browsers that may tint
+   the page with the OS/browser theme color.
+───────────────────────────────────────────────────────── */
+
+/* Light mode — force neutral bg on all mobile */
+html, body, #root {
+  background-color: var(--page-bg-color);
+  background: var(--page-bg-color);
+}
+
+/* Dark mode — force dark bg */
+body.dark,
+body.dark #root {
+  background-color: #0f172a;
+  background: #0f172a;
+}
+
+/* Explicit color enforcement on main content area */
+.main-content {
+  background-color: var(--page-bg-color);
+  background: var(--page-bg-color);
+  color: var(--text-main);
+  -webkit-text-fill-color: var(--text-main);
+}
+
+body.dark .main-content {
+  background-color: #0f172a;
+  background: #0f172a;
+}
+
+/* ─────────────────────────────────────────────────────────
+   SECTION HEADING ROW — consistent layout
+   Flex row with h2 + badge, doesn't break on mobile
+───────────────────────────────────────────────────────── */
+.section-header-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  justify-content: space-between;
+}
+
+.section-header-row h2 {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.section-badge {
+  padding: 0.375rem 0.875rem;
+  border-radius: 20px;
+  background: rgba(79, 70, 229, 0.1);
+  color: var(--primary);
+  -webkit-text-fill-color: var(--primary);
+  font-weight: 600;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+  border: 1px solid rgba(79, 70, 229, 0.15);
+  letter-spacing: 0.01em;
+}
+
+body.dark .section-badge {
+  background: rgba(99, 102, 241, 0.15);
+  color: #a5b4fc;
+  -webkit-text-fill-color: #a5b4fc;
+  border-color: rgba(99, 102, 241, 0.25);
+}
+
+/* ─────────────────────────────────────────────────────────
+   CARD HEADING MOBILE OVERRIDE
+   Ensure .card h2 renders correctly on mobile
+───────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+
+  /* Force page bg — mobile browsers tint rgba */
+  html, body, #root, .main-content, .app-container {
+    background-color: var(--page-bg-color) !important;
+  }
+
+  body.dark,
+  body.dark #root,
+  body.dark .main-content,
+  body.dark .app-container {
+    background-color: #0f172a !important;
+  }
+
+  /* Card headings — slightly smaller on mobile */
+  .card h2 {
+    font-size: 1.2rem;
+    letter-spacing: -0.01em;
+  }
+
+  /* Section header rows — stack badge below on very small screens */
+  .section-header-row {
+    gap: 0.5rem;
+  }
+
+  /* Improve card inner padding on mobile */
+  .card.p-6 {
+    padding: 1.25rem;
+  }
+
+  /* Input label spacing tightened */
+  .input-group {
+    margin-bottom: 1.25rem;
+  }
+
+  .input-label {
+    font-size: 0.8rem;
+    margin-bottom: 0.375rem;
+  }
+
+  /* Reduce header banner spacing */
+  .header-banner {
+    gap: 0.875rem;
+  }
+
+  /* Ensure `text-xl font-bold` headings inherit correct color */
+  .card h2.text-xl,
+  .card h2.text-2xl {
+    color: var(--dark);
+    -webkit-text-fill-color: var(--dark);
+    background: linear-gradient(135deg, var(--dark) 0%, var(--primary-hover) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    display: inline-block;
+  }
+
+  @supports (-webkit-background-clip: text) {
+    .card h2.text-xl,
+    .card h2.text-2xl {
+      -webkit-text-fill-color: transparent;
+    }
+  }
+
+  body.dark .card h2.text-xl,
+  body.dark .card h2.text-2xl {
+    color: #e2e8f0;
+    -webkit-text-fill-color: #e2e8f0;
+    background: linear-gradient(135deg, #e2e8f0 0%, #818cf8 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+
+  @supports (-webkit-background-clip: text) {
+    body.dark .card h2.text-xl,
+    body.dark .card h2.text-2xl {
+      -webkit-text-fill-color: transparent;
+    }
+  }
+}
+
+/* ─────────────────────────────────────────────────────────
+   FONT UTILITIES
+───────────────────────────────────────────────────────── */
+.text-xl  { font-size: 1.25rem !important; }
+.text-2xl { font-size: 1.5rem !important; }
+.text-lg  { font-size: 1.125rem; }
+.font-bold { font-weight: 700; }
+.font-semibold { font-weight: 600; }
+.mb-4 { margin-bottom: 1rem; }
+.mb-6 { margin-bottom: 1.5rem; }

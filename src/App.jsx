@@ -44,13 +44,18 @@ function App() {
   useEffect(() => {
     if (isDarkMode) {
       document.body.classList.add('dark')
-      // Update browser chrome color for Android/iOS
-      const meta = document.querySelector('meta[name="theme-color"]')
-      if (meta) meta.setAttribute('content', '#0f172a')
+      // Update browser chrome color for Android/iOS status bar
+      const metaTheme = document.querySelector('meta[name="theme-color"]')
+      if (metaTheme) metaTheme.setAttribute('content', '#0f172a')
+      // Switch color-scheme so native elements (inputs, scrollbars) use dark style
+      const metaScheme = document.querySelector('meta[name="color-scheme"]')
+      if (metaScheme) metaScheme.setAttribute('content', 'dark')
     } else {
       document.body.classList.remove('dark')
-      const meta = document.querySelector('meta[name="theme-color"]')
-      if (meta) meta.setAttribute('content', '#f8fafc')
+      const metaTheme = document.querySelector('meta[name="theme-color"]')
+      if (metaTheme) metaTheme.setAttribute('content', '#f4f4f5')
+      const metaScheme = document.querySelector('meta[name="color-scheme"]')
+      if (metaScheme) metaScheme.setAttribute('content', 'light')
     }
   }, [isDarkMode])
 

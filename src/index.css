@@ -49,9 +49,10 @@
   --btn-secondary-bg: #ffffff;
   --btn-secondary-border: #e2e8f0;
   --btn-secondary-text: #334155;
-  --btn-secondary-hover-bg: #f8fafc;
+  --btn-secondary-hover-bg: #f1f5f9;
 
-  --page-bg-color: #f8fafc;
+  /* —— Pure neutral background (no blue tint) */
+  --page-bg-color: #f4f4f5;
 
   /* Undefined var safety */
   --bg-gradient-start: #ffffff;
@@ -139,17 +140,40 @@ body.dark {
 ───────────────────────────────────────────────────────── */
 html {
   scroll-behavior: smooth;
+  background-color: var(--page-bg-color);
+  background: var(--page-bg-color);
 }
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   background-color: var(--page-bg-color);
+  background: var(--page-bg-color);
   color: var(--text-main);
+  -webkit-text-fill-color: var(--text-main);
   min-height: 100vh;
   min-height: 100dvh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Explicit #root background so no gap shows through */
+#root {
+  background-color: var(--page-bg-color);
+  background: var(--page-bg-color);
+  min-height: 100vh;
+  min-height: 100dvh;
+  transition: background-color 0.3s ease;
+}
+
+body.dark {
+  background-color: #0f172a;
+  background: #0f172a;
+}
+
+body.dark #root {
+  background-color: #0f172a;
+  background: #0f172a;
 }
 
 /* ─────────────────────────────────────────────────────────
@@ -174,8 +198,9 @@ h1, h2, h3, h4, h5, h6 {
   background: linear-gradient(135deg, var(--dark) 0%, var(--primary-hover) 100%);
   -webkit-background-clip: text;
   background-clip: text;
-  /* Use block not inline-block — inline-block breaks flex sibling positioning */
-  display: block;
+  /* inline-block so gradient only covers the text, not the full row */
+  display: inline-block;
+  max-width: 100%;
 }
 
 /* Gradient supported: make text transparent to show gradient */
@@ -188,10 +213,12 @@ h1, h2, h3, h4, h5, h6 {
 /* Dark mode — gradient adjusts */
 body.dark .card h2 {
   color: #e2e8f0;
+  -webkit-text-fill-color: #e2e8f0;
   background: linear-gradient(135deg, #e2e8f0 0%, #818cf8 100%);
   -webkit-background-clip: text;
   background-clip: text;
-  display: block;
+  display: inline-block;
+  max-width: 100%;
 }
 
 @supports (-webkit-background-clip: text) {
@@ -521,4 +548,77 @@ th {
 td {
   color: var(--text-main);
   -webkit-text-fill-color: var(--text-main);
+}
+
+/* ─────────────────────────────────────────────────────────
+   AUTOFILL OVERRIDE — Chrome mobile fills with yellow
+   This overrides the browser's autofill background color
+───────────────────────────────────────────────────────── */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px var(--input-bg) inset !important;
+  -webkit-text-fill-color: var(--input-text) !important;
+  background-color: var(--input-bg) !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* ─────────────────────────────────────────────────────────
+   MOBILE TOUCH — better feel on iOS/Android
+───────────────────────────────────────────────────────── */
+html {
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Smooth momentum scrolling on iOS for scrollable containers */
+.sidebar-nav,
+.main-content {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Better min touch target size for interactive elements on mobile */
+@media (max-width: 768px) {
+  .btn {
+    min-height: 44px;
+  }
+
+  .nav-item {
+    min-height: 48px;
+  }
+
+  .input-field {
+    min-height: 48px;
+  }
+
+  /* Fix cards that have overflow-x issues */
+  .card {
+    overflow: hidden;
+  }
+
+  /* Ensure tables scroll horizontally on mobile */
+  .table-wrapper,
+  table {
+    max-width: 100%;
+    overflow-x: auto;
+    display: block;
+  }
+
+  /* Except for tables that are layout-only inside cards */
+  .card table {
+    display: table;
+    width: 100%;
+  }
+
+  /* Reduce animation delay on mobile for better responsiveness */
+  .slide-up {
+    animation-duration: 0.3s;
+  }
+
+  .fade-in {
+    animation-duration: 0.25s;
+  }
 }
