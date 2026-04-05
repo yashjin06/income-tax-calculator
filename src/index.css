@@ -26,9 +26,9 @@
   --glass-highlight: #ffffff;
   --nav-bg: #ffffff;
 
-  --shadow-sm: 0 2px 4px rgba(0,0,0,0.02), 0 1px 2px rgba(0,0,0,0.04);
-  --shadow-md: 0 10px 25px -5px rgba(0,0,0,0.05), 0 8px 10px -6px rgba(0,0,0,0.01);
-  --shadow-lg: 0 20px 40px -10px rgba(0,0,0,0.08), 0 0 20px rgba(255,255,255,0.6) inset;
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.02), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+  --shadow-lg: 0 20px 40px -10px rgba(0, 0, 0, 0.08), 0 0 20px rgba(255, 255, 255, 0.6) inset;
   --shadow-glow: 0 0 24px rgba(99, 102, 241, 0.25);
 
   --radius-sm: 10px;
@@ -90,9 +90,9 @@ body.dark {
   --glass-highlight: #1e293b;
   --nav-bg: #0f172a;
 
-  --shadow-sm: 0 2px 4px rgba(0,0,0,0.3);
-  --shadow-md: 0 10px 25px -5px rgba(0,0,0,0.4);
-  --shadow-lg: 0 20px 40px -10px rgba(0,0,0,0.6), 0 0 20px rgba(255,255,255,0.02) inset;
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 20px 40px -10px rgba(0, 0, 0, 0.6), 0 0 20px rgba(255, 255, 255, 0.02) inset;
 
   --input-bg: #1e293b;
   --input-bg-hover: #263548;
@@ -128,7 +128,9 @@ body.dark {
 /* ─────────────────────────────────────────────────────────
    RESET
 ───────────────────────────────────────────────────────── */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -179,7 +181,12 @@ body.dark #root {
 /* ─────────────────────────────────────────────────────────
    TYPOGRAPHY
 ───────────────────────────────────────────────────────── */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: 'Outfit', 'Inter', sans-serif;
   color: var(--dark);
   font-weight: 700;
@@ -278,14 +285,14 @@ li {
 }
 
 .card:hover {
-  box-shadow: 0 30px 60px -15px rgba(0,0,0,0.12);
+  box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.12);
 }
 
 body.dark .card:hover {
-  box-shadow: 0 30px 60px -15px rgba(0,0,0,0.5);
+  box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.5);
 }
 
-.card > * {
+.card>* {
   position: relative;
   z-index: 2;
 }
@@ -334,7 +341,7 @@ body.dark .card:hover {
   background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
   color: #ffffff;
   -webkit-text-fill-color: #ffffff;
-  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3), inset 0 1px 1px rgba(255,255,255,0.3);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.3);
   border: 1px solid transparent;
 }
 
@@ -421,7 +428,6 @@ body.dark .card:hover {
   border: 1.5px solid var(--input-border);
   /* Fully opaque background — critical for mobile */
   background-color: var(--input-bg);
-  background: var(--input-bg);
   font-family: 'Inter', sans-serif;
   font-size: 0.95rem;
   color: var(--input-text);
@@ -447,7 +453,6 @@ body.dark .card:hover {
 
 .input-field:hover:not(:disabled) {
   background-color: var(--input-bg-hover);
-  background: var(--input-bg-hover);
   border-color: var(--primary);
 }
 
@@ -455,7 +460,6 @@ body.dark .card:hover {
   outline: none;
   border-color: var(--primary);
   background-color: var(--input-bg-focus);
-  background: var(--input-bg-focus);
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.18);
 }
 
@@ -496,8 +500,15 @@ body.dark select.input-field {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .slide-up {
@@ -505,31 +516,81 @@ body.dark select.input-field {
 }
 
 @keyframes slideUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ─────────────────────────────────────────────────────────
    SCROLLBAR
 ───────────────────────────────────────────────────────── */
-::-webkit-scrollbar        { width: 6px; height: 6px; }
-::-webkit-scrollbar-track  { background: transparent; }
-::-webkit-scrollbar-thumb  { background: var(--text-muted); border-radius: 10px; opacity: 0.4; }
-::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--text-muted);
+  border-radius: 10px;
+  opacity: 0.4;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
 
 /* ─────────────────────────────────────────────────────────
    LAYOUT UTILITIES
 ───────────────────────────────────────────────────────── */
-.p-4 { padding: 1rem; }
-.p-6 { padding: 1.5rem; }
-.mb-2 { margin-bottom: 0.5rem; }
-.mb-4 { margin-bottom: 1rem; }
-.mb-6 { margin-bottom: 1.5rem; }
-.mt-2 { margin-top: 0.5rem; }
-.mt-4 { margin-top: 1rem; }
-.mt-6 { margin-top: 1.5rem; }
-.rounded-md { border-radius: var(--radius-md); }
-.rounded-lg { border-radius: var(--radius-lg); }
+.p-4 {
+  padding: 1rem;
+}
+
+.p-6 {
+  padding: 1.5rem;
+}
+
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+
+.mb-4 {
+  margin-bottom: 1rem;
+}
+
+.mb-6 {
+  margin-bottom: 1.5rem;
+}
+
+.mt-2 {
+  margin-top: 0.5rem;
+}
+
+.mt-4 {
+  margin-top: 1rem;
+}
+
+.mt-6 {
+  margin-top: 1.5rem;
+}
+
+.rounded-md {
+  border-radius: var(--radius-md);
+}
+
+.rounded-lg {
+  border-radius: var(--radius-lg);
+}
 
 /* Badge / Label Utility */
 .badge {
@@ -539,7 +600,8 @@ body.dark select.input-field {
   font-size: 0.875rem;
   font-weight: 600;
   white-space: nowrap;
-  color: white;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
 }
 
 .text-white {
@@ -644,6 +706,7 @@ html {
 .react-datepicker-wrapper {
   width: 100%;
 }
+
 .react-datepicker {
   font-family: 'Inter', sans-serif !important;
   border: 1px solid var(--glass-border) !important;
@@ -652,12 +715,14 @@ html {
   background-color: var(--card-bg) !important;
   overflow: hidden;
 }
+
 .react-datepicker__header {
   background-color: var(--row-highlight-bg) !important;
   border-bottom: 1px solid var(--glass-border) !important;
   border-radius: var(--radius-md) var(--radius-md) 0 0 !important;
   padding-top: 1rem !important;
 }
+
 .react-datepicker__current-month,
 .react-datepicker-time__header,
 .react-datepicker-year-header {
@@ -669,10 +734,12 @@ html {
   -webkit-text-fill-color: var(--dark) !important;
   background: none !important;
 }
+
 .react-datepicker__day-name {
   color: var(--text-muted) !important;
   font-weight: 600 !important;
 }
+
 .react-datepicker__day-name,
 .react-datepicker__day,
 .react-datepicker__time-name {
@@ -683,6 +750,7 @@ html {
   border-radius: 50% !important;
   transition: all 0.2s ease;
 }
+
 .react-datepicker__day--selected,
 .react-datepicker__day--in-selecting-range,
 .react-datepicker__day--in-range,
@@ -692,29 +760,36 @@ html {
   -webkit-text-fill-color: #fff !important;
   font-weight: 600 !important;
 }
+
 .react-datepicker__day:hover,
 .react-datepicker__month-text:hover {
   background-color: var(--primary-light) !important;
   color: var(--primary) !important;
 }
+
 .react-datepicker__day--keyboard-selected {
   background-color: var(--primary) !important;
   color: #fff !important;
 }
+
 .react-datepicker__navigation-icon::before {
   border-color: var(--text-muted) !important;
 }
+
 .react-datepicker__navigation:hover *::before {
   border-color: var(--primary) !important;
 }
+
 body.dark .react-datepicker__current-month {
   color: #e2e8f0 !important;
   -webkit-text-fill-color: #e2e8f0 !important;
 }
-.react-datepicker-popper[data-placement^=bottom] .react-datepicker__triangle::before, 
+
+.react-datepicker-popper[data-placement^=bottom] .react-datepicker__triangle::before,
 .react-datepicker-popper[data-placement^=bottom] .react-datepicker__triangle::after {
   border-bottom-color: var(--glass-border) !important;
 }
+
 .react-datepicker-popper[data-placement^=bottom] .react-datepicker__triangle::after {
   border-bottom-color: var(--row-highlight-bg) !important;
 }

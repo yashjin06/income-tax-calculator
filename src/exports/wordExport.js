@@ -123,7 +123,11 @@ export const generateWord = async (data) => {
             createRow("   Net HP Income (after Set-off)", results.netHouseProperty),
 
             createRow("3. Profits and Gains of Business/Profession", "", true),
-            createRow("   Net Taxable PGBP", results.netPGBP),
+            createRow("   Normal Business Income", results.netPGBP),
+            ...((parseFloat(data.crypto?.totalTaxableGain) || 0) > 0 ? [
+               createRow("   Add: Virtual Digital Assets (Sec 115BBH)", parseFloat(data.crypto.totalTaxableGain))
+            ] : []),
+            createRow("   Net Income from Business/Profession", results.netPGBP + (parseFloat(data.crypto?.totalTaxableGain) || 0)),
 
             createRow("4. Capital Gains", "", true),
             ...(results.grossSTCG > 0 || results.stcg > 0 ? [
@@ -142,12 +146,7 @@ export const generateWord = async (data) => {
             ] : []),
             createRow("   Total Taxable Capital Gains", results.stcg + results.ltcg),
 
-            ...((parseFloat(data.crypto?.totalTaxableGain) || 0) > 0 ? [
-               createRow("5. Income from Virtual Digital Assets", "", true),
-               createRow("   Net Taxable VDA (Crypto) Income", parseFloat(data.crypto.totalTaxableGain))
-            ] : []),
-
-            createRow(((parseFloat(data.crypto?.totalTaxableGain) || 0) > 0 ? "6. " : "5. ") + "Income from Other Sources", "", true),
+            createRow("5. Income from Other Sources", "", true),
             createRow("   Net Taxable Other Sources", results.netOtherSources),
             
             createRow("GROSS TOTAL INCOME (A)", results.grossTotalIncome, true, "₹ ")

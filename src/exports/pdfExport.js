@@ -105,8 +105,12 @@ export const generatePDF = (data) => {
 
   // PGBP
   incomeBody.push([{ content: '3. Profits and Gains of Business / Profession', colSpan: 2, styles: { fontStyle: 'bold', fillColor: [241, 245, 249], textColor: [15, 23, 42] } }])
-  incomeBody.push([{ content: '   Net Taxable Business/Profession Income', styles: { fontStyle: 'bold' } }, { content: results.netPGBP.toLocaleString('en-IN'), styles: { fontStyle: 'bold' } }])
-
+  incomeBody.push(['   Normal Business Income', results.netPGBP.toLocaleString('en-IN')])
+  const vda = parseFloat(data.crypto?.totalTaxableGain) || 0;
+  if (vda > 0) {
+      incomeBody.push(['   Add: Virtual Digital Assets (Sec 115BBH)', vda.toLocaleString('en-IN')])
+  }
+  incomeBody.push([{ content: '   Net Income from Business/Profession', styles: { fontStyle: 'bold' } }, { content: (results.netPGBP + vda).toLocaleString('en-IN'), styles: { fontStyle: 'bold' } }])
   // Capital Gains
   if (results.grossSTCG > 0 || results.grossLTCG > 0 || results.stcg > 0 || results.ltcg > 0) {
       incomeBody.push([{ content: '4. Capital Gains', colSpan: 2, styles: { fontStyle: 'bold', fillColor: [241, 245, 249], textColor: [15, 23, 42] } }])
@@ -135,13 +139,7 @@ export const generatePDF = (data) => {
   }
 
   // Other Sources
-  const vda = parseFloat(data.crypto?.totalTaxableGain) || 0;
-  if (vda > 0) {
-      incomeBody.push([{ content: '5. Income from Virtual Digital Assets (Crypto)', colSpan: 2, styles: { fontStyle: 'bold', fillColor: [241, 245, 249], textColor: [15, 23, 42] } }])
-      incomeBody.push([{ content: '   Net Taxable VDA Income (Sec 115BBH)', styles: { fontStyle: 'bold' } }, { content: vda.toLocaleString('en-IN'), styles: { fontStyle: 'bold' } }])
-  }
-
-  incomeBody.push([{ content: (vda > 0 ? '6.' : '5.') + ' Income from Other Sources', colSpan: 2, styles: { fontStyle: 'bold', fillColor: [241, 245, 249], textColor: [15, 23, 42] } }])
+  incomeBody.push([{ content: '5. Income from Other Sources', colSpan: 2, styles: { fontStyle: 'bold', fillColor: [241, 245, 249], textColor: [15, 23, 42] } }])
   incomeBody.push([{ content: '   Net Income from Other Sources', styles: { fontStyle: 'bold' } }, { content: results.netOtherSources.toLocaleString('en-IN'), styles: { fontStyle: 'bold' } }])
 
   // GTI

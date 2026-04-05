@@ -14,23 +14,30 @@ const BrokerImport = ({ data, updateData }) => {
     setFileState('parsing')
     setErrorMessage('')
 
-    const reader = new FileReader()
-    reader.onload = (evt) => {
-      try {
-        const bstr = evt.target.result
-        const workbook = XLSX.read(bstr, { type: 'binary', cellDates: true })
-        processExcelData(workbook)
-      } catch (error) {
-        setFileState('error')
-        setErrorMessage(error.message || 'Failed to process Excel file. Please ensure it matches the template.')
+    // Yield to main thread so React can render the 'parsing' spinner state
+    setTimeout(() => {
+      const reader = new FileReader()
+      reader.onload = (evt) => {
+        // Adding a micro-delay gives the UX a smooth animated transition
+        setTimeout(() => {
+          try {
+            const bstr = evt.target.result
+            const workbook = XLSX.read(bstr, { type: 'binary', cellDates: true })
+            processExcelData(workbook)
+          } catch (error) {
+            setFileState('error')
+            setErrorMessage(error.message || 'Failed to process Excel file. Please ensure it matches the template.')
+          }
+        }, 150)
       }
-    }
-    reader.onerror = () => {
-       setFileState('error')
-       setErrorMessage('Error occurred while reading the file.')
-    }
-    reader.readAsBinaryString(file)
+      reader.onerror = () => {
+         setFileState('error')
+         setErrorMessage('Error occurred while reading the file.')
+      }
+      reader.readAsBinaryString(file)
+    }, 50)
   }
+
 
   const parseDate = (d) => {
     if (!d) return new Date()
@@ -185,7 +192,7 @@ const BrokerImport = ({ data, updateData }) => {
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '3rem', border: '2px dashed var(--input-border)', borderRadius: 'var(--radius-lg)', background: 'var(--glass-bg)' }}>
           <UploadCloud size={48} color="var(--primary)" style={{ marginBottom: '1rem' }} />
           <h3 className="font-bold mb-2">Upload Excel Tradebook</h3>
-          <p className="text-sm text-muted mb-6 text-center max-w-md">Your data is parsed locally in your browser. No data is sent to any server. Must use the standard template structure.</p>
+          <p className="text-sm text-muted mb-6 text-center max-w-md">Your data is parsed securely and locally. <b>Instructions:</b> Please only fill the cells that are highlighted in grey in the downloaded template.</p>
           
           <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
             <button className="btn btn-secondary" onClick={downloadTemplate}><FileText size={16} /> Download Template</button>

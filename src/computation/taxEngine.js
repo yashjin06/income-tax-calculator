@@ -136,22 +136,24 @@ export const computeTax = (data) => {
   
   // 5. Income from Other Sources
   const os = otherSources || {}
-  let netOtherSources = (parseFloat(os.savingsInterest) || 0) + (parseFloat(os.fdInterest) || 0) + (parseFloat(os.dividend) || 0) + (parseFloat(os.winnings) || 0) + (parseFloat(os.gifts) || 0) + (parseFloat(os.otherIncome) || 0) - (parseFloat(os.expenses) || 0)
-  netOtherSources = Math.max(0, netOtherSources)
+  const winnings = parseFloat(os.winnings) || 0
+  let normalOS = (parseFloat(os.savingsInterest) || 0) + (parseFloat(os.fdInterest) || 0) + (parseFloat(os.dividend) || 0) + (parseFloat(os.gifts) || 0) + (parseFloat(os.otherIncome) || 0) - (parseFloat(os.expenses) || 0)
+  normalOS = Math.max(0, normalOS)
+  let netOtherSources = normalOS + winnings
 
   // 6. Virtual Digital Assets (Crypto)
   const crypto = data.crypto || {}
   const vdaIncome = parseFloat(crypto.totalTaxableGain) || 0
 
   // Gross Total Income
-  let totalNormalIncome = netSalary + netHouseProperty + netPGBP + stcgNormal + netOtherSources - (parseFloat(os.winnings) || 0) // Special rate for winnings
+  let totalNormalIncome = netSalary + netHouseProperty + netPGBP + stcgNormal + normalOS
   
   // Apply HP Loss
   if (housePropertyLossToSetOff > 0) {
     totalNormalIncome = Math.max(0, totalNormalIncome - housePropertyLossToSetOff)
   }
 
-  const grossTotalIncome = totalNormalIncome + stcg20 + taxableLtcg125Equity + ltcg125Other + ltcg20 + (parseFloat(os.winnings) || 0) + vdaIncome
+  const grossTotalIncome = totalNormalIncome + stcg20 + taxableLtcg125Equity + ltcg125Other + ltcg20 + winnings + vdaIncome
 
   // Deductions Chapter VI-A
   let totalDeductions = 0
@@ -184,7 +186,7 @@ export const computeTax = (data) => {
   totalDeductions = Math.min(totalDeductions, totalNormalIncome)
   let taxableNormalIncome = Math.max(0, totalNormalIncome - totalDeductions)
 
-  const totalTaxableIncome = taxableNormalIncome + stcg20 + taxableLtcg125Equity + ltcg125Other + ltcg20 + (parseFloat(os.winnings) || 0) + vdaIncome
+  const totalTaxableIncome = taxableNormalIncome + stcg20 + taxableLtcg125Equity + ltcg125Other + ltcg20 + winnings + vdaIncome
 
   // --- HELPER FOR TAX ON SPECIFIED INCOME (For Marginal Relief) ---
   const getNormalTaxOn = (inc) => {
@@ -401,7 +403,8 @@ export const computeTax = (data) => {
     grossLTCG,
     exemptionsLTCG,
     netLTCG,
-    netOtherSources: netOtherSources + (parseFloat(os.winnings) || 0),
+    netOtherSources,
+    netVDA: vdaIncome,
     grossTotalIncome,
     totalDeductions,
     taxableNormalIncome,

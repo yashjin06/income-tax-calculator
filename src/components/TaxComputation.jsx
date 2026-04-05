@@ -111,7 +111,7 @@ const TaxComputation = ({ data }) => {
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
         <h2 className="text-xl font-bold">Detailed Computation ({isNewRegime ? 'New' : 'Old'} Regime)</h2>
         <div style={{ display: 'flex', gap: '0.5rem' }}>
-           <span className="badge" style={{ background: isNewRegime ? 'var(--primary)' : 'var(--warning)' }}>
+           <span className="badge" style={{ background: isNewRegime ? 'var(--primary)' : 'var(--warning)', color: '#ffffff' }}>
              Selected: {isNewRegime ? 'New Regime (Sec 115BAC)' : 'Old Tax Regime'}
            </span>
         </div>
@@ -134,8 +134,14 @@ const TaxComputation = ({ data }) => {
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span>3. Profits and Gains of Business/Profession</span>
-              <span style={{ fontWeight: 500 }}>₹ {results.netPGBP.toLocaleString('en-IN')}</span>
+              <span style={{ fontWeight: 500 }}>₹ {(results.netPGBP + (results.netVDA || 0)).toLocaleString('en-IN')}</span>
             </div>
+            {results.netVDA > 0 && (
+               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem', color: 'var(--text-muted)' }}>
+                  <span style={{ paddingLeft: '1rem' }}>∟ incl. VDA (Crypto) Income</span>
+                  <span>₹ {results.netVDA.toLocaleString('en-IN')}</span>
+               </div>
+            )}
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span>4. Capital Gains (Short & Long Term)</span>
               <span style={{ fontWeight: 500 }}>₹ {(results.stcg + results.ltcg).toLocaleString('en-IN')}</span>
