@@ -106,9 +106,19 @@ export const computeTax = (data) => {
   let exemptionsLTCG = parseFloat(capitalGains?.exemptions_ltcg) || 0
   let netLTCG = ltcg125Equity + ltcg20 + ltcg125Other
 
-  // Set-off of Brought Forward Capital Losses
-  let remainingLTCL = parseFloat(bfl.ltcl) || 0
-  let remainingSTCL = parseFloat(bfl.stcl) || 0
+  // Handle negative capital gains (Current Year Losses)
+  let currentSTCL = 0;
+  if (stcg20 < 0) { currentSTCL += Math.abs(stcg20); stcg20 = 0; }
+  if (stcgNormal < 0) { currentSTCL += Math.abs(stcgNormal); stcgNormal = 0; }
+
+  let currentLTCL = 0;
+  if (ltcg125Equity < 0) { currentLTCL += Math.abs(ltcg125Equity); ltcg125Equity = 0; }
+  if (ltcg20 < 0) { currentLTCL += Math.abs(ltcg20); ltcg20 = 0; }
+  if (ltcg125Other < 0) { currentLTCL += Math.abs(ltcg125Other); ltcg125Other = 0; }
+
+  // Set-off of Brought Forward Capital Losses combined with Current Year Capital Losses
+  let remainingLTCL = (parseFloat(bfl.ltcl) || 0) + currentLTCL
+  let remainingSTCL = (parseFloat(bfl.stcl) || 0) + currentSTCL
 
   // LTCL only against LTCG
   if (remainingLTCL > 0 && ltcg20 > 0) { const off = Math.min(remainingLTCL, ltcg20); ltcg20 -= off; remainingLTCL -= off; }

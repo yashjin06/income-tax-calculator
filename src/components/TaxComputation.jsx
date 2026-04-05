@@ -111,7 +111,7 @@ const TaxComputation = ({ data }) => {
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
         <h2 className="text-xl font-bold">Detailed Computation ({isNewRegime ? 'New' : 'Old'} Regime)</h2>
         <div style={{ display: 'flex', gap: '0.5rem' }}>
-           <span className="badge" style={{ padding: '0.25rem 0.75rem', borderRadius: '1rem', background: isNewRegime ? 'var(--primary)' : 'var(--warning)', color: 'white', fontSize: '0.875rem' }}>
+           <span className="badge" style={{ background: isNewRegime ? 'var(--primary)' : 'var(--warning)' }}>
              Selected: {isNewRegime ? 'New Regime (Sec 115BAC)' : 'Old Tax Regime'}
            </span>
         </div>

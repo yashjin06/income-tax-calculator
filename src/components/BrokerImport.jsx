@@ -33,20 +33,34 @@ const BrokerImport = ({ data, updateData }) => {
   }
 
   const parseDate = (d) => {
-     if (!d) return new Date()
-     if (d instanceof Date) return d
-     if (typeof d === 'number') {
-        // Excel serial date fallback (though cellDates: true handles most)
-        return new Date((d - 25569) * 86400 * 1000)
-     }
-     const dStr = String(d)
-     const parts = dStr.includes('/') ? dStr.split('/') : dStr.split('-')
-     if (parts.length === 3) {
-         if (dStr.includes('/') || parts[0].length === 2) {
-            return new Date(`${parts[2]}-${parts[1]}-${parts[0]}`)
-         }
-     }
-     return new Date(dStr)
+    if (!d) return new Date()
+    if (d instanceof Date) return d
+    if (typeof d === 'number') {
+      // Excel serial date fallback
+      return new Date((d - 25569) * 86400 * 1000)
+    }
+    const dStr = String(d).trim()
+    
+    // Handle "5 May 2023" format
+    const months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
+    const parts = dStr.toLowerCase().split(/[\s\-\/]+/)
+    if (parts.length === 3) {
+       let day = parseInt(parts[0])
+       let month = months.indexOf(parts[1].substring(0, 3))
+       let year = parseInt(parts[2])
+       
+       if (month !== -1) {
+          return new Date(year, month, day)
+       }
+       
+       // Handle DD-MM-YYYY or DD/MM/YYYY
+       day = parseInt(parts[0])
+       month = parseInt(parts[1]) - 1
+       year = parseInt(parts[2])
+       return new Date(year, month, day)
+    }
+    
+    return new Date(dStr)
   }
 
   const processExcelData = (workbook) => {
@@ -63,40 +77,63 @@ const BrokerImport = ({ data, updateData }) => {
 
     sheetsToRead.forEach(sheetName => {
       const sheet = workbook.Sheets[sheetName]
-      if (!sheet) return // Skip if template is missing one of the sheets
+      if (!sheet) return
       
       const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 })
       
-      // Starting from row index 1 (skipping header)
       for (let i = 1; i < rows.length; i++) {
         const row = rows[i]
+        if (!row || row.length < 5) continue
         
-        // Expected columns as per template:
-        // 0: Description, 1: BuyDate, 2: BuyValue, 3: SellDate, 4: SellValue, 5: Expenses, 6: Gain
-        const desc = row[0]
-        const buyDate = parseDate(row[1])
-        const buyVal = parseFloat(row[2]) || 0
-        const sellDate = parseDate(row[3])
-        const sellVal = parseFloat(row[4]) || 0
-        const expenses = parseFloat(row[5]) || 0
+        // New Indices based on "TaxNova Capital Gains Template.xlsx"
+        // 0: Type, 1: Desc, 2: BuyDate, 3: BuyValue, 4: SellDate, 5: SellValue, 6: Expenses
+        const type = String(row[0] || '').trim()
+        const buyDate = parseDate(row[2])
+        const buyVal = parseFloat(row[3]) || 0
+        const sellDate = parseDate(row[4])
+        const sellVal = parseFloat(row[5]) || 0
+        const expenses = parseFloat(row[6]) || 0
         
-        if (!desc && row[2] === undefined && row[4] === undefined) continue // Empty row
+        if (buyVal === 0 && sellVal === 0) continue // Empty row
         
         const timeDiff = sellDate.getTime() - buyDate.getTime()
         const daysHeld = Math.ceil(timeDiff / (1000 * 3600 * 24))
         const gain = sellVal - buyVal - expenses
 
-        // In this template, we assume Shares and Mutual Funds act as Equity for tax purposes (12 months = LTCG)
-        const isEquity = true
-        let isLTCG = (daysHeld > 365)
+        let isLTCG = false
+        let taxCategory = 'normal' // 'equity_stcg', 'equity_ltcg', 'other_ltcg', 'normal'
+
+        if (type.includes('Listed') || type === 'MF (Equity)') {
+          // 12 months threshold
+          isLTCG = daysHeld > 365
+          taxCategory = isLTCG ? 'equity_ltcg' : 'equity_stcg'
+        } else if (type.includes('Unlisted')) {
+          // 24 months threshold
+          isLTCG = daysHeld > 730
+          taxCategory = isLTCG ? 'other_ltcg' : 'normal'
+        } else if (type === 'MF (Debt)') {
+          // Post April 1, 2023 rule: Always Normal Slab
+          const cutOffDate = new Date(2023, 3, 1) // Apr 1, 2023
+          if (buyDate >= cutOffDate) {
+            isLTCG = false
+            taxCategory = 'normal'
+          } else {
+            isLTCG = daysHeld > 1095 // 3 years
+            taxCategory = isLTCG ? 'other_ltcg' : 'normal'
+          }
+        } else {
+          // Default fallback
+          isLTCG = daysHeld > 1095
+          taxCategory = isLTCG ? 'other_ltcg' : 'normal'
+        }
 
         if (isLTCG) {
           totals.ltcgTrades++
-          if (isEquity) totals.ltcg_125_equity += gain
+          if (taxCategory === 'equity_ltcg') totals.ltcg_125_equity += gain
           else totals.ltcg_125_other += gain
         } else {
           totals.stcgTrades++
-          if (isEquity) totals.stcg_20 += gain
+          if (taxCategory === 'equity_stcg') totals.stcg_20 += gain
           else totals.stcg_normal += gain
         }
       }
@@ -104,7 +141,7 @@ const BrokerImport = ({ data, updateData }) => {
 
     if (totals.stcgTrades === 0 && totals.ltcgTrades === 0) {
        setFileState('error')
-       setErrorMessage('No valid transactions found. Please ensure data is strictly inside "Sale of Shares" or "Sale of Mutual Funds" sheets.')
+       setErrorMessage('No valid transactions found. Please ensure data matches the latest TaxNova template.')
        return
     }
 
@@ -130,9 +167,8 @@ const BrokerImport = ({ data, updateData }) => {
 
   const downloadTemplate = () => {
      const link = document.createElement("a")
-     // Link directly to the template hosted in the public directory
-     link.setAttribute("href", "/template for shares and mutual funds.xlsx")
-     link.setAttribute("download", "template for shares and mutual funds.xlsx")
+     link.setAttribute("href", "/TaxNova Capital Gains Template.xlsx")
+     link.setAttribute("download", "TaxNova Capital Gains Template.xlsx")
      document.body.appendChild(link)
      link.click()
      link.remove()

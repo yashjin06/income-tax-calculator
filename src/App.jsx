@@ -257,10 +257,7 @@ function App() {
               <Calculator size={20} />
               <span>Tax Computation</span>
             </button>
-            <button className={`nav-item ${activeTab === 'regime-compare' ? 'active' : ''}`} onClick={() => handleNavSelect('regime-compare')}>
-              <BarChart2 size={20} />
-              <span>Regime Comparison</span>
-            </button>
+
             <button className={`nav-item ${activeTab === 'advance-tax' ? 'active' : ''}`} onClick={() => handleNavSelect('advance-tax')}>
               <Calendar size={20} />
               <span>Advance Tax & Penalties</span>
