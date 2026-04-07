@@ -8,7 +8,7 @@ const GuidedMode = ({ data, updateData, exitGuidedMode }) => {
     { id: 'intro', title: 'Welcome to TaxNova Pro', icon: <User size={24} /> },
     { id: 'personal', title: 'Personal Details', icon: <User size={24} /> },
     { id: 'salary', title: 'Employment Income', icon: <FileText size={24} /> },
-    { id: 'deductions', title: 'Tax Saving Investments', icon: <Activity size={24} /> },
+    ...(data.personal?.newRegime !== 'yes' ? [{ id: 'deductions', title: 'Tax Saving Investments', icon: <Activity size={24} /> }] : []),
     { id: 'business', title: 'Business & Profession', icon: <Briefcase size={24} /> },
     { id: 'capital', title: 'Capital Gains & VDA', icon: <Activity size={24} /> },
     { id: 'other', title: 'Other Income', icon: <Home size={24} /> },
@@ -127,11 +127,11 @@ const GuidedMode = ({ data, updateData, exitGuidedMode }) => {
              <p className="text-sm text-gray-500 mb-4">Such as interest from banks or dividend payouts.</p>
              <div className="input-group mb-4">
                 <label className="input-label">Interest from Savings Bank Accounts (₹)</label>
-                <input type="number" className="input-field" value={data.otherSources?.savings || ''} onChange={(e) => handleChange('otherSources', 'savings', parseFloat(e.target.value) || 0)} placeholder="0" />
+                <input type="number" className="input-field" value={data.otherSources?.savingsInterest || ''} onChange={(e) => handleChange('otherSources', 'savingsInterest', parseFloat(e.target.value) || 0)} placeholder="0" />
              </div>
              <div className="input-group mb-4">
                 <label className="input-label">Interest from Fixed Deposits (FD) (₹)</label>
-                <input type="number" className="input-field" value={data.otherSources?.fds || ''} onChange={(e) => handleChange('otherSources', 'fds', parseFloat(e.target.value) || 0)} placeholder="0" />
+                <input type="number" className="input-field" value={data.otherSources?.fdInterest || ''} onChange={(e) => handleChange('otherSources', 'fdInterest', parseFloat(e.target.value) || 0)} placeholder="0" />
              </div>
           </div>
         )

@@ -21,6 +21,18 @@ const CryptoVDA = ({ data, updateData }) => {
     setTradeForm({ ...tradeForm, [e.target.name]: e.target.value })
   }
 
+  const handleManualOverride = (e) => {
+    const val = e.target.value === '' ? '' : parseFloat(e.target.value) || 0
+    updateData({
+      ...data,
+      crypto: { ...vda, totalTaxableGain: val }
+    })
+  }
+
+  const handleCheckboxChange = (e) => {
+    updateData({ ...data, crypto: { ...vda, treatAsPGBP: e.target.checked } })
+  }
+
   const addTrade = () => {
     if (!tradeForm.assetName || !tradeForm.saleValue) return
 
@@ -89,6 +101,21 @@ const CryptoVDA = ({ data, updateData }) => {
          <div>
            <strong>Important VDA Tax Rules:</strong> Flat 30% tax applies on all gains. No deduction is allowed except cost of acquisition (no indexation). Losses from one VDA cannot be set-off against gains from another VDA or any other income. 1% TDS applies on transfer.
          </div>
+      </div>
+
+      <div className="card p-6 mb-6 slide-up">
+        <h3 className="text-lg font-bold mb-4" style={{ color: 'var(--primary)' }}>Configuration & Manual Entry</h3>
+        
+        <div className="input-group mb-4" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <input type="checkbox" id="treatAsPGBP" checked={vda.treatAsPGBP || false} onChange={handleCheckboxChange} style={{ width: '20px', height: '20px' }} />
+          <label htmlFor="treatAsPGBP" className="font-bold cursor-pointer" style={{ userSelect: 'none' }}>Frequent Trader: Treat VDA income as Business Income (PGBP)</label>
+        </div>
+
+        <div className="input-group">
+          <label className="input-label">Total Taxable VDA/Crypto Income (₹)</label>
+          <input type="number" className="input-field" value={vda.totalTaxableGain || ''} onChange={handleManualOverride} placeholder="0" />
+          <p style={{fontSize: '0.75rem', marginTop: '0.25rem', color: 'var(--text-muted)'}}>Enter a consolidated profit if you don't want to list individual transactions.</p>
+        </div>
       </div>
 
       <div className="card p-6 mb-6 slide-up">

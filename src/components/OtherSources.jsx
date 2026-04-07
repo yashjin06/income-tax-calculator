@@ -7,6 +7,8 @@ const OtherSources = ({ data, updateData }) => {
     dividend: 0,
     winnings: 0, // Taxed at flat 30%
     gifts: 0,
+    agriculturalIncome: 0,
+    familyPension: 0,
     otherIncome: 0,
     expenses: 0
   }
@@ -20,15 +22,20 @@ const OtherSources = ({ data, updateData }) => {
   }
 
   useEffect(() => {
+    const famPen = parseFloat(os.familyPension) || 0
+    const famPenDed = Math.min(famPen / 3, 15000)
+    const netFamPen = famPen - famPenDed
+
     const total = (parseFloat(os.savingsInterest) || 0) + 
                   (parseFloat(os.fdInterest) || 0) + 
                   (parseFloat(os.dividend) || 0) + 
                   (parseFloat(os.winnings) || 0) + 
                   (parseFloat(os.gifts) || 0) + 
+                  netFamPen +
                   (parseFloat(os.otherIncome) || 0) -
                   (parseFloat(os.expenses) || 0)
     
-    setTotalOs(Math.max(0, total)) // Generally can't be negative unless specific expenses allowed
+    setTotalOs(Math.round(Math.max(0, total))) // Generally can't be negative unless specific expenses allowed
   }, [os])
 
   return (
@@ -70,7 +77,19 @@ const OtherSources = ({ data, updateData }) => {
           </div>
 
           <div className="input-group">
-            <label className="input-label">Any Other Income (Family Pension, etc.)</label>
+            <label className="input-label">Net Agricultural Income</label>
+            <input type="number" name="agriculturalIncome" className="input-field" value={os.agriculturalIncome || ''} onChange={handleChange} placeholder="0" />
+            <p style={{fontSize: '0.75rem', marginTop: '0.25rem', color: 'var(--text-muted)'}}>Used for Partial Integration rule</p>
+          </div>
+
+          <div className="input-group">
+            <label className="input-label">Gross Family Pension Received</label>
+            <input type="number" name="familyPension" className="input-field" value={os.familyPension || ''} onChange={handleChange} placeholder="0" />
+            <p style={{fontSize: '0.75rem', marginTop: '0.25rem', color: 'var(--primary)'}}>Auto-deducting standard deduction of 1/3rd or ₹15,000</p>
+          </div>
+
+          <div className="input-group">
+            <label className="input-label">Any Other Taxable Income</label>
             <input type="number" name="otherIncome" className="input-field" value={os.otherIncome || ''} onChange={handleChange} placeholder="0" />
           </div>
 

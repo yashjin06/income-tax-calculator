@@ -7,6 +7,7 @@ const Deductions = ({ data, updateData }) => {
     sec80ccd1: 0,
     sec80ccd1b: 0, // NPS max 50k
     sec80ccd2: 0, // Employer NPS - Allowed in New Regime
+    sec80cch: 0, // Agniveer Corpus Fund - Allowed in New Regime
     sec80d: 0, // Health insurance
     sec80dd: 0,
     sec80ddb: 0,
@@ -28,8 +29,8 @@ const Deductions = ({ data, updateData }) => {
 
   useEffect(() => {
     if (isNewRegime && data.personal.assessmentYear !== '2023-24') {
-      // Under new regime, only 80CCD(2) is broadly available
-      setTotalDeductions(parseFloat(ded.sec80ccd2) || 0)
+      // Under new regime, 80CCD(2) and 80CCH are allowed
+      setTotalDeductions((parseFloat(ded.sec80ccd2) || 0) + (parseFloat(ded.sec80cch) || 0))
       return
     }
 
@@ -50,7 +51,7 @@ const Deductions = ({ data, updateData }) => {
                    (parseFloat(ded.sec80ttb) || 0) + 
                    (parseFloat(ded.otherDeductions) || 0)
 
-    const total = limited80C + limited80CCD1B + others + (parseFloat(ded.sec80ccd2) || 0)
+    const total = limited80C + limited80CCD1B + others + (parseFloat(ded.sec80ccd2) || 0) + (parseFloat(ded.sec80cch) || 0)
     setTotalDeductions(total)
   }, [ded, isNewRegime, data.personal.assessmentYear])
 
@@ -65,7 +66,7 @@ const Deductions = ({ data, updateData }) => {
 
       {isNewRegime && (
         <div className="mb-6 p-4 rounded-md" style={{ background: 'rgba(245, 158, 11, 0.1)', color: 'var(--warning)', border: '1px solid rgba(245, 158, 11, 0.2)' }}>
-          <strong>Note:</strong> You have selected the New Tax Regime (Sec 115BAC). Section 80C, 80D, 80G etc. deductions are <strong>not allowed</strong> except for <strong>Section 80CCD(2) (Employer's NPS Contribution)</strong>.
+          <strong>Note:</strong> You have selected the New Tax Regime (Sec 115BAC). Section 80C, 80D, 80G etc. deductions are <strong>not allowed</strong> except for <strong>Section 80CCD(2) (Employer's NPS)</strong> and <strong>Section 80CCH (Agniveer Corpus Fund)</strong>.
         </div>
       )}
 
@@ -94,6 +95,11 @@ const Deductions = ({ data, updateData }) => {
           <div className="input-group">
             <label className="input-label" style={{ color: isNewRegime ? 'var(--dark)' : 'var(--text-main)', fontWeight: isNewRegime ? 'bold' : 'normal' }}>Sec 80CCD(2) (NPS Contribution - Employer)</label>
             <input type="number" name="sec80ccd2" className="input-field" value={ded.sec80ccd2 || ''} onChange={handleChange} placeholder="0" style={{ borderColor: isNewRegime ? 'var(--primary)' : 'var(--input-border)' }} />
+            <p style={{fontSize: '0.75rem', marginTop: '0.25rem', color: isNewRegime ? 'var(--primary)' : 'var(--text-muted)'}}>Allowed under New Tax Regime!</p>
+          </div>
+          <div className="input-group">
+            <label className="input-label" style={{ color: isNewRegime ? 'var(--dark)' : 'var(--text-main)', fontWeight: isNewRegime ? 'bold' : 'normal' }}>Sec 80CCH (Agniveer Corpus Fund)</label>
+            <input type="number" name="sec80cch" className="input-field" value={ded.sec80cch || ''} onChange={handleChange} placeholder="0" style={{ borderColor: isNewRegime ? 'var(--primary)' : 'var(--input-border)' }} />
             <p style={{fontSize: '0.75rem', marginTop: '0.25rem', color: isNewRegime ? 'var(--primary)' : 'var(--text-muted)'}}>Allowed under New Tax Regime!</p>
           </div>
         </div>

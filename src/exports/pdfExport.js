@@ -105,14 +105,16 @@ export const generatePDF = (data) => {
 
   // PGBP
   incomeBody.push([{ content: '3. Profits and Gains of Business / Profession', colSpan: 2, styles: { fontStyle: 'bold', fillColor: [241, 245, 249], textColor: [15, 23, 42] } }])
-  incomeBody.push(['   Normal Business Income', results.netPGBP.toLocaleString('en-IN')])
   const vda = parseFloat(data.crypto?.totalTaxableGain) || 0;
-  if (vda > 0) {
-      incomeBody.push(['   Add: Virtual Digital Assets (Sec 115BBH)', vda.toLocaleString('en-IN')])
+  if (data.crypto?.treatAsPGBP && vda > 0) {
+      incomeBody.push(['   Normal Business Income', results.netPGBP.toLocaleString('en-IN')])
+      incomeBody.push(['   Add: Virtual Digital Assets (Crypto)', vda.toLocaleString('en-IN')])
+      incomeBody.push([{ content: '   Net Income from Business/Profession', styles: { fontStyle: 'bold' } }, { content: (results.netPGBP + vda).toLocaleString('en-IN'), styles: { fontStyle: 'bold' } }])
+  } else {
+      incomeBody.push([{ content: '   Net Income from Business/Profession', styles: { fontStyle: 'bold' } }, { content: results.netPGBP.toLocaleString('en-IN'), styles: { fontStyle: 'bold' } }])
   }
-  incomeBody.push([{ content: '   Net Income from Business/Profession', styles: { fontStyle: 'bold' } }, { content: (results.netPGBP + vda).toLocaleString('en-IN'), styles: { fontStyle: 'bold' } }])
   // Capital Gains
-  if (results.grossSTCG > 0 || results.grossLTCG > 0 || results.stcg > 0 || results.ltcg > 0) {
+  if (results.grossSTCG > 0 || results.grossLTCG > 0 || results.stcg > 0 || results.ltcg > 0 || (!data.crypto?.treatAsPGBP && vda > 0)) {
       incomeBody.push([{ content: '4. Capital Gains', colSpan: 2, styles: { fontStyle: 'bold', fillColor: [241, 245, 249], textColor: [15, 23, 42] } }])
       if (results.stcg > 0 || results.grossSTCG > 0) {
           incomeBody.push(['   Gross Short Term Capital Gains', results.grossSTCG.toLocaleString('en-IN')])
@@ -132,7 +134,10 @@ export const generatePDF = (data) => {
               incomeBody.push(['   Net Taxable Long Term Capital Gains', results.ltcg.toLocaleString('en-IN')])
           }
       }
-      incomeBody.push([{ content: '   Total Taxable Capital Gains', styles: { fontStyle: 'bold' } }, { content: (results.stcg + results.ltcg).toLocaleString('en-IN'), styles: { fontStyle: 'bold' } }])
+      if (!data.crypto?.treatAsPGBP && vda > 0) {
+          incomeBody.push(['   Add: Virtual Digital Assets (Crypto)', vda.toLocaleString('en-IN')])
+      }
+      incomeBody.push([{ content: '   Total Taxable Capital Gains', styles: { fontStyle: 'bold' } }, { content: (results.stcg + results.ltcg + (!data.crypto?.treatAsPGBP ? vda : 0)).toLocaleString('en-IN'), styles: { fontStyle: 'bold' } }])
   } else {
       incomeBody.push([{ content: '4. Capital Gains', colSpan: 2, styles: { fontStyle: 'bold', fillColor: [241, 245, 249], textColor: [15, 23, 42] } }])
       incomeBody.push([{ content: '   Total Capital Gains', styles: { fontStyle: 'bold' } }, { content: '0', styles: { fontStyle: 'bold' } }])

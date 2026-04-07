@@ -67,26 +67,36 @@ const IncomeSummary = ({ data }) => {
 
                {/* PGBP */}
                <tr><td style={{ ...tdStyle, fontWeight: 'bold', fontSize: '1.125rem', paddingTop: '1rem', paddingBottom: '0.25rem' }} colSpan={2}>3. Profits & Gains of Business/Profession</td></tr>
-               <tr>
-                  <td style={{ ...tdStyle, paddingLeft: '1.5rem', opacity: 0.85 }}>Normal Business Income</td>
-                  <td style={{ ...tdRight }}>{fmt(results.netPGBP)}</td>
+               {data.crypto?.treatAsPGBP ? (
+                 <>
+                   <tr>
+                      <td style={{ ...tdStyle, paddingLeft: '1.5rem', opacity: 0.85 }}>Normal Business Income</td>
+                      <td style={{ ...tdRight }}>{fmt(results.netPGBP)}</td>
+                   </tr>
+                   {results.netVDA > 0 && (
+                      <tr>
+                         <td style={{ ...tdStyle, paddingLeft: '1.5rem', opacity: 0.85 }}>Add: Virtual Digital Assets (Sec 115BBH)</td>
+                         <td style={{ ...tdRight }}>{fmt(results.netVDA)}</td>
+                      </tr>
+                   )}
+                 </>
+               ) : null}
+               <tr style={{ background: 'var(--row-alt-bg)', borderBottom: '1px solid var(--input-border)' }}>
+                  <td style={{ ...tdStyle, paddingLeft: '1.5rem', fontWeight: 600 }}>Net Income from Business/Profession</td>
+                  <td style={{ ...tdRight, fontWeight: 'bold', fontSize: '1.125rem' }}>{fmt(results.netPGBP + (data.crypto?.treatAsPGBP ? (results.netVDA || 0) : 0))}</td>
                </tr>
-               {results.netVDA > 0 && (
+
+               {/* CG */}
+               <tr><td style={{ ...tdStyle, fontWeight: 'bold', fontSize: '1.125rem', paddingTop: '1rem', paddingBottom: '0.25rem' }} colSpan={2}>4. Capital Gains</td></tr>
+               {!data.crypto?.treatAsPGBP && results.netVDA > 0 && (
                   <tr>
                      <td style={{ ...tdStyle, paddingLeft: '1.5rem', opacity: 0.85 }}>Add: Virtual Digital Assets (Sec 115BBH)</td>
                      <td style={{ ...tdRight }}>{fmt(results.netVDA)}</td>
                   </tr>
                )}
-               <tr style={{ background: 'var(--row-alt-bg)', borderTop: '1px dashed var(--input-border)', borderBottom: '1px solid var(--input-border)' }}>
-                  <td style={{ ...tdStyle, paddingLeft: '1.5rem', fontWeight: 600 }}>Net Income from Business/Profession</td>
-                  <td style={{ ...tdRight, fontWeight: 'bold', fontSize: '1.125rem' }}>{fmt(results.netPGBP + (results.netVDA || 0))}</td>
-               </tr>
-
-               {/* CG */}
-               <tr><td style={{ ...tdStyle, fontWeight: 'bold', fontSize: '1.125rem', paddingTop: '1rem', paddingBottom: '0.25rem' }} colSpan={2}>4. Capital Gains</td></tr>
                <tr style={{ borderBottom: '1px solid var(--input-border)' }}>
-                  <td style={{ ...tdStyle, paddingLeft: '1.5rem' }}>Income chargeable under the head 'Capital Gains'</td>
-                  <td style={{ ...tdRight, fontWeight: 'bold', fontSize: '1.125rem' }}>{fmt(results.stcg + results.ltcg)}</td>
+                  <td style={{ ...tdStyle, paddingLeft: '1.5rem', fontWeight: 600 }}>Income chargeable under the head 'Capital Gains'</td>
+                  <td style={{ ...tdRight, fontWeight: 'bold', fontSize: '1.125rem' }}>{fmt(results.stcg + results.ltcg + (!data.crypto?.treatAsPGBP ? (results.netVDA || 0) : 0))}</td>
                </tr>
 
                {/* OS */}
@@ -118,6 +128,41 @@ const IncomeSummary = ({ data }) => {
                </tr>
             </tbody>
          </table>
+
+         {/* Loss Carry Forward Matrix */}
+         {results.carryForwardLosses && (results.carryForwardLosses.houseProperty > 0 || results.carryForwardLosses.business > 0 || results.carryForwardLosses.stcl > 0 || results.carryForwardLosses.ltcl > 0) && (
+            <>
+               <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1rem', color: '#d97706', borderBottom: '1px solid var(--input-border)', paddingBottom: '0.5rem', marginTop: '2rem' }}>III. Losses to be Carried Forward</h3>
+               <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '2.5rem', color: 'var(--text-main)' }}>
+                  <tbody>
+                     {results.carryForwardLosses.houseProperty > 0 && (
+                        <tr style={{ borderBottom: '1px solid var(--input-border)' }}>
+                           <td style={{ ...tdStyle, paddingLeft: '1.5rem' }}>House Property Loss</td>
+                           <td style={{ ...tdRight, fontWeight: 'bold', fontSize: '1.125rem', color: '#d97706' }}>{fmt(results.carryForwardLosses.houseProperty)}</td>
+                        </tr>
+                     )}
+                     {results.carryForwardLosses.business > 0 && (
+                        <tr style={{ borderBottom: '1px solid var(--input-border)' }}>
+                           <td style={{ ...tdStyle, paddingLeft: '1.5rem' }}>Business Loss (PGBP)</td>
+                           <td style={{ ...tdRight, fontWeight: 'bold', fontSize: '1.125rem', color: '#d97706' }}>{fmt(results.carryForwardLosses.business)}</td>
+                        </tr>
+                     )}
+                     {results.carryForwardLosses.stcl > 0 && (
+                        <tr style={{ borderBottom: '1px solid var(--input-border)' }}>
+                           <td style={{ ...tdStyle, paddingLeft: '1.5rem' }}>Short-Term Capital Loss (STCL)</td>
+                           <td style={{ ...tdRight, fontWeight: 'bold', fontSize: '1.125rem', color: '#d97706' }}>{fmt(results.carryForwardLosses.stcl)}</td>
+                        </tr>
+                     )}
+                     {results.carryForwardLosses.ltcl > 0 && (
+                        <tr style={{ borderBottom: '1px solid var(--input-border)' }}>
+                           <td style={{ ...tdStyle, paddingLeft: '1.5rem' }}>Long-Term Capital Loss (LTCL)</td>
+                           <td style={{ ...tdRight, fontWeight: 'bold', fontSize: '1.125rem', color: '#d97706' }}>{fmt(results.carryForwardLosses.ltcl)}</td>
+                        </tr>
+                     )}
+                  </tbody>
+               </table>
+            </>
+         )}
 
          {/* Exempt Incomes */}
          {data.exemptIncome && data.exemptIncome.length > 0 && (

@@ -36,8 +36,8 @@ const TaxBreakup = ({ data }) => {
                         {row.rate}
                       </span>
                     </td>
-                    <td style={{ padding: '1rem', textAlign: 'right', fontFamily: 'monospace', fontSize: '1.05rem' }}>{row.amount.toLocaleString('en-IN')}</td>
-                    <td style={{ padding: '1rem', textAlign: 'right', fontFamily: 'monospace', fontSize: '1.05rem', color: row.tax > 0 ? 'var(--danger)' : 'var(--text-main)' }}>{row.tax.toLocaleString('en-IN')}</td>
+                    <td style={{ padding: '1rem', textAlign: 'right', fontSize: '1.05rem' }}>{row.amount.toLocaleString('en-IN')}</td>
+                    <td style={{ padding: '1rem', textAlign: 'right', fontSize: '1.05rem', color: row.tax > 0 ? 'var(--danger)' : 'var(--text-main)' }}>{row.tax.toLocaleString('en-IN')}</td>
                   </tr>
                 ))
               ) : (
@@ -49,8 +49,8 @@ const TaxBreakup = ({ data }) => {
             <tfoot>
               <tr style={{ background: 'var(--glass-bg)', borderTop: '2px solid var(--primary)', color: 'var(--primary)', fontWeight: 'bold' }}>
                 <td colSpan="2" style={{ padding: '1.25rem 1rem', textAlign: 'left', borderRadius: '0 0 0 var(--radius-md)' }}>TOTAL NORMAL TAX</td>
-                <td style={{ padding: '1.25rem 1rem', textAlign: 'right', fontFamily: 'monospace', fontSize: '1.15rem' }}>{results.taxableNormalIncome > 0 ? results.taxableNormalIncome.toLocaleString('en-IN') : '0'}</td>
-                <td style={{ padding: '1.25rem 1rem', textAlign: 'right', fontFamily: 'monospace', fontSize: '1.15rem', borderRadius: '0 0 var(--radius-md) 0' }}>{results.normalTax.toLocaleString('en-IN')}</td>
+                <td style={{ padding: '1.25rem 1rem', textAlign: 'right', fontSize: '1.15rem' }}>{results.taxableNormalIncome > 0 ? results.taxableNormalIncome.toLocaleString('en-IN') : '0'}</td>
+                <td style={{ padding: '1.25rem 1rem', textAlign: 'right', fontSize: '1.15rem', borderRadius: '0 0 var(--radius-md) 0' }}>{results.normalTax.toLocaleString('en-IN')}</td>
               </tr>
             </tfoot>
           </table>
@@ -68,25 +68,25 @@ const TaxBreakup = ({ data }) => {
                 {results.specialTaxBreakup.map((item, idx) => (
                    <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', padding: '0.75rem 1rem', borderBottom: idx < results.specialTaxBreakup.length - 1 ? '1px dashed var(--input-border)' : 'none', opacity: 0.9 }}>
                       <span>{item.label} <span style={{fontSize:'0.85em', opacity: 0.7}}>({item.amount.toLocaleString('en-IN')} ₹)</span></span>
-                      <span style={{ fontFamily: 'monospace' }}>+ ₹ {item.tax.toLocaleString('en-IN')}</span>
+                      <span style={{  }}>+ ₹ {item.tax.toLocaleString('en-IN')}</span>
                    </div>
                 ))}
                 <div style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem', background: 'rgba(79, 70, 229, 0.05)', borderTop: '1px solid var(--input-border)' }}>
                    <span style={{ fontWeight: 600, color: 'var(--primary)' }}>Total Special Tax</span>
-                   <span style={{ fontFamily: 'monospace', fontSize: '1.1rem', color: 'var(--primary)', fontWeight: 'bold' }}>+ ₹ {results.specialTax.toLocaleString('en-IN')}</span>
+                   <span style={{ fontSize: '1.1rem', color: 'var(--primary)', fontWeight: 'bold' }}>+ ₹ {results.specialTax.toLocaleString('en-IN')}</span>
                 </div>
              </div>
           ) : (
             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem', background: 'var(--glass-bg)', borderRadius: 'var(--radius-md)', border: '1px solid var(--input-border)' }}>
               <span style={{ fontWeight: 500 }}>Tax on Special Incomes (Capital Gains, Winnings)</span>
-              <span style={{ fontFamily: 'monospace', fontSize: '1.1rem' }}>+ ₹ 0</span>
+              <span style={{ fontSize: '1.1rem' }}>+ ₹ 0</span>
             </div>
           )}
 
           <div style={{ background: 'var(--glass-bg)', borderRadius: 'var(--radius-md)', border: '1px solid var(--input-border)', overflow: 'hidden' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem' }}>
               <span style={{ fontWeight: 500 }}>Less: Rebate u/s 87A</span>
-              <span style={{ fontFamily: 'monospace', fontSize: '1.1rem', color: 'var(--success)' }}>(₹ {Math.round(results.rebate).toLocaleString('en-IN')})</span>
+              <span style={{ fontSize: '1.1rem', color: 'var(--success)' }}>(₹ {Math.round(results.rebate).toLocaleString('en-IN')})</span>
             </div>
             {results.rebate > 0 && (
                <div style={{ padding: '0.75rem 1rem', background: 'var(--row-alt-bg)', borderTop: '1px dashed var(--input-border)', fontSize: '0.9rem', color: 'var(--text-muted)' }}>
@@ -98,7 +98,7 @@ const TaxBreakup = ({ data }) => {
           <div style={{ background: 'var(--glass-bg)', borderRadius: 'var(--radius-md)', border: '1px solid var(--input-border)', overflow: 'hidden' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem' }}>
               <span style={{ fontWeight: 500 }}>Add: Surcharge</span>
-              <span style={{ fontFamily: 'monospace', fontSize: '1.1rem', color: 'var(--danger)' }}>+ ₹ {Math.round(results.surcharge).toLocaleString('en-IN')}</span>
+              <span style={{ fontSize: '1.1rem', color: 'var(--danger)' }}>+ ₹ {Math.round(results.surcharge).toLocaleString('en-IN')}</span>
             </div>
             {results.surcharge > 0 && results.surchargeBreakup && (
               <div style={{ padding: '0.75rem 1rem', background: 'rgba(0,0,0,0.02)', borderTop: '1px dashed var(--input-border)', fontSize: '0.9rem', color: 'var(--text-muted)' }}>
@@ -112,7 +112,7 @@ const TaxBreakup = ({ data }) => {
           <div style={{ background: 'var(--glass-bg)', borderRadius: 'var(--radius-md)', border: '1px solid var(--input-border)', overflow: 'hidden' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem' }}>
               <span style={{ fontWeight: 500 }}>Add: Health & Education Cess (4%)</span>
-              <span style={{ fontFamily: 'monospace', fontSize: '1.1rem', color: 'var(--danger)' }}>+ ₹ {Math.round(results.cess).toLocaleString('en-IN')}</span>
+              <span style={{ fontSize: '1.1rem', color: 'var(--danger)' }}>+ ₹ {Math.round(results.cess).toLocaleString('en-IN')}</span>
             </div>
             {results.cess > 0 && (
                <div style={{ padding: '0.75rem 1rem', background: 'var(--row-alt-bg)', borderTop: '1px dashed var(--input-border)', fontSize: '0.9rem', color: 'var(--text-muted)' }}>
@@ -133,9 +133,9 @@ const TaxBreakup = ({ data }) => {
                 <div style={{ padding: '1rem', borderBottom: '1px solid var(--input-border)', fontWeight: 600, background: 'var(--row-alt-bg)' }}>
                    Less: Taxes Already Paid
                 </div>
-                {results.tdsPaid > 0 && <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.75rem 1rem', borderBottom: '1px dashed var(--input-border)' }}><span>TDS / TCS</span><span style={{ color: 'var(--success)', fontFamily: 'monospace' }}>- ₹ {results.tdsPaid.toLocaleString('en-IN')}</span></div>}
-                {results.advanceTaxPaid > 0 && <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.75rem 1rem', borderBottom: '1px dashed var(--input-border)' }}><span>Advance Tax</span><span style={{ color: 'var(--success)', fontFamily: 'monospace' }}>- ₹ {results.advanceTaxPaid.toLocaleString('en-IN')}</span></div>}
-                {results.selfAssessmentTaxPaid > 0 && <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.75rem 1rem' }}><span>Self Assessment Tax</span><span style={{ color: 'var(--success)', fontFamily: 'monospace' }}>- ₹ {results.selfAssessmentTaxPaid.toLocaleString('en-IN')}</span></div>}
+                {results.tdsPaid > 0 && <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.75rem 1rem', borderBottom: '1px dashed var(--input-border)' }}><span>TDS / TCS</span><span style={{ color: 'var(--success)' }}>- ₹ {results.tdsPaid.toLocaleString('en-IN')}</span></div>}
+                {results.advanceTaxPaid > 0 && <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.75rem 1rem', borderBottom: '1px dashed var(--input-border)' }}><span>Advance Tax</span><span style={{ color: 'var(--success)' }}>- ₹ {results.advanceTaxPaid.toLocaleString('en-IN')}</span></div>}
+                {results.selfAssessmentTaxPaid > 0 && <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.75rem 1rem' }}><span>Self Assessment Tax</span><span style={{ color: 'var(--success)' }}>- ₹ {results.selfAssessmentTaxPaid.toLocaleString('en-IN')}</span></div>}
              </div>
           )}
 

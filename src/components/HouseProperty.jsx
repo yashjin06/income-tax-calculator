@@ -31,7 +31,8 @@ const HouseProperty = ({ data, updateData }) => {
       municipalTaxes: 0,
       standardDeduction: 0,
       interestOnLoan: 0,
-      preConstructionInterest: 0
+      totalPreConstructionInterest: 0,
+      ownershipShare: 100
     }
     setProperties([...properties, newProp])
   }
@@ -41,8 +42,15 @@ const HouseProperty = ({ data, updateData }) => {
   }
 
   const handleChange = (id, field, value) => {
-    const numValue = field === 'type' ? value : (value === '' ? '' : parseFloat(value) || 0)
+    let numValue = field === 'type' ? value : (value === '' ? '' : parseFloat(value) || 0)
     
+    if (field === 'ownershipShare') {
+      if (numValue !== '') {
+        if (numValue > 100) numValue = 100
+        if (numValue < 0) numValue = 0
+      }
+    }
+
     setProperties(properties.map(p => {
       if (p.id === id) {
         const updated = { ...p, [field]: numValue }
@@ -63,14 +71,19 @@ const HouseProperty = ({ data, updateData }) => {
   }
 
   const calculatePropertyIncome = (p) => {
+    const share = (parseFloat(p.ownershipShare) || 100) / 100
+    const regularInterest = (parseFloat(p.interestOnLoan) || 0) * share
+    const preConInterest = ((parseFloat(p.totalPreConstructionInterest) || 0) / 5) * share
+
     if (p.type === 'self-occupied') {
       // NAV is Nil, only interest deduction is allowed (Max 2 Lakhs, handled in tax Engine)
-      return - ((parseFloat(p.interestOnLoan) || 0) + (parseFloat(p.preConstructionInterest) || 0))
+      return - (regularInterest + preConInterest)
     } else {
-      const nav = Math.max(0, (parseFloat(p.grossAnnualValue) || 0) - (parseFloat(p.municipalTaxes) || 0))
+      const gav = (parseFloat(p.grossAnnualValue) || 0) * share
+      const taxes = (parseFloat(p.municipalTaxes) || 0) * share
+      const nav = Math.max(0, gav - taxes)
       const stdDed = nav * 0.3 // 30% standard deduction
-      const interest = (parseFloat(p.interestOnLoan) || 0) + (parseFloat(p.preConstructionInterest) || 0)
-      return nav - stdDed - interest
+      return nav - stdDed - (regularInterest + preConInterest)
     }
   }
 
@@ -113,6 +126,11 @@ const HouseProperty = ({ data, updateData }) => {
                 </select>
               </div>
 
+              <div className="input-group">
+                <label className="input-label">Your Ownership Share (%)</label>
+                <input type="number" className="input-field" value={prop.ownershipShare !== undefined ? prop.ownershipShare : 100} onChange={(e) => handleChange(prop.id, 'ownershipShare', e.target.value)} placeholder="100" min="0" max="100" />
+              </div>
+
               {prop.type !== 'self-occupied' && (
                 <>
                   <div className="input-group">
@@ -141,9 +159,9 @@ const HouseProperty = ({ data, updateData }) => {
               </div>
 
               <div className="input-group">
-                <label className="input-label">Pre-construction Interest</label>
-                <input type="number" className="input-field" value={prop.preConstructionInterest || ''} onChange={(e) => handleChange(prop.id, 'preConstructionInterest', e.target.value)} placeholder="0" />
-                <p style={{fontSize: '0.75rem', marginTop: '0.25rem', color: 'var(--text-muted)'}}>Allowed in 5 equal installments</p>
+                <label className="input-label">Total Pre-construction Interest</label>
+                <input type="number" className="input-field" value={prop.totalPreConstructionInterest || ''} onChange={(e) => handleChange(prop.id, 'totalPreConstructionInterest', e.target.value)} placeholder="0" />
+                <p style={{fontSize: '0.75rem', marginTop: '0.25rem', color: 'var(--text-muted)'}}>Auto-applies 1/5th deduction for this year</p>
               </div>
             </div>
 

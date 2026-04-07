@@ -15,11 +15,29 @@ const Salary = ({ data, updateData }) => {
 
   const [grossSalary, setGrossSalary] = useState(0)
   const [netSalary, setNetSalary] = useState(0)
+  const [showHraCalc, setShowHraCalc] = useState(false)
+  const [hraInputs, setHraInputs] = useState({ actualHra: 0, rentPaid: 0, isMetro: false })
 
   const handleChange = (e) => {
     const { name, value } = e.target
     const numValue = value === '' ? '' : parseFloat(value) || 0
     updateData({ ...data, salary: { ...salData, [name]: numValue } })
+  }
+
+  const calculateHRA = () => {
+     let actual = parseFloat(hraInputs.actualHra) || 0
+     let rent = parseFloat(hraInputs.rentPaid) || 0
+     let basicDA = (parseFloat(salData.basic) || 0) + (parseFloat(salData.da) || 0)
+     
+     let limit1 = actual
+     let limit2 = Math.max(0, rent - (0.10 * basicDA))
+     let limit3 = hraInputs.isMetro ? (0.50 * basicDA) : (0.40 * basicDA)
+     
+     let exemptHra = Math.min(limit1, limit2, limit3)
+     let taxableHra = Math.max(0, actual - exemptHra)
+     
+     updateData({ ...data, salary: { ...salData, hra: taxableHra } })
+     setShowHraCalc(false)
   }
 
   useEffect(() => {
@@ -89,8 +107,33 @@ const Salary = ({ data, updateData }) => {
           </div>
 
           <div className="input-group">
-            <label className="input-label">House Rent Allowance (HRA) (Taxable Portion)</label>
+            <label className="input-label" style={{ display: 'flex', justifyContent: 'space-between' }}>
+               <span>House Rent Allowance (HRA) (Taxable Portion)</span>
+               <button className="btn btn-sm" style={{ background: 'transparent', color: 'var(--primary)', padding: 0 }} onClick={() => setShowHraCalc(!showHraCalc)}>⚡ Calculate</button>
+            </label>
             <input type="number" name="hra" className="input-field" value={salData.hra || ''} onChange={handleChange} placeholder="0" />
+            
+            {showHraCalc && (
+               <div style={{ marginTop: '0.5rem', background: 'var(--glass-bg)', padding: '1rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--primary)' }}>
+                  <h4 className="font-bold text-sm mb-2" style={{ color: 'var(--primary)' }}>Smart HRA Exemption Calculator</h4>
+                  <div style={{ display: 'grid', gap: '0.75rem' }}>
+                    <div>
+                       <label className="text-xs font-bold text-gray-500">Actual HRA Received</label>
+                       <input type="number" className="input-field" value={hraInputs.actualHra || ''} onChange={(e) => setHraInputs({...hraInputs, actualHra: e.target.value})} placeholder="Per Year" />
+                    </div>
+                    <div>
+                       <label className="text-xs font-bold text-gray-500">Total Rent Paid</label>
+                       <input type="number" className="input-field" value={hraInputs.rentPaid || ''} onChange={(e) => setHraInputs({...hraInputs, rentPaid: e.target.value})} placeholder="Per Year" />
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                       <input type="checkbox" id="metroCity" checked={hraInputs.isMetro} onChange={(e) => setHraInputs({...hraInputs, isMetro: e.target.checked})} />
+                       <label htmlFor="metroCity" className="text-sm font-bold cursor-pointer">Rented in Metro City? (Delhi, Mumbai, Chennai, Kolkata)</label>
+                    </div>
+                    <button className="btn btn-primary btn-sm mt-2" onClick={calculateHRA}>Apply Taxable HRA</button>
+                    <p style={{fontSize: '0.7rem', color: 'var(--text-muted)'}}>Uses Basic + DA salary specified above to compute Least of 3 rule.</p>
+                  </div>
+               </div>
+            )}
           </div>
 
           <div className="input-group">

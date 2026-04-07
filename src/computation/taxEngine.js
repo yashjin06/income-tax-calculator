@@ -41,8 +41,11 @@ export const computeTax = (data) => {
 
   // Set-off of HP loss against other heads is restricted to 2 lakhs.
   let housePropertyLossToSetOff = 0
+  let housePropertyCarryForward = 0
   if (netHouseProperty < 0) {
-    housePropertyLossToSetOff = Math.min(200000, Math.abs(netHouseProperty))
+    let absLoss = Math.abs(netHouseProperty)
+    housePropertyLossToSetOff = Math.min(200000, absLoss)
+    housePropertyCarryForward = absLoss - housePropertyLossToSetOff
     // We will apply this globally
     netHouseProperty = 0
   }
@@ -52,6 +55,9 @@ export const computeTax = (data) => {
   if (netHouseProperty > 0 && bfl.houseProperty > 0) {
       const setoff = Math.min(netHouseProperty, bfl.houseProperty)
       netHouseProperty -= setoff
+      housePropertyCarryForward += (bfl.houseProperty - setoff)
+  } else if (bfl.houseProperty > 0) {
+      housePropertyCarryForward += bfl.houseProperty
   }
 
   // 3. Profits and Gains of Business or Profession (PGBP)
@@ -83,11 +89,19 @@ export const computeTax = (data) => {
      }
   }
   
-  let netPGBP = Math.max(0, np + additions - deds + presumptiveIncome) // Losses not carried forward in this simple calc
+  let netPGBP = np + additions - deds + presumptiveIncome
+  let businessCarryForward = 0
+  if (netPGBP < 0) {
+      businessCarryForward = Math.abs(netPGBP)
+      netPGBP = 0
+  }
   
   if (netPGBP > 0 && bfl.business > 0) {
       const setoff = Math.min(netPGBP, bfl.business)
       netPGBP -= setoff
+      businessCarryForward += (bfl.business - setoff)
+  } else if (bfl.business > 0) {
+      businessCarryForward += bfl.business
   }
 
   // 4. Capital Gains
@@ -137,7 +151,14 @@ export const computeTax = (data) => {
   // 5. Income from Other Sources
   const os = otherSources || {}
   const winnings = parseFloat(os.winnings) || 0
-  let normalOS = (parseFloat(os.savingsInterest) || 0) + (parseFloat(os.fdInterest) || 0) + (parseFloat(os.dividend) || 0) + (parseFloat(os.gifts) || 0) + (parseFloat(os.otherIncome) || 0) - (parseFloat(os.expenses) || 0)
+  const dividend = parseFloat(os.dividend) || 0
+  const agriIncome = parseFloat(os.agriculturalIncome) || 0
+  
+  const familyPension = parseFloat(os.familyPension) || 0
+  const familyPensionDed = Math.min(familyPension / 3, 15000)
+  const netFamilyPension = familyPension - familyPensionDed
+
+  let normalOS = (parseFloat(os.savingsInterest) || 0) + (parseFloat(os.fdInterest) || 0) + dividend + (parseFloat(os.gifts) || 0) + netFamilyPension + (parseFloat(os.otherIncome) || 0) - (parseFloat(os.expenses) || 0)
   normalOS = Math.max(0, normalOS)
   let netOtherSources = normalOS + winnings
 
@@ -158,6 +179,7 @@ export const computeTax = (data) => {
   // Deductions Chapter VI-A
   let totalDeductions = 0
   const sec80ccd2 = parseFloat(deductions?.sec80ccd2) || 0
+  const sec80cch = parseFloat(deductions?.sec80cch) || 0
 
   if (!isNewRegime) {
       const c_ccc_ccd1 = (parseFloat(deductions?.sec80c) || 0) + (parseFloat(deductions?.sec80ccc) || 0) + (parseFloat(deductions?.sec80ccd1) || 0)
@@ -175,10 +197,10 @@ export const computeTax = (data) => {
          sec80tta = Math.min(10000, parseFloat(deductions?.sec80tta) || 0)
       }
 
-      totalDeductions = limited80C + limited80CCD1B + others + sec80tta + sec80ttb + sec80ccd2
+      totalDeductions = limited80C + limited80CCD1B + others + sec80tta + sec80ttb + sec80ccd2 + sec80cch
   } else {
       if (assessmentYear !== '2023-24') {
-          totalDeductions = sec80ccd2 // Only Employer NPS is allowed under New Scheme
+          totalDeductions = sec80ccd2 + sec80cch // Only Employer NPS and Agniveer allowed under New Scheme
       }
   }
   
@@ -225,8 +247,26 @@ export const computeTax = (data) => {
      return tax
   }
 
-  // --- COMPUTE TAX ---
-  let normalTax = getNormalTaxOn(taxableNormalIncome)
+  // --- COMPUTE TAX WITH AGRICULTURAL PARTIAL INTEGRATION ---
+  let normalTax = 0
+  let exemptionLimitForAgri = 250000
+  if (isNewRegime) {
+     if (assessmentYear === '2026-27') exemptionLimitForAgri = 400000
+     else if (assessmentYear === '2025-26') exemptionLimitForAgri = 300000
+     else exemptionLimitForAgri = 300000
+  } else {
+     if (personal.ageCategory === 'superSenior') exemptionLimitForAgri = 500000
+     else if (personal.ageCategory === 'senior') exemptionLimitForAgri = 300000
+  }
+
+  if (agriIncome > 5000 && taxableNormalIncome > exemptionLimitForAgri) {
+      let taxOnBoth = getNormalTaxOn(taxableNormalIncome + agriIncome)
+      let taxOnAgriWithBasic = getNormalTaxOn(exemptionLimitForAgri + agriIncome)
+      normalTax = Math.max(0, taxOnBoth - taxOnAgriWithBasic)
+  } else {
+      normalTax = getNormalTaxOn(taxableNormalIncome)
+  }
+
   let taxBreakup = []
   
   if (isNewRegime) {
@@ -289,27 +329,37 @@ export const computeTax = (data) => {
 
   // Rebate u/s 87A
   let rebate = 0
+  
+  let eligibleTaxFor87A = totalTaxBeforeRebate
+  if (isNewRegime) {
+     // Under New Regime: STCG 111A, LTCG 112A, LTCG 112, VDA are not eligible.
+     eligibleTaxFor87A = Math.max(0, normalTax + ((parseFloat(os.winnings) || 0) * 0.3))
+  } else {
+     // Under Old Regime: LTCG 112A, LTCG 112, VDA are not eligible. STCG 111A IS eligible.
+     eligibleTaxFor87A = Math.max(0, normalTax + (stcg20 * 0.20) + ((parseFloat(os.winnings) || 0) * 0.3))
+  }
+
   if (isNewRegime) {
       if (assessmentYear === '2026-27') {
          if (totalTaxableIncome <= 1200000) {
-            rebate = Math.min(60000, totalTaxBeforeRebate)
+            rebate = Math.min(60000, eligibleTaxFor87A)
          } else if (totalTaxableIncome <= 1270588) {
             // Marginal Relief for AY 2026-27
             const incomeAbove12L = totalTaxableIncome - 1200000
-            if (totalTaxBeforeRebate > incomeAbove12L) rebate = totalTaxBeforeRebate - incomeAbove12L
+            if (eligibleTaxFor87A > incomeAbove12L) rebate = eligibleTaxFor87A - incomeAbove12L
          }
       } else {
          if (totalTaxableIncome <= 700000) {
-            rebate = Math.min(25000, totalTaxBeforeRebate)
+            rebate = Math.min(25000, eligibleTaxFor87A)
          } else if (totalTaxableIncome <= 727777) {
             // Marginal relief for previous New Regime (7L)
             const incomeAbove7L = totalTaxableIncome - 700000
-            if (totalTaxBeforeRebate > incomeAbove7L) rebate = totalTaxBeforeRebate - incomeAbove7L
+            if (eligibleTaxFor87A > incomeAbove7L) rebate = eligibleTaxFor87A - incomeAbove7L
          }
       }
   } else {
       if (totalTaxableIncome <= 500000) {
-         rebate = Math.min(12500, totalTaxBeforeRebate) // Max rebate 12.5k
+         rebate = Math.min(12500, eligibleTaxFor87A) // Max rebate 12.5k
       }
   }
 
@@ -320,11 +370,17 @@ export const computeTax = (data) => {
   let surchargeBreakup = { rateNormal: 0, rateSpecial: 0, amountNormal: 0, amountSpecial: 0, marginalRelief: 0 }
 
   if (totalTaxableIncome > 5000000) {
-      let baseTaxObj = taxAfterRebate
-      let normalTaxObj = normalTax // approx breakdown
-      let specialTaxObj = specialTax
+      // Find proportion of Normal Tax attributable to Dividend Income (capped at 15%)
+      let normalTaxRateAverage = taxableNormalIncome > 0 ? (normalTax / taxableNormalIncome) : 0
+      let dividendIncomeEffective = Math.min(dividend, Math.max(0, taxableNormalIncome - totalDeductions))
+      let normalTaxOnDividend = dividendIncomeEffective * normalTaxRateAverage
+      let normalTaxOnOther = normalTax - normalTaxOnDividend
 
-      const computeSurcharge = (inc, baseT, normalT, specialT) => {
+      let specialTaxBase = specialTax + normalTaxOnDividend
+      let normalTaxBase = normalTaxOnOther
+      let baseTaxObj = taxAfterRebate
+
+      const computeSurcharge = (inc, baseT, normalT_base, specialT_base) => {
          let rateNormal = 0
          let rateSpecial = 0
 
@@ -334,14 +390,14 @@ export const computeTax = (data) => {
          else if (inc > 5000000) { rateNormal = 0.10; rateSpecial = 0.10; }
 
          return {
-             total: (normalT * rateNormal) + (specialT * rateSpecial),
+             total: (normalT_base * rateNormal) + (specialT_base * rateSpecial),
              rateNormal, rateSpecial,
-             amountNormal: normalT * rateNormal,
-             amountSpecial: specialT * rateSpecial
+             amountNormal: normalT_base * rateNormal,
+             amountSpecial: specialT_base * rateSpecial
          }
       }
 
-      let surgRes = computeSurcharge(totalTaxableIncome, baseTaxObj, normalTaxObj, specialTaxObj)
+      let surgRes = computeSurcharge(totalTaxableIncome, baseTaxObj, normalTaxBase, specialTaxBase)
       surcharge = surgRes.total
       surchargeBreakup.rateNormal = surgRes.rateNormal
       surchargeBreakup.rateSpecial = surgRes.rateSpecial
@@ -357,7 +413,9 @@ export const computeTax = (data) => {
               let taxAtT_special = specialTax // special tax remains constant
               let taxAtT = taxAtT_normal + taxAtT_special
 
-              let surchargeAtT = computeSurcharge(threshold, taxAtT, taxAtT_normal, taxAtT_special).total
+              // Calculated tax on exact threshold bounds 
+              let thresholdSurchargeRes = computeSurcharge(threshold, baseTaxObj, normalTaxBase, specialTaxBase)
+              let surchargeAtT = thresholdSurchargeRes.total
               let totalLiabilityAtT = taxAtT + surchargeAtT
 
               let currentTotalLiability = baseTaxObj + surchargeBreakup.amountNormal + surchargeBreakup.amountSpecial
@@ -385,11 +443,76 @@ export const computeTax = (data) => {
 
   const totalTaxLiability = Math.round(taxPlusSurcharge + cess)
   
-  const tdsPaid = (parseFloat(data.taxesPaid?.tds) || 0) + (parseFloat(data.taxesPaid?.tcs) || 0)
-  const advanceTaxPaid = parseFloat(data.taxesPaid?.advanceTax) || 0
-  const selfAssessmentTaxPaid = parseFloat(data.taxesPaid?.selfAssessmentTax) || 0
+  const taxesPaidObj = data.taxesPaid || {}
+  const tdsPaid = (parseFloat(taxesPaidObj.tds) || 0) + (parseFloat(taxesPaidObj.tcs) || 0)
+  const advanceTaxQ1 = parseFloat(taxesPaidObj.advanceTaxQ1) || 0
+  const advanceTaxQ2 = parseFloat(taxesPaidObj.advanceTaxQ2) || 0
+  const advanceTaxQ3 = parseFloat(taxesPaidObj.advanceTaxQ3) || 0
+  const advanceTaxQ4 = parseFloat(taxesPaidObj.advanceTaxQ4) || 0
+  const advanceTaxTotal = advanceTaxQ1 + advanceTaxQ2 + advanceTaxQ3 + advanceTaxQ4
+  const selfAssessmentTaxPaid = parseFloat(taxesPaidObj.selfAssessmentTax) || 0
 
-  const netTaxPayable = totalTaxLiability - (tdsPaid + advanceTaxPaid + selfAssessmentTaxPaid)
+  let interest234A = 0
+  let interest234B = 0
+  let interest234C = 0
+
+  const assessedTaxForPenalty = Math.max(0, totalTaxLiability - tdsPaid)
+
+  if (assessedTaxForPenalty >= 10000) {
+      // 234C: Deferment of Advance Tax
+      const q1Req = assessedTaxForPenalty * 0.15
+      const q2Req = assessedTaxForPenalty * 0.45
+      const q3Req = assessedTaxForPenalty * 0.75
+      const q4Req = assessedTaxForPenalty * 1.00
+
+      if (advanceTaxQ1 < q1Req) interest234C += Math.max(0, q1Req - advanceTaxQ1) * 0.01 * 3
+      let cumulativeQ2 = advanceTaxQ1 + advanceTaxQ2
+      if (cumulativeQ2 < q2Req) interest234C += Math.max(0, q2Req - cumulativeQ2) * 0.01 * 3
+      let cumulativeQ3 = cumulativeQ2 + advanceTaxQ3
+      if (cumulativeQ3 < q3Req) interest234C += Math.max(0, q3Req - cumulativeQ3) * 0.01 * 3
+      let cumulativeQ4 = cumulativeQ3 + advanceTaxQ4
+      if (cumulativeQ4 < q4Req) interest234C += Math.max(0, q4Req - cumulativeQ4) * 0.01 * 1
+
+      // 234B & 234A Temporal Engine
+      const AY = assessmentYear || "2024-25"
+      const ayYearMatch = AY.match(/^(\d{4})/)
+      const baseYear = ayYearMatch ? parseInt(ayYearMatch[1]) : 2024
+      
+      const filingDateStr = taxesPaidObj.actualFilingDate
+      if (filingDateStr) {
+          const filingDate = new Date(filingDateStr)
+          
+          const april1stOfAY = new Date(`${baseYear}-04-01`)
+          if (advanceTaxTotal < assessedTaxForPenalty * 0.90) {
+              if (filingDate > april1stOfAY) {
+                  let monthsFor234B = (filingDate.getFullYear() - april1stOfAY.getFullYear()) * 12 + (filingDate.getMonth() - april1stOfAY.getMonth()) + (filingDate.getDate() > april1stOfAY.getDate() ? 1 : 0)
+                  if (monthsFor234B === 0) monthsFor234B = 1
+                  interest234B = Math.max(0, assessedTaxForPenalty - advanceTaxTotal) * 0.01 * monthsFor234B
+              }
+          }
+          
+          const dueFilingDate = new Date(`${baseYear}-07-31`)
+          if (filingDate > dueFilingDate) {
+              let monthsFor234A = (filingDate.getFullYear() - dueFilingDate.getFullYear()) * 12 + (filingDate.getMonth() - dueFilingDate.getMonth()) + (filingDate.getDate() > dueFilingDate.getDate() ? 1 : 0)
+              if (monthsFor234A === 0) monthsFor234A = 1
+              interest234A = Math.max(0, totalTaxLiability - tdsPaid - advanceTaxTotal) * 0.01 * monthsFor234A
+          }
+      } else {
+         // Fallback if Date is omitted
+         if (advanceTaxTotal < assessedTaxForPenalty * 0.90) {
+             interest234B = Math.round(Math.max(0, assessedTaxForPenalty - advanceTaxTotal) * 0.01 * 4) // Approx up to July 31
+         }
+      }
+  }
+
+  interest234A = Math.round(interest234A)
+  interest234B = Math.round(interest234B)
+  interest234C = Math.round(interest234C)
+  
+  const penalInterest = interest234A + interest234B + interest234C
+  const finalTaxPayableWithInterest = totalTaxLiability + penalInterest
+
+  const netTaxPayable = finalTaxPayableWithInterest - (tdsPaid + advanceTaxTotal + selfAssessmentTaxPaid)
 
   const results = {
     netSalary,
@@ -419,12 +542,23 @@ export const computeTax = (data) => {
     cess,
     totalTaxLiability,
     tdsPaid,
-    advanceTaxPaid,
+    advanceTaxPaid: advanceTaxTotal,
     selfAssessmentTaxPaid,
+    interest234A,
+    interest234B,
+    interest234C,
+    penalInterest,
+    finalTaxPayableWithInterest,
     netTaxPayable,
     taxBreakup,
     specialTaxBreakup,
-    presumptiveIncome
+    presumptiveIncome,
+    carryForwardLosses: {
+      houseProperty: housePropertyCarryForward,
+      business: businessCarryForward,
+      stcl: remainingSTCL,
+      ltcl: remainingLTCL
+    }
   }
 
   // Ensure fully rounded integer figures across all generated reports

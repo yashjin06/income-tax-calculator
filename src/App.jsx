@@ -20,7 +20,6 @@ import RegimeComparison from './components/RegimeComparison'
 import GuidedMode from './components/GuidedMode'
 import { generatePDF } from './exports/pdfExport'
 import { generateWord } from './exports/wordExport'
-import { generateItrJson } from './exports/itrJsonExport'
 import './App.css'
 
 function App() {
@@ -293,11 +292,6 @@ function App() {
              <button className="btn btn-primary" onClick={() => generatePDF(taxData)}>
                <Download size={16} />
                Export PDF
-             </button>
-
-             <button className="btn btn-primary" onClick={() => generateItrJson(taxData)} style={{ background: 'var(--success)', border: 'none', color: '#fff' }}>
-               <Download size={16} />
-               Export ITR JSON
              </button>
           </div>
         </header>

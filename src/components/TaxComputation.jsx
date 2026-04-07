@@ -134,18 +134,24 @@ const TaxComputation = ({ data }) => {
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span>3. Profits and Gains of Business/Profession</span>
-              <span style={{ fontWeight: 500 }}>₹ {(results.netPGBP + (results.netVDA || 0)).toLocaleString('en-IN')}</span>
+              <span style={{ fontWeight: 500 }}>₹ {(results.netPGBP + (data.crypto?.treatAsPGBP ? (results.netVDA || 0) : 0)).toLocaleString('en-IN')}</span>
             </div>
-            {results.netVDA > 0 && (
+            {data.crypto?.treatAsPGBP && results.netVDA > 0 && (
                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem', color: 'var(--text-muted)' }}>
                   <span style={{ paddingLeft: '1rem' }}>∟ incl. VDA (Crypto) Income</span>
                   <span>₹ {results.netVDA.toLocaleString('en-IN')}</span>
                </div>
             )}
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span>4. Capital Gains (Short & Long Term)</span>
-              <span style={{ fontWeight: 500 }}>₹ {(results.stcg + results.ltcg).toLocaleString('en-IN')}</span>
+              <span>4. Capital Gains { !data.crypto?.treatAsPGBP ? '(incl. VDA/Crypto)' : '(Short & Long Term)' }</span>
+              <span style={{ fontWeight: 500 }}>₹ {(results.stcg + results.ltcg + (!data.crypto?.treatAsPGBP ? (results.netVDA || 0) : 0)).toLocaleString('en-IN')}</span>
             </div>
+            {!data.crypto?.treatAsPGBP && results.netVDA > 0 && (
+               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem', color: 'var(--text-muted)' }}>
+                  <span style={{ paddingLeft: '1rem' }}>∟ incl. VDA (Crypto) Income</span>
+                  <span>₹ {results.netVDA.toLocaleString('en-IN')}</span>
+               </div>
+            )}
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span>5. Income from Other Sources</span>
               <span style={{ fontWeight: 500 }}>₹ {results.netOtherSources.toLocaleString('en-IN')}</span>
@@ -203,9 +209,36 @@ const TaxComputation = ({ data }) => {
               <span style={{ fontWeight: 500, whiteSpace: 'nowrap', flexShrink: 0 }}>₹ {Math.round(results.cess).toLocaleString('en-IN')}</span>
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1rem', borderTop: '2px solid var(--primary)', fontWeight: 'bold', fontSize: '1.5rem', color: 'var(--dark)', background: 'var(--row-highlight-bg)', borderRadius: 'var(--radius-md)', padding: '1rem', boxShadow: 'var(--shadow-sm)', alignItems: 'flex-start' }}>
-              <span style={{ flex: 1, paddingRight: '1rem' }}>Net Tax Payable</span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '0.5rem', paddingTop: '0.5rem', borderTop: '1px dashed rgba(79, 70, 229, 0.3)', alignItems: 'flex-start', fontWeight: 600 }}>
+              <span style={{ flex: 1, paddingRight: '1rem' }}>Total Tax Liability</span>
               <span style={{ whiteSpace: 'nowrap', flexShrink: 0 }}>₹ {Math.round(results.totalTaxLiability).toLocaleString('en-IN')}</span>
+            </div>
+
+            {results.penalInterest > 0 && (
+               <>
+                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', color: 'var(--danger)', marginTop: '0.5rem' }}>
+                   <span style={{ flex: 1, paddingRight: '1rem' }}>Add: Penal Interest (Sec 234A/B/C)</span>
+                   <span style={{ fontWeight: 500, whiteSpace: 'nowrap', flexShrink: 0 }}>₹ {Math.round(results.penalInterest).toLocaleString('en-IN')}</span>
+                 </div>
+                 {results.interest234A > 0 && <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', paddingLeft: '1rem' }}>∟ Sec 234A (Late Filing): ₹ {Math.round(results.interest234A).toLocaleString('en-IN')}</div>}
+                 {results.interest234B > 0 && <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', paddingLeft: '1rem' }}>∟ Sec 234B (Advance Tax Default): ₹ {Math.round(results.interest234B).toLocaleString('en-IN')}</div>}
+                 {results.interest234C > 0 && <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', paddingLeft: '1rem' }}>∟ Sec 234C (Installment Deferment): ₹ {Math.round(results.interest234C).toLocaleString('en-IN')}</div>}
+               </>
+            )}
+
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1rem', borderTop: '2px solid var(--primary)', fontWeight: 'bold', fontSize: '1.25rem', color: 'var(--dark)', background: 'var(--row-highlight-bg)', borderRadius: 'var(--radius-md)', padding: '1rem', boxShadow: 'var(--shadow-sm)', alignItems: 'flex-start' }}>
+              <span style={{ flex: 1, paddingRight: '1rem' }}>Total Payable (Incl. Interest)</span>
+              <span style={{ whiteSpace: 'nowrap', flexShrink: 0 }}>₹ {Math.round(results.finalTaxPayableWithInterest || results.totalTaxLiability).toLocaleString('en-IN')}</span>
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginTop: '1rem' }}>
+              <span style={{ flex: 1, paddingRight: '1rem', color: 'var(--success)' }}>Less: Prepaid Taxes (TDS / Advance / Self)</span>
+              <span style={{ fontWeight: 500, whiteSpace: 'nowrap', flexShrink: 0, color: 'var(--success)' }}>(₹ {Math.round((results.tdsPaid || 0) + (results.advanceTaxPaid || 0) + (results.selfAssessmentTaxPaid || 0)).toLocaleString('en-IN')})</span>
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1rem', borderTop: '2px dashed var(--danger)', fontWeight: 'bold', fontSize: '1.5rem', color: results.netTaxPayable > 0 ? 'var(--danger)' : 'var(--success)', alignItems: 'flex-start', paddingTop: '1rem' }}>
+              <span style={{ flex: 1, paddingRight: '1rem' }}>{results.netTaxPayable < 0 ? 'Tax Refund Due' : 'Balance Tax Payable'}</span>
+              <span style={{ whiteSpace: 'nowrap', flexShrink: 0 }}>₹ {Math.abs(Math.round(results.netTaxPayable)).toLocaleString('en-IN')}</span>
             </div>
           </div>
         </div>

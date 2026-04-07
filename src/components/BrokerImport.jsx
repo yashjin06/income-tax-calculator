@@ -213,7 +213,7 @@ const BrokerImport = ({ data, updateData }) => {
         {fileState === 'parsing' && (
           <div className="mt-4 p-4 text-center fade-in">
             <span className="loading-spinner" style={{ display: 'inline-block', width: '20px', height: '20px', border: '2px solid var(--primary)', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></span>
-            <span style={{ marginLeft: '0.75rem' }}>Parsing workbook locally...</span>
+            <span style={{ marginLeft: '0.75rem' }}>Parsing workbook...</span>
           </div>
         )}
 

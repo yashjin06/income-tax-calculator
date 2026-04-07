@@ -243,17 +243,6 @@ const PersonalInfo = ({ data, updateData }) => {
               onChange={handleChange} 
             />
           </div>
-          <div className="input-group" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '1.5rem' }}>
-            <input 
-              type="checkbox" 
-              id="isPrimaryAccount" 
-              name="isPrimaryAccount" 
-              style={{ width: '20px', height: '20px' }}
-              checked={data?.personal?.isPrimaryAccount !== false} 
-              onChange={(e) => updateData({ ...data, personal: { ...data.personal, isPrimaryAccount: e.target.checked } })} 
-            />
-            <label htmlFor="isPrimaryAccount" className="font-bold cursor-pointer" style={{ userSelect: 'none' }}>Select for Refund Claim?</label>
-          </div>
         </div>
       </div>
     </div>
