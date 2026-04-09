@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import CurrencyInput from './CurrencyInput'
 
 const Deductions = ({ data, updateData }) => {
   const ded = data.deductions || {
@@ -77,29 +78,29 @@ const Deductions = ({ data, updateData }) => {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
           <div className="input-group">
             <label className="input-label">Sec 80C (LIC, PPF, EPF, ELSS, etc.)</label>
-            <input type="number" name="sec80c" className="input-field" value={ded.sec80c || ''} onChange={handleChange} placeholder="0" disabled={isNewRegime} />
+            <CurrencyInput name="sec80c" className="input-field" value={ded.sec80c || ''} onChange={handleChange} placeholder="0" disabled={isNewRegime} />
           </div>
           <div className="input-group">
             <label className="input-label">Sec 80CCC (Annuity Plan of LIC or other insurer)</label>
-            <input type="number" name="sec80ccc" className="input-field" value={ded.sec80ccc || ''} onChange={handleChange} placeholder="0" disabled={isNewRegime} />
+            <CurrencyInput name="sec80ccc" className="input-field" value={ded.sec80ccc || ''} onChange={handleChange} placeholder="0" disabled={isNewRegime} />
           </div>
           <div className="input-group">
             <label className="input-label">Sec 80CCD(1) (NPS Contribution - Employee)</label>
-            <input type="number" name="sec80ccd1" className="input-field" value={ded.sec80ccd1 || ''} onChange={handleChange} placeholder="0" disabled={isNewRegime} />
+            <CurrencyInput name="sec80ccd1" className="input-field" value={ded.sec80ccd1 || ''} onChange={handleChange} placeholder="0" disabled={isNewRegime} />
           </div>
           <div className="input-group">
             <label className="input-label">Sec 80CCD(1B) (NPS Contribution - Additional)</label>
-            <input type="number" name="sec80ccd1b" className="input-field" value={ded.sec80ccd1b || ''} onChange={handleChange} placeholder="0" disabled={isNewRegime} />
+            <CurrencyInput name="sec80ccd1b" className="input-field" value={ded.sec80ccd1b || ''} onChange={handleChange} placeholder="0" disabled={isNewRegime} />
             <p style={{fontSize: '0.75rem', marginTop: '0.25rem', color: 'var(--text-muted)'}}>Max separate allowance ₹50,000</p>
           </div>
           <div className="input-group">
             <label className="input-label" style={{ color: isNewRegime ? 'var(--dark)' : 'var(--text-main)', fontWeight: isNewRegime ? 'bold' : 'normal' }}>Sec 80CCD(2) (NPS Contribution - Employer)</label>
-            <input type="number" name="sec80ccd2" className="input-field" value={ded.sec80ccd2 || ''} onChange={handleChange} placeholder="0" style={{ borderColor: isNewRegime ? 'var(--primary)' : 'var(--input-border)' }} />
+            <CurrencyInput name="sec80ccd2" className="input-field" value={ded.sec80ccd2 || ''} onChange={handleChange} placeholder="0" style={{ borderColor: isNewRegime ? 'var(--primary)' : 'var(--input-border)' }} />
             <p style={{fontSize: '0.75rem', marginTop: '0.25rem', color: isNewRegime ? 'var(--primary)' : 'var(--text-muted)'}}>Allowed under New Tax Regime!</p>
           </div>
           <div className="input-group">
             <label className="input-label" style={{ color: isNewRegime ? 'var(--dark)' : 'var(--text-main)', fontWeight: isNewRegime ? 'bold' : 'normal' }}>Sec 80CCH (Agniveer Corpus Fund)</label>
-            <input type="number" name="sec80cch" className="input-field" value={ded.sec80cch || ''} onChange={handleChange} placeholder="0" style={{ borderColor: isNewRegime ? 'var(--primary)' : 'var(--input-border)' }} />
+            <CurrencyInput name="sec80cch" className="input-field" value={ded.sec80cch || ''} onChange={handleChange} placeholder="0" style={{ borderColor: isNewRegime ? 'var(--primary)' : 'var(--input-border)' }} />
             <p style={{fontSize: '0.75rem', marginTop: '0.25rem', color: isNewRegime ? 'var(--primary)' : 'var(--text-muted)'}}>Allowed under New Tax Regime!</p>
           </div>
         </div>
@@ -111,34 +112,34 @@ const Deductions = ({ data, updateData }) => {
           
           <div className="input-group">
             <label className="input-label">Sec 80D (Health Insurance Premium)</label>
-            <input type="number" name="sec80d" className="input-field" value={ded.sec80d || ''} onChange={handleChange} placeholder="0" disabled={isNewRegime} />
+            <CurrencyInput name="sec80d" className="input-field" value={ded.sec80d || ''} onChange={handleChange} placeholder="0" disabled={isNewRegime} />
           </div>
 
           <div className="input-group">
             <label className="input-label">Sec 80E (Interest on Education Loan)</label>
-            <input type="number" name="sec80e" className="input-field" value={ded.sec80e || ''} onChange={handleChange} placeholder="0" disabled={isNewRegime} />
+            <CurrencyInput name="sec80e" className="input-field" value={ded.sec80e || ''} onChange={handleChange} placeholder="0" disabled={isNewRegime} />
           </div>
 
           <div className="input-group">
             <label className="input-label">Sec 80G (Donations to Charitable Funds)</label>
-            <input type="number" name="sec80g" className="input-field" value={ded.sec80g || ''} onChange={handleChange} placeholder="0" disabled={isNewRegime} />
+            <CurrencyInput name="sec80g" className="input-field" value={ded.sec80g || ''} onChange={handleChange} placeholder="0" disabled={isNewRegime} />
           </div>
 
           <div className="input-group">
             <label className="input-label">Sec 80TTA (Interest on Savings Account)</label>
-            <input type="number" name="sec80tta" className="input-field" value={ded.sec80tta || ''} onChange={handleChange} placeholder="0" disabled={isNewRegime} />
+            <CurrencyInput name="sec80tta" className="input-field" value={ded.sec80tta || ''} onChange={handleChange} placeholder="0" disabled={isNewRegime} />
             <p style={{fontSize: '0.75rem', marginTop: '0.25rem', color: 'var(--text-muted)'}}>Max ₹10,000, Not for Sen. Citizens</p>
           </div>
 
           <div className="input-group">
             <label className="input-label">Sec 80TTB (Interest on Deposits - Sen. Citizens)</label>
-            <input type="number" name="sec80ttb" className="input-field" value={ded.sec80ttb || ''} onChange={handleChange} placeholder="0" disabled={isNewRegime} />
+            <CurrencyInput name="sec80ttb" className="input-field" value={ded.sec80ttb || ''} onChange={handleChange} placeholder="0" disabled={isNewRegime} />
             <p style={{fontSize: '0.75rem', marginTop: '0.25rem', color: 'var(--text-muted)'}}>Max ₹50,000</p>
           </div>
 
           <div className="input-group">
             <label className="input-label">Other Specific Deductions (80DD, 80DDB, 80U etc.)</label>
-            <input type="number" name="otherDeductions" className="input-field" value={ded.otherDeductions || ''} onChange={handleChange} placeholder="0" disabled={isNewRegime} />
+            <CurrencyInput name="otherDeductions" className="input-field" value={ded.otherDeductions || ''} onChange={handleChange} placeholder="0" disabled={isNewRegime} />
           </div>
 
         </div>

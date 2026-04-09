@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Calculator, ArrowRight, CornerDownRight } from 'lucide-react'
+import CurrencyInput from './CurrencyInput'
 
 const defaultCiiTable = {
   '2001-02': 100, '2002-03': 105, '2003-04': 109, '2004-05': 113, '2005-06': 117,
@@ -201,7 +202,7 @@ const CapitalGains = ({ data, updateData }) => {
             </div>
             <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem', alignItems: 'center' }}>
                <input type="text" className="input-field" placeholder="Year (e.g. 2026-27)" id="newCiiYear" style={{ maxWidth: '150px' }} />
-               <input type="number" className="input-field" placeholder="CII Value" id="newCiiValue" style={{ maxWidth: '150px' }} />
+               <CurrencyInput className="input-field" placeholder="CII Value" id="newCiiValue" style={{ maxWidth: '150px' }} />
                <button className="btn btn-primary btn-sm" onClick={() => {
                   let y = document.getElementById('newCiiYear').value
                   let v = document.getElementById('newCiiValue').value
@@ -246,19 +247,19 @@ const CapitalGains = ({ data, updateData }) => {
               )}
               <div className="input-group">
                 <label className="input-label">Sale Consideration (₹)</label>
-                <input type="number" className="input-field" name="sale" value={propCalc.sale} onChange={handlePropChange} placeholder="0" />
+                <CurrencyInput className="input-field" name="sale" value={propCalc.sale} onChange={handlePropChange} placeholder="0" />
               </div>
               <div className="input-group">
                 <label className="input-label">Expenses on Transfer (₹)</label>
-                <input type="number" className="input-field" name="expenses" value={propCalc.expenses} onChange={handlePropChange} placeholder="Brokerage, etc" />
+                <CurrencyInput className="input-field" name="expenses" value={propCalc.expenses} onChange={handlePropChange} placeholder="Brokerage, etc" />
               </div>
               <div className="input-group">
                 <label className="input-label">Cost of Acquisition (₹)</label>
-                <input type="number" className="input-field" name="cost" value={propCalc.cost} onChange={handlePropChange} placeholder="0" />
+                <CurrencyInput className="input-field" name="cost" value={propCalc.cost} onChange={handlePropChange} placeholder="0" />
               </div>
               <div className="input-group">
                 <label className="input-label">Cost of Improvement (₹)</label>
-                <input type="number" className="input-field" name="improvementCost" value={propCalc.improvementCost} onChange={handlePropChange} placeholder="0" />
+                <CurrencyInput className="input-field" name="improvementCost" value={propCalc.improvementCost} onChange={handlePropChange} placeholder="0" />
               </div>
             </div>
             
@@ -266,15 +267,15 @@ const CapitalGains = ({ data, updateData }) => {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.25rem', marginBottom: '1.5rem' }}>
                 <div className="input-group">
                   <label className="input-label">Sec 54 (New House) (₹)</label>
-                  <input type="number" className="input-field" name="ext_54" value={propCalc.ext_54} onChange={handlePropChange} placeholder="0" />
+                  <CurrencyInput className="input-field" name="ext_54" value={propCalc.ext_54} onChange={handlePropChange} placeholder="0" />
                 </div>
                 <div className="input-group">
                   <label className="input-label">Sec 54EC (Bonds) (₹)</label>
-                  <input type="number" className="input-field" name="ext_54EC" value={propCalc.ext_54EC} onChange={handlePropChange} placeholder="0" />
+                  <CurrencyInput className="input-field" name="ext_54EC" value={propCalc.ext_54EC} onChange={handlePropChange} placeholder="0" />
                 </div>
                 <div className="input-group">
                   <label className="input-label">Sec 54F (₹)</label>
-                  <input type="number" className="input-field" name="ext_54F" value={propCalc.ext_54F} onChange={handlePropChange} placeholder="0" />
+                  <CurrencyInput className="input-field" name="ext_54F" value={propCalc.ext_54F} onChange={handlePropChange} placeholder="0" />
                 </div>
             </div>
 
@@ -362,15 +363,15 @@ const CapitalGains = ({ data, updateData }) => {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.25rem', marginBottom: '1.5rem' }}>
               <div className="input-group">
                 <label className="input-label">Actual Purchase Cost (₹)</label>
-                <input type="number" className="input-field" name="cost" value={gfCalc.cost} onChange={handleGfChange} />
+                <CurrencyInput className="input-field" name="cost" value={gfCalc.cost} onChange={handleGfChange} />
               </div>
               <div className="input-group">
                 <label className="input-label">Highest Price on 31 Jan 2018 (FMV) (₹)</label>
-                <input type="number" className="input-field" name="fmv" value={gfCalc.fmv} onChange={handleGfChange} />
+                <CurrencyInput className="input-field" name="fmv" value={gfCalc.fmv} onChange={handleGfChange} />
               </div>
               <div className="input-group">
                 <label className="input-label">Actual Sale Value (₹)</label>
-                <input type="number" className="input-field" name="sale" value={gfCalc.sale} onChange={handleGfChange} />
+                <CurrencyInput className="input-field" name="sale" value={gfCalc.sale} onChange={handleGfChange} />
               </div>
             </div>
             <button className="btn btn-primary" onClick={calculateGrandfathering}>Calculate Grandfathered Gain</button>
@@ -408,12 +409,12 @@ const CapitalGains = ({ data, updateData }) => {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
           <div className="input-group">
             <label className="input-label">STCG covered u/s 111A (Shares/Equity, Taxed @ 20%)</label>
-            <input type="number" name="stcg_20" className="input-field" value={cg.stcg_20 || ''} onChange={handleChange} placeholder="0" />
+            <CurrencyInput name="stcg_20" className="input-field" value={cg.stcg_20 || ''} onChange={handleChange} placeholder="0" />
             <p style={{fontSize: '0.75rem', marginTop: '0.25rem', color: 'var(--text-muted)'}}>STT Paid Equities/Units</p>
           </div>
           <div className="input-group">
             <label className="input-label">STCG Not covered u/s 111A (Normal Rates)</label>
-            <input type="number" name="stcg_normal" className="input-field" value={cg.stcg_normal || ''} onChange={handleChange} placeholder="0" />
+            <CurrencyInput name="stcg_normal" className="input-field" value={cg.stcg_normal || ''} onChange={handleChange} placeholder="0" />
             <p style={{fontSize: '0.75rem', marginTop: '0.25rem', color: 'var(--text-muted)'}}>Other assets (Real Estate, Gold, etc.)</p>
           </div>
         </div>
@@ -424,17 +425,17 @@ const CapitalGains = ({ data, updateData }) => {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
           <div className="input-group">
             <label className="input-label">LTCG Equity u/s 112A (Taxed @ 12.5%)</label>
-            <input type="number" name="ltcg_125_equity" className="input-field" value={cg.ltcg_125_equity || ''} onChange={handleChange} placeholder="0" />
+            <CurrencyInput name="ltcg_125_equity" className="input-field" value={cg.ltcg_125_equity || ''} onChange={handleChange} placeholder="0" />
             <p style={{fontSize: '0.75rem', marginTop: '0.25rem', color: 'var(--text-muted)'}}>STT Paid Equities/Units (Eligible for 1.25L Exemption)</p>
           </div>
           <div className="input-group">
             <label className="input-label">LTCG Other Assets (Flat 12.5% without indexation)</label>
-            <input type="number" name="ltcg_125_other" className="input-field" value={cg.ltcg_125_other || ''} onChange={handleChange} placeholder="0" />
+            <CurrencyInput name="ltcg_125_other" className="input-field" value={cg.ltcg_125_other || ''} onChange={handleChange} placeholder="0" />
             <p style={{fontSize: '0.75rem', marginTop: '0.25rem', color: 'var(--text-muted)'}}>Real Estate bought on/after 23 Jul 2024, Unlisted Shares, etc.</p>
           </div>
           <div className="input-group">
             <label className="input-label">LTCG Property (Option @ 20% with Indexation)</label>
-            <input type="number" name="ltcg_20" className="input-field" value={cg.ltcg_20 || ''} onChange={handleChange} placeholder="0" />
+            <CurrencyInput name="ltcg_20" className="input-field" value={cg.ltcg_20 || ''} onChange={handleChange} placeholder="0" />
             <p style={{fontSize: '0.75rem', marginTop: '0.25rem', color: 'var(--text-muted)'}}>Only for Property bought before 23 Jul 2024 if chosen</p>
           </div>
         </div>

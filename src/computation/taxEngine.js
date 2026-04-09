@@ -7,7 +7,7 @@ export const computeTax = (data) => {
   const maxStandardDeduction = (isNewRegime && isLatestBudget) ? 75000 : 50000
 
   // 1. Income from Salary
-  const grossSalary = (parseFloat(salary.basic) || 0) + (parseFloat(salary.da) || 0) + (parseFloat(salary.hra) || 0) + (parseFloat(salary.lta) || 0) + (parseFloat(salary.otherAllowances) || 0) + (parseFloat(salary.perquisites) || 0) + (parseFloat(salary.profitInLieu) || 0)
+  const grossSalary = (parseFloat(salary.basic) || 0) + (parseFloat(salary.da) || 0) + (parseFloat(salary.hra) || 0) + (parseFloat(salary.lta) || 0) + (parseFloat(salary.otherAllowances) || 0) + (parseFloat(salary.commutedPension) || 0) + (parseFloat(salary.perquisites) || 0) + (parseFloat(salary.profitInLieu) || 0)
   const stdDeduction = Math.min(maxStandardDeduction, grossSalary)
   const pt = parseFloat(salary.pt) || 0
   const entAllow = parseFloat(salary.entAllow) || 0
@@ -155,7 +155,12 @@ export const computeTax = (data) => {
   const agriIncome = parseFloat(os.agriculturalIncome) || 0
   
   const familyPension = parseFloat(os.familyPension) || 0
-  const familyPensionDed = Math.min(familyPension / 3, 15000)
+  
+  let maxFamilyPensionDed = 15000
+  if (assessmentYear === '2025-26' || assessmentYear === '2026-27') {
+      maxFamilyPensionDed = 25000
+  }
+  const familyPensionDed = Math.min(familyPension / 3, maxFamilyPensionDed)
   const netFamilyPension = familyPension - familyPensionDed
 
   let normalOS = (parseFloat(os.savingsInterest) || 0) + (parseFloat(os.fdInterest) || 0) + dividend + (parseFloat(os.gifts) || 0) + netFamilyPension + (parseFloat(os.otherIncome) || 0) - (parseFloat(os.expenses) || 0)

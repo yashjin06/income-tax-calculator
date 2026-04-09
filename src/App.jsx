@@ -277,20 +277,20 @@ function App() {
             <p>Assessment Year: {taxData.personal.assessmentYear} | Assessee: {taxData.personal.name || 'Not provided'}</p>
           </div>
           <div style={{display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap'}}>
-             <button className="btn btn-secondary" onClick={toggleDarkMode} style={{ padding: '0.625rem', borderRadius: '50%' }} title="Toggle Dark Mode">
-               {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
+             <button className="btn btn-secondary" onClick={toggleDarkMode} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '40px', height: '40px', padding: 0, borderRadius: '50%' }} title="Toggle Dark Mode">
+               {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
              </button>
-             <button className="btn btn-primary" onClick={() => setIsGuidedMode(true)} style={{ background: '#ec4899', border: 'none' }}>
-               <PlayCircle size={16} />
+             <button className="btn btn-primary" onClick={() => setIsGuidedMode(true)} style={{ background: '#ec4899', border: 'none', display: 'flex', alignItems: 'center', height: '40px' }}>
+               <PlayCircle size={16} style={{marginRight: '6px'}}/>
                Guided Setup
              </button>
-             <button className="btn btn-secondary" onClick={() => generateWord(taxData)}>
-               <FileText size={16} />
+             <button className="btn btn-secondary" onClick={() => generateWord(taxData)} style={{ display: 'flex', alignItems: 'center', height: '40px' }}>
+               <FileText size={16} style={{marginRight: '6px'}}/>
                Export Word
              </button>
 
-             <button className="btn btn-primary" onClick={() => generatePDF(taxData)}>
-               <Download size={16} />
+             <button className="btn btn-primary" onClick={() => generatePDF(taxData)} style={{ display: 'flex', alignItems: 'center', height: '40px' }}>
+               <Download size={16} style={{marginRight: '6px'}}/>
                Export PDF
              </button>
           </div>

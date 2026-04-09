@@ -1,5 +1,6 @@
 import React from 'react'
 import { Plus, Trash2, Shield } from 'lucide-react'
+import CurrencyInput from './CurrencyInput'
 
 const exemptSections = [
   { code: '10(1)', label: 'Sec 10(1) - Agricultural Income' },
@@ -84,7 +85,7 @@ const ExemptIncome = ({ data, updateData }) => {
                      <input type="text" className="input-field" style={{ marginBottom: 0 }} placeholder="Optional Remark" value={entry.description || ''} onChange={(e) => updateEntry(index, 'description', e.target.value)} />
                   </div>
                   <div style={{ flex: '0 0 150px' }}>
-                     <input type="number" className="input-field" style={{ marginBottom: 0 }} placeholder="0" value={entry.amount || ''} onChange={(e) => updateEntry(index, 'amount', e.target.value)} />
+                     <CurrencyInput className="input-field" style={{ marginBottom: 0 }} placeholder="0" value={entry.amount || ''} onChange={(e) => updateEntry(index, 'amount', e.target.value)} />
                   </div>
                   <div style={{ flex: '0 0 50px', display: 'flex', justifyContent: 'center' }}>
                     <button className="btn btn-danger" style={{ padding: '0.5rem' }} onClick={() => removeEntry(index)} title="Remove Entry">

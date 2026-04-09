@@ -27,10 +27,10 @@ const IncomeSummary = ({ data }) => {
          {/* 1. Profile */}
          <h3 style={{ fontSize: '1.125rem', fontWeight: 'bold', marginBottom: '0.75rem', color: 'var(--text-main)' }}>Assessee Profile</h3>
          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem', background: 'var(--glass-bg)', padding: '1.5rem', borderRadius: 'var(--radius-md)', marginBottom: '2.5rem', border: '1px dashed var(--primary)' }}>
-            <div style={{ fontSize: '1.05rem' }}><span style={{ color: 'var(--text-muted)' }}>Name:</span> <strong style={{ color: 'var(--text-main)' }}>{data.personal?.name || '________________'}</strong></div>
-            <div style={{ fontSize: '1.05rem' }}><span style={{ color: 'var(--text-muted)' }}>PAN:</span> <strong style={{ color: 'var(--text-main)' }}>{(data.personal?.pan || '__________').toUpperCase()}</strong></div>
+            <div style={{ fontSize: '1.05rem' }}><span style={{ color: 'var(--text-muted)' }}>Name:</span> <strong style={{ color: 'var(--text-main)' }}>{data.personal?.name || <span style={{ opacity: 0.5, fontStyle: 'italic', fontWeight: 'normal' }}>Not Specified</span>}</strong></div>
+            <div style={{ fontSize: '1.05rem' }}><span style={{ color: 'var(--text-muted)' }}>PAN:</span> <strong style={{ color: 'var(--text-main)' }}>{data.personal?.pan ? data.personal.pan.toUpperCase() : <span style={{ opacity: 0.5, fontStyle: 'italic', fontWeight: 'normal' }}>Not Specified</span>}</strong></div>
             <div style={{ fontSize: '1.05rem' }}><span style={{ color: 'var(--text-muted)' }}>Status:</span> <strong style={{ color: 'var(--text-main)' }}>{data.personal?.category || 'Individual'}</strong></div>
-            <div style={{ fontSize: '1.05rem' }}><span style={{ color: 'var(--text-muted)' }}>D.O.B:</span> <strong style={{ color: 'var(--text-main)' }}>{data.personal?.dob || 'DD/MM/YYYY'}</strong></div>
+            <div style={{ fontSize: '1.05rem' }}><span style={{ color: 'var(--text-muted)' }}>D.O.B:</span> <strong style={{ color: 'var(--text-main)' }}>{data.personal?.dob || <span style={{ opacity: 0.5, fontStyle: 'italic', fontWeight: 'normal' }}>Not Specified</span>}</strong></div>
          </div>
 
          {/* 2. Computation of Income */}

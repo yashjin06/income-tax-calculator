@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Activity, ArrowRight, Info } from 'lucide-react'
 import DatePicker from 'react-datepicker'
+import CurrencyInput from './CurrencyInput'
 import 'react-datepicker/dist/react-datepicker.css'
 
 const CryptoVDA = ({ data, updateData }) => {
@@ -113,7 +114,7 @@ const CryptoVDA = ({ data, updateData }) => {
 
         <div className="input-group">
           <label className="input-label">Total Taxable VDA/Crypto Income (₹)</label>
-          <input type="number" className="input-field" value={vda.totalTaxableGain || ''} onChange={handleManualOverride} placeholder="0" />
+          <CurrencyInput className="input-field" value={vda.totalTaxableGain || ''} onChange={handleManualOverride} placeholder="0" />
           <p style={{fontSize: '0.75rem', marginTop: '0.25rem', color: 'var(--text-muted)'}}>Enter a consolidated profit if you don't want to list individual transactions.</p>
         </div>
       </div>
@@ -148,11 +149,11 @@ const CryptoVDA = ({ data, updateData }) => {
           </div>
           <div className="input-group">
             <label className="input-label">Sale Consideration (₹)</label>
-            <input type="number" className="input-field" name="saleValue" value={tradeForm.saleValue} onChange={handleChange} placeholder="0" />
+            <CurrencyInput className="input-field" name="saleValue" value={tradeForm.saleValue} onChange={handleChange} placeholder="0" />
           </div>
           <div className="input-group">
             <label className="input-label">Cost of Acquisition (₹)</label>
-            <input type="number" className="input-field" name="costOfAcq" value={tradeForm.costOfAcq} onChange={handleChange} placeholder="0" />
+            <CurrencyInput className="input-field" name="costOfAcq" value={tradeForm.costOfAcq} onChange={handleChange} placeholder="0" />
           </div>
         </div>
         <button className="btn btn-primary" onClick={addTrade} disabled={!tradeForm.assetName || !tradeForm.saleValue}>+ Add Transaction</button>

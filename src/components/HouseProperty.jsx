@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
+import CurrencyInput from './CurrencyInput'
 
 const HouseProperty = ({ data, updateData }) => {
+  const isNewRegime = data?.personal?.newRegime === 'yes'
   const [properties, setProperties] = useState(data.houseProperty || [])
   const [totalNetIncome, setTotalNetIncome] = useState(0)
 
@@ -128,18 +130,18 @@ const HouseProperty = ({ data, updateData }) => {
 
               <div className="input-group">
                 <label className="input-label">Your Ownership Share (%)</label>
-                <input type="number" className="input-field" value={prop.ownershipShare !== undefined ? prop.ownershipShare : 100} onChange={(e) => handleChange(prop.id, 'ownershipShare', e.target.value)} placeholder="100" min="0" max="100" />
+                <CurrencyInput className="input-field" value={prop.ownershipShare !== undefined ? prop.ownershipShare : 100} onChange={(e) => handleChange(prop.id, 'ownershipShare', e.target.value)} placeholder="100" min="0" max="100" />
               </div>
 
               {prop.type !== 'self-occupied' && (
                 <>
                   <div className="input-group">
                     <label className="input-label">Gross Annual Value (GAV)</label>
-                    <input type="number" className="input-field" value={prop.grossAnnualValue || ''} onChange={(e) => handleChange(prop.id, 'grossAnnualValue', e.target.value)} placeholder="0" />
+                    <CurrencyInput className="input-field" value={prop.grossAnnualValue || ''} onChange={(e) => handleChange(prop.id, 'grossAnnualValue', e.target.value)} placeholder="0" />
                   </div>
                   <div className="input-group">
                     <label className="input-label">Municipal Taxes Paid</label>
-                    <input type="number" className="input-field" value={prop.municipalTaxes || ''} onChange={(e) => handleChange(prop.id, 'municipalTaxes', e.target.value)} placeholder="0" />
+                    <CurrencyInput className="input-field" value={prop.municipalTaxes || ''} onChange={(e) => handleChange(prop.id, 'municipalTaxes', e.target.value)} placeholder="0" />
                   </div>
                   <div className="input-group">
                     <label className="input-label">Net Annual Value (NAV)</label>
@@ -154,13 +156,13 @@ const HouseProperty = ({ data, updateData }) => {
 
               <div className="input-group">
                 <label className="input-label">Interest on Borrowed Capital (u/s 24b)</label>
-                <input type="number" className="input-field" value={prop.interestOnLoan || ''} onChange={(e) => handleChange(prop.id, 'interestOnLoan', e.target.value)} placeholder="0" />
-                {prop.type === 'self-occupied' && <p style={{fontSize: '0.75rem', marginTop: '0.25rem', color: 'var(--text-muted)'}}>Max ₹2,000,000 allowance</p>}
+                <CurrencyInput className="input-field" value={prop.interestOnLoan || ''} onChange={(e) => handleChange(prop.id, 'interestOnLoan', e.target.value)} placeholder="0" disabled={isNewRegime && prop.type === 'self-occupied'} />
+                {prop.type === 'self-occupied' && <p style={{fontSize: '0.75rem', marginTop: '0.25rem', color: 'var(--text-muted)'}}>{isNewRegime ? <span style={{color: 'var(--danger)'}}>Not allowed under New Regime</span> : "Max ₹2,00,000 allowance"}</p>}
               </div>
 
               <div className="input-group">
                 <label className="input-label">Total Pre-construction Interest</label>
-                <input type="number" className="input-field" value={prop.totalPreConstructionInterest || ''} onChange={(e) => handleChange(prop.id, 'totalPreConstructionInterest', e.target.value)} placeholder="0" />
+                <CurrencyInput className="input-field" value={prop.totalPreConstructionInterest || ''} onChange={(e) => handleChange(prop.id, 'totalPreConstructionInterest', e.target.value)} placeholder="0" disabled={isNewRegime && prop.type === 'self-occupied'} />
                 <p style={{fontSize: '0.75rem', marginTop: '0.25rem', color: 'var(--text-muted)'}}>Auto-applies 1/5th deduction for this year</p>
               </div>
             </div>

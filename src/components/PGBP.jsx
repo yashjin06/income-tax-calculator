@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { FileText, PieChart, Layers, Settings, Calculator, AlertTriangle } from 'lucide-react'
+import CurrencyInput from './CurrencyInput'
 
 const businessCodes = [
   { code: '', label: 'Select a standard code...' },
@@ -200,28 +201,28 @@ const PGBP = ({ data, updateData }) => {
 
               {pgbp.presumptive.nature === '44AD' && (
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
-                  <div className="input-group"><label className="input-label">Digital Turnover (Gross Receipts via Banking - Min 6% Profit)</label><input type="number" className="input-field" value={pgbp.presumptive.turnoverDigital || ''} onChange={(e) => deepUpdate('presumptive', 'turnoverDigital', e.target.value)} /></div>
-                  <div className="input-group"><label className="input-label">Non-Digital Turnover (Cash/Other Receipts - Min 8% Profit)</label><input type="number" className="input-field" value={pgbp.presumptive.turnoverNonDigital || ''} onChange={(e) => deepUpdate('presumptive', 'turnoverNonDigital', e.target.value)} /></div>
-                  <div className="input-group"><label className="input-label">Declared Profit (Must be at least minimum threshold)</label><input type="number" className="input-field" value={pgbp.presumptive.declaredProfit44AD || ''} onChange={(e) => deepUpdate('presumptive', 'declaredProfit44AD', e.target.value)} /></div>
+                  <div className="input-group"><label className="input-label">Digital Turnover (Gross Receipts via Banking - Min 6% Profit)</label><CurrencyInput className="input-field" value={pgbp.presumptive.turnoverDigital || ''} onChange={(e) => deepUpdate('presumptive', 'turnoverDigital', e.target.value)} /></div>
+                  <div className="input-group"><label className="input-label">Non-Digital Turnover (Cash/Other Receipts - Min 8% Profit)</label><CurrencyInput className="input-field" value={pgbp.presumptive.turnoverNonDigital || ''} onChange={(e) => deepUpdate('presumptive', 'turnoverNonDigital', e.target.value)} /></div>
+                  <div className="input-group"><label className="input-label">Declared Profit (Must be at least minimum threshold)</label><CurrencyInput className="input-field" value={pgbp.presumptive.declaredProfit44AD || ''} onChange={(e) => deepUpdate('presumptive', 'declaredProfit44AD', e.target.value)} /></div>
                 </div>
               )}
 
               {pgbp.presumptive.nature === '44ADA' && (
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
-                  <div className="input-group"><label className="input-label">Gross Professional Receipts (Min 50% Profit)</label><input type="number" className="input-field" value={pgbp.presumptive.grossReceipts44ADA || ''} onChange={(e) => deepUpdate('presumptive', 'grossReceipts44ADA', e.target.value)} /></div>
-                  <div className="input-group"><label className="input-label">Declared Profit (Must be at least 50% of Receipts)</label><input type="number" className="input-field" value={pgbp.presumptive.declaredProfit44ADA || ''} onChange={(e) => deepUpdate('presumptive', 'declaredProfit44ADA', e.target.value)} /></div>
+                  <div className="input-group"><label className="input-label">Gross Professional Receipts (Min 50% Profit)</label><CurrencyInput className="input-field" value={pgbp.presumptive.grossReceipts44ADA || ''} onChange={(e) => deepUpdate('presumptive', 'grossReceipts44ADA', e.target.value)} /></div>
+                  <div className="input-group"><label className="input-label">Declared Profit (Must be at least 50% of Receipts)</label><CurrencyInput className="input-field" value={pgbp.presumptive.declaredProfit44ADA || ''} onChange={(e) => deepUpdate('presumptive', 'declaredProfit44ADA', e.target.value)} /></div>
                 </div>
               )}
 
               {pgbp.presumptive.nature === '44AE' && (
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
-                  <div className="input-group"><label className="input-label">No. of Heavy Goods Vehicles (Over 12MT)</label><input type="number" className="input-field" value={pgbp.presumptive.heavyVehicles || ''} onChange={(e) => deepUpdate('presumptive', 'heavyVehicles', e.target.value)} /></div>
-                  <div className="input-group"><label className="input-label">Total Tonnage of Heavy Vehicles</label><input type="number" className="input-field" value={pgbp.presumptive.heavyVehiclesTonnage || ''} onChange={(e) => deepUpdate('presumptive', 'heavyVehiclesTonnage', e.target.value)} /></div>
-                  <div className="input-group"><label className="input-label">Months Owned (Heavy)</label><input type="number" className="input-field" value={pgbp.presumptive.heavyVehiclesMonths || ''} onChange={(e) => deepUpdate('presumptive', 'heavyVehiclesMonths', e.target.value)} /></div>
+                  <div className="input-group"><label className="input-label">No. of Heavy Goods Vehicles (Over 12MT)</label><CurrencyInput className="input-field" value={pgbp.presumptive.heavyVehicles || ''} onChange={(e) => deepUpdate('presumptive', 'heavyVehicles', e.target.value)} /></div>
+                  <div className="input-group"><label className="input-label">Total Tonnage of Heavy Vehicles</label><CurrencyInput className="input-field" value={pgbp.presumptive.heavyVehiclesTonnage || ''} onChange={(e) => deepUpdate('presumptive', 'heavyVehiclesTonnage', e.target.value)} /></div>
+                  <div className="input-group"><label className="input-label">Months Owned (Heavy)</label><CurrencyInput className="input-field" value={pgbp.presumptive.heavyVehiclesMonths || ''} onChange={(e) => deepUpdate('presumptive', 'heavyVehiclesMonths', e.target.value)} /></div>
                   
-                  <div className="input-group"><label className="input-label">No. of Light Vehicles (Up to 12MT)</label><input type="number" className="input-field" value={pgbp.presumptive.lightVehicles || ''} onChange={(e) => deepUpdate('presumptive', 'lightVehicles', e.target.value)} /></div>
-                  <div className="input-group"><label className="input-label">Months Owned (Light)</label><input type="number" className="input-field" value={pgbp.presumptive.lightVehiclesMonths || ''} onChange={(e) => deepUpdate('presumptive', 'lightVehiclesMonths', e.target.value)} /></div>
-                  <div className="input-group"><label className="input-label">Declared Profit (Must be at least Threshold)</label><input type="number" className="input-field" value={pgbp.presumptive.declaredProfit44AE || ''} onChange={(e) => deepUpdate('presumptive', 'declaredProfit44AE', e.target.value)} /></div>
+                  <div className="input-group"><label className="input-label">No. of Light Vehicles (Up to 12MT)</label><CurrencyInput className="input-field" value={pgbp.presumptive.lightVehicles || ''} onChange={(e) => deepUpdate('presumptive', 'lightVehicles', e.target.value)} /></div>
+                  <div className="input-group"><label className="input-label">Months Owned (Light)</label><CurrencyInput className="input-field" value={pgbp.presumptive.lightVehiclesMonths || ''} onChange={(e) => deepUpdate('presumptive', 'lightVehiclesMonths', e.target.value)} /></div>
+                  <div className="input-group"><label className="input-label">Declared Profit (Must be at least Threshold)</label><CurrencyInput className="input-field" value={pgbp.presumptive.declaredProfit44AE || ''} onChange={(e) => deepUpdate('presumptive', 'declaredProfit44AE', e.target.value)} /></div>
                 </div>
               )}
             </div>
@@ -238,14 +239,14 @@ const PGBP = ({ data, updateData }) => {
             <div>
               <h4 style={{ marginBottom: '1rem', color: 'var(--primary)', borderBottom: '2px solid rgba(79, 70, 229, 0.2)', paddingBottom: '0.5rem', fontWeight: 'bold' }}>I. REVENUE</h4>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
-                <div className="input-group"><label className="input-label">Revenue from Operations (Sales/Gross Receipts)</label><input type="number" className="input-field" value={pgbp.pnl.revenueOperations || ''} onChange={(e) => deepUpdate('pnl', 'revenueOperations', e.target.value)} /></div>
+                <div className="input-group"><label className="input-label">Revenue from Operations (Sales/Gross Receipts)</label><CurrencyInput className="input-field" value={pgbp.pnl.revenueOperations || ''} onChange={(e) => deepUpdate('pnl', 'revenueOperations', e.target.value)} /></div>
               {(parseFloat(pgbp.pnl.revenueOperations) || 0) > 10000000 && (
                 <div style={{ padding: '0.75rem 1rem', background: 'rgba(245, 158, 11, 0.1)', color: 'var(--warning)', borderRadius: 'var(--radius-sm)', border: '1px solid rgba(245, 158, 11, 0.3)', marginTop: '0.5rem', fontSize: '0.9rem' }}>
                   <strong>⚠️ Statutory Audit Alert (Sec 44AB):</strong> Your gross receipts exceed ₹1 Crore. You may be liable for a Tax Audit by a Chartered Accountant unless your cash receipts are less than 5% of total receipts (in which case threshold is ₹10 Cr).
                 </div>
               )}
-                <div className="input-group"><label className="input-label">Other Income</label><input type="number" className="input-field" value={pgbp.pnl.otherIncome || ''} onChange={(e) => deepUpdate('pnl', 'otherIncome', e.target.value)} /></div>
-                <div className="input-group"><label className="input-label">Closing Stock (added to revenue side for tax computation)</label><input type="number" className="input-field" value={pgbp.pnl.closingStock || ''} onChange={(e) => deepUpdate('pnl', 'closingStock', e.target.value)} /></div>
+                <div className="input-group"><label className="input-label">Other Income</label><CurrencyInput className="input-field" value={pgbp.pnl.otherIncome || ''} onChange={(e) => deepUpdate('pnl', 'otherIncome', e.target.value)} /></div>
+                <div className="input-group"><label className="input-label">Closing Stock (added to revenue side for tax computation)</label><CurrencyInput className="input-field" value={pgbp.pnl.closingStock || ''} onChange={(e) => deepUpdate('pnl', 'closingStock', e.target.value)} /></div>
               </div>
               <div style={{ marginTop: '1rem', display: 'flex', justifyContent: 'flex-end', fontWeight: 'bold' }}>
                  Total Revenue: ₹ {((parseFloat(pgbp.pnl.revenueOperations) || 0) + (parseFloat(pgbp.pnl.otherIncome) || 0) + (parseFloat(pgbp.pnl.closingStock) || 0)).toLocaleString('en-IN')}
@@ -256,13 +257,13 @@ const PGBP = ({ data, updateData }) => {
             <div>
               <h4 style={{ marginBottom: '1rem', color: 'var(--danger)', borderBottom: '2px solid rgba(239, 68, 68, 0.2)', paddingBottom: '0.5rem', fontWeight: 'bold' }}>II. EXPENSES</h4>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
-                <div className="input-group"><label className="input-label">Opening Stock</label><input type="number" className="input-field" value={pgbp.pnl.openingStock || ''} onChange={(e) => deepUpdate('pnl', 'openingStock', e.target.value)} /></div>
-                <div className="input-group"><label className="input-label">Purchases of Stock-in-Trade / Raw Materials</label><input type="number" className="input-field" value={pgbp.pnl.purchases || ''} onChange={(e) => deepUpdate('pnl', 'purchases', e.target.value)} /></div>
-                <div className="input-group"><label className="input-label">Direct Expenses (Manufacturing/Trading)</label><input type="number" className="input-field" value={pgbp.pnl.directExpenses || ''} onChange={(e) => deepUpdate('pnl', 'directExpenses', e.target.value)} /></div>
-                <div className="input-group"><label className="input-label">Employee Benefits Expense (Salaries/Wages)</label><input type="number" className="input-field" value={pgbp.pnl.employeeBenefits || ''} onChange={(e) => deepUpdate('pnl', 'employeeBenefits', e.target.value)} /></div>
-                <div className="input-group"><label className="input-label">Finance Costs (Interest on Loans)</label><input type="number" className="input-field" value={pgbp.pnl.financeCosts || ''} onChange={(e) => deepUpdate('pnl', 'financeCosts', e.target.value)} /></div>
-                <div className="input-group"><label className="input-label">Depreciation and Amortization Expense</label><input type="number" className="input-field" value={pgbp.pnl.depreciation || ''} onChange={(e) => deepUpdate('pnl', 'depreciation', e.target.value)} /></div>
-                <div className="input-group"><label className="input-label">Other Expenses (Admin, Selling, Overheads)</label><input type="number" className="input-field" value={pgbp.pnl.otherExpenses || ''} onChange={(e) => deepUpdate('pnl', 'otherExpenses', e.target.value)} /></div>
+                <div className="input-group"><label className="input-label">Opening Stock</label><CurrencyInput className="input-field" value={pgbp.pnl.openingStock || ''} onChange={(e) => deepUpdate('pnl', 'openingStock', e.target.value)} /></div>
+                <div className="input-group"><label className="input-label">Purchases of Stock-in-Trade / Raw Materials</label><CurrencyInput className="input-field" value={pgbp.pnl.purchases || ''} onChange={(e) => deepUpdate('pnl', 'purchases', e.target.value)} /></div>
+                <div className="input-group"><label className="input-label">Direct Expenses (Manufacturing/Trading)</label><CurrencyInput className="input-field" value={pgbp.pnl.directExpenses || ''} onChange={(e) => deepUpdate('pnl', 'directExpenses', e.target.value)} /></div>
+                <div className="input-group"><label className="input-label">Employee Benefits Expense (Salaries/Wages)</label><CurrencyInput className="input-field" value={pgbp.pnl.employeeBenefits || ''} onChange={(e) => deepUpdate('pnl', 'employeeBenefits', e.target.value)} /></div>
+                <div className="input-group"><label className="input-label">Finance Costs (Interest on Loans)</label><CurrencyInput className="input-field" value={pgbp.pnl.financeCosts || ''} onChange={(e) => deepUpdate('pnl', 'financeCosts', e.target.value)} /></div>
+                <div className="input-group"><label className="input-label">Depreciation and Amortization Expense</label><CurrencyInput className="input-field" value={pgbp.pnl.depreciation || ''} onChange={(e) => deepUpdate('pnl', 'depreciation', e.target.value)} /></div>
+                <div className="input-group"><label className="input-label">Other Expenses (Admin, Selling, Overheads)</label><CurrencyInput className="input-field" value={pgbp.pnl.otherExpenses || ''} onChange={(e) => deepUpdate('pnl', 'otherExpenses', e.target.value)} /></div>
               </div>
               <div style={{ marginTop: '1rem', display: 'flex', justifyContent: 'flex-end', fontWeight: 'bold' }}>
                  Total Expenses: ₹ {((parseFloat(pgbp.pnl.openingStock) || 0) + (parseFloat(pgbp.pnl.purchases) || 0) + (parseFloat(pgbp.pnl.directExpenses) || 0) + (parseFloat(pgbp.pnl.employeeBenefits) || 0) + (parseFloat(pgbp.pnl.financeCosts) || 0) + (parseFloat(pgbp.pnl.depreciation) || 0) + (parseFloat(pgbp.pnl.otherExpenses) || 0)).toLocaleString('en-IN')}
@@ -288,22 +289,22 @@ const PGBP = ({ data, updateData }) => {
               
               <h5 style={{ fontWeight: 600, color: 'var(--text-muted)', marginBottom: '1rem', fontSize: '0.9rem', textTransform: 'uppercase' }}>1. Shareholders' Funds / Partners' Capital</h5>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', marginBottom: '1.5rem' }}>
-                <div className="input-group"><label className="input-label">Capital Account</label><input type="number" className="input-field" value={pgbp.balanceSheet.partnerCapital || ''} onChange={(e) => deepUpdate('balanceSheet', 'partnerCapital', e.target.value)} /></div>
-                <div className="input-group"><label className="input-label">Reserves and Surplus</label><input type="number" className="input-field" value={pgbp.balanceSheet.reservesSurplus || ''} onChange={(e) => deepUpdate('balanceSheet', 'reservesSurplus', e.target.value)} /></div>
+                <div className="input-group"><label className="input-label">Capital Account</label><CurrencyInput className="input-field" value={pgbp.balanceSheet.partnerCapital || ''} onChange={(e) => deepUpdate('balanceSheet', 'partnerCapital', e.target.value)} /></div>
+                <div className="input-group"><label className="input-label">Reserves and Surplus</label><CurrencyInput className="input-field" value={pgbp.balanceSheet.reservesSurplus || ''} onChange={(e) => deepUpdate('balanceSheet', 'reservesSurplus', e.target.value)} /></div>
               </div>
 
               <h5 style={{ fontWeight: 600, color: 'var(--text-muted)', marginBottom: '1rem', fontSize: '0.9rem', textTransform: 'uppercase' }}>2. Non-Current Liabilities</h5>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', marginBottom: '1.5rem' }}>
-                <div className="input-group"><label className="input-label">Long-Term Borrowings (Secured & Unsecured)</label><input type="number" className="input-field" value={pgbp.balanceSheet.longTermBorrowings || ''} onChange={(e) => deepUpdate('balanceSheet', 'longTermBorrowings', e.target.value)} /></div>
-                <div className="input-group"><label className="input-label">Other Long-Term Liabilities & Provisions</label><input type="number" className="input-field" value={pgbp.balanceSheet.otherLongTermLiab || ''} onChange={(e) => deepUpdate('balanceSheet', 'otherLongTermLiab', e.target.value)} /></div>
+                <div className="input-group"><label className="input-label">Long-Term Borrowings (Secured & Unsecured)</label><CurrencyInput className="input-field" value={pgbp.balanceSheet.longTermBorrowings || ''} onChange={(e) => deepUpdate('balanceSheet', 'longTermBorrowings', e.target.value)} /></div>
+                <div className="input-group"><label className="input-label">Other Long-Term Liabilities & Provisions</label><CurrencyInput className="input-field" value={pgbp.balanceSheet.otherLongTermLiab || ''} onChange={(e) => deepUpdate('balanceSheet', 'otherLongTermLiab', e.target.value)} /></div>
               </div>
 
               <h5 style={{ fontWeight: 600, color: 'var(--text-muted)', marginBottom: '1rem', fontSize: '0.9rem', textTransform: 'uppercase' }}>3. Current Liabilities</h5>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
-                <div className="input-group"><label className="input-label">Short-Term Borrowings (Bank OD, etc)</label><input type="number" className="input-field" value={pgbp.balanceSheet.shortTermBorrowings || ''} onChange={(e) => deepUpdate('balanceSheet', 'shortTermBorrowings', e.target.value)} /></div>
-                <div className="input-group"><label className="input-label">Trade Payables (Sundry Creditors)</label><input type="number" className="input-field" value={pgbp.balanceSheet.tradePayables || ''} onChange={(e) => deepUpdate('balanceSheet', 'tradePayables', e.target.value)} /></div>
-                <div className="input-group"><label className="input-label">Other Current Liabilities</label><input type="number" className="input-field" value={pgbp.balanceSheet.otherCurrentLiab || ''} onChange={(e) => deepUpdate('balanceSheet', 'otherCurrentLiab', e.target.value)} /></div>
-                <div className="input-group"><label className="input-label">Short-Term Provisions</label><input type="number" className="input-field" value={pgbp.balanceSheet.shortTermProvisions || ''} onChange={(e) => deepUpdate('balanceSheet', 'shortTermProvisions', e.target.value)} /></div>
+                <div className="input-group"><label className="input-label">Short-Term Borrowings (Bank OD, etc)</label><CurrencyInput className="input-field" value={pgbp.balanceSheet.shortTermBorrowings || ''} onChange={(e) => deepUpdate('balanceSheet', 'shortTermBorrowings', e.target.value)} /></div>
+                <div className="input-group"><label className="input-label">Trade Payables (Sundry Creditors)</label><CurrencyInput className="input-field" value={pgbp.balanceSheet.tradePayables || ''} onChange={(e) => deepUpdate('balanceSheet', 'tradePayables', e.target.value)} /></div>
+                <div className="input-group"><label className="input-label">Other Current Liabilities</label><CurrencyInput className="input-field" value={pgbp.balanceSheet.otherCurrentLiab || ''} onChange={(e) => deepUpdate('balanceSheet', 'otherCurrentLiab', e.target.value)} /></div>
+                <div className="input-group"><label className="input-label">Short-Term Provisions</label><CurrencyInput className="input-field" value={pgbp.balanceSheet.shortTermProvisions || ''} onChange={(e) => deepUpdate('balanceSheet', 'shortTermProvisions', e.target.value)} /></div>
               </div>
 
               <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'flex-end', fontWeight: 'bold', fontSize: '1.1rem', background: 'var(--row-highlight-bg)', padding: '1rem', borderRadius: 'var(--radius-sm)' }}>
@@ -317,20 +318,20 @@ const PGBP = ({ data, updateData }) => {
               
               <h5 style={{ fontWeight: 600, color: 'var(--text-muted)', marginBottom: '1rem', fontSize: '0.9rem', textTransform: 'uppercase' }}>1. Non-Current Assets</h5>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', marginBottom: '1.5rem' }}>
-                <div className="input-group"><label className="input-label">Property, Plant and Equipment (Fixed Assets)</label><input type="number" className="input-field" value={pgbp.balanceSheet.fixedAssets || ''} onChange={(e) => deepUpdate('balanceSheet', 'fixedAssets', e.target.value)} /></div>
-                <div className="input-group"><label className="input-label">Intangible Assets</label><input type="number" className="input-field" value={pgbp.balanceSheet.intangibleAssets || ''} onChange={(e) => deepUpdate('balanceSheet', 'intangibleAssets', e.target.value)} /></div>
-                <div className="input-group"><label className="input-label">Non-Current Investments</label><input type="number" className="input-field" value={pgbp.balanceSheet.nonCurrentInvestments || ''} onChange={(e) => deepUpdate('balanceSheet', 'nonCurrentInvestments', e.target.value)} /></div>
-                <div className="input-group"><label className="input-label">Long-Term Loans and Advances</label><input type="number" className="input-field" value={pgbp.balanceSheet.longTermLoans || ''} onChange={(e) => deepUpdate('balanceSheet', 'longTermLoans', e.target.value)} /></div>
+                <div className="input-group"><label className="input-label">Property, Plant and Equipment (Fixed Assets)</label><CurrencyInput className="input-field" value={pgbp.balanceSheet.fixedAssets || ''} onChange={(e) => deepUpdate('balanceSheet', 'fixedAssets', e.target.value)} /></div>
+                <div className="input-group"><label className="input-label">Intangible Assets</label><CurrencyInput className="input-field" value={pgbp.balanceSheet.intangibleAssets || ''} onChange={(e) => deepUpdate('balanceSheet', 'intangibleAssets', e.target.value)} /></div>
+                <div className="input-group"><label className="input-label">Non-Current Investments</label><CurrencyInput className="input-field" value={pgbp.balanceSheet.nonCurrentInvestments || ''} onChange={(e) => deepUpdate('balanceSheet', 'nonCurrentInvestments', e.target.value)} /></div>
+                <div className="input-group"><label className="input-label">Long-Term Loans and Advances</label><CurrencyInput className="input-field" value={pgbp.balanceSheet.longTermLoans || ''} onChange={(e) => deepUpdate('balanceSheet', 'longTermLoans', e.target.value)} /></div>
               </div>
 
               <h5 style={{ fontWeight: 600, color: 'var(--text-muted)', marginBottom: '1rem', fontSize: '0.9rem', textTransform: 'uppercase' }}>2. Current Assets</h5>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
-                <div className="input-group"><label className="input-label">Current Investments</label><input type="number" className="input-field" value={pgbp.balanceSheet.currentInvestments || ''} onChange={(e) => deepUpdate('balanceSheet', 'currentInvestments', e.target.value)} /></div>
-                <div className="input-group"><label className="input-label">Inventories</label><input type="number" className="input-field" value={pgbp.balanceSheet.inventories || ''} onChange={(e) => deepUpdate('balanceSheet', 'inventories', e.target.value)} /></div>
-                <div className="input-group"><label className="input-label">Trade Receivables (Sundry Debtors)</label><input type="number" className="input-field" value={pgbp.balanceSheet.tradeReceivables || ''} onChange={(e) => deepUpdate('balanceSheet', 'tradeReceivables', e.target.value)} /></div>
-                <div className="input-group"><label className="input-label">Cash and Cash Equivalents</label><input type="number" className="input-field" value={pgbp.balanceSheet.cashEquivalents || ''} onChange={(e) => deepUpdate('balanceSheet', 'cashEquivalents', e.target.value)} /></div>
-                <div className="input-group"><label className="input-label">Short-Term Loans and Advances</label><input type="number" className="input-field" value={pgbp.balanceSheet.shortTermLoans || ''} onChange={(e) => deepUpdate('balanceSheet', 'shortTermLoans', e.target.value)} /></div>
-                <div className="input-group"><label className="input-label">Other Current Assets</label><input type="number" className="input-field" value={pgbp.balanceSheet.otherCurrentAssets || ''} onChange={(e) => deepUpdate('balanceSheet', 'otherCurrentAssets', e.target.value)} /></div>
+                <div className="input-group"><label className="input-label">Current Investments</label><CurrencyInput className="input-field" value={pgbp.balanceSheet.currentInvestments || ''} onChange={(e) => deepUpdate('balanceSheet', 'currentInvestments', e.target.value)} /></div>
+                <div className="input-group"><label className="input-label">Inventories</label><CurrencyInput className="input-field" value={pgbp.balanceSheet.inventories || ''} onChange={(e) => deepUpdate('balanceSheet', 'inventories', e.target.value)} /></div>
+                <div className="input-group"><label className="input-label">Trade Receivables (Sundry Debtors)</label><CurrencyInput className="input-field" value={pgbp.balanceSheet.tradeReceivables || ''} onChange={(e) => deepUpdate('balanceSheet', 'tradeReceivables', e.target.value)} /></div>
+                <div className="input-group"><label className="input-label">Cash and Cash Equivalents</label><CurrencyInput className="input-field" value={pgbp.balanceSheet.cashEquivalents || ''} onChange={(e) => deepUpdate('balanceSheet', 'cashEquivalents', e.target.value)} /></div>
+                <div className="input-group"><label className="input-label">Short-Term Loans and Advances</label><CurrencyInput className="input-field" value={pgbp.balanceSheet.shortTermLoans || ''} onChange={(e) => deepUpdate('balanceSheet', 'shortTermLoans', e.target.value)} /></div>
+                <div className="input-group"><label className="input-label">Other Current Assets</label><CurrencyInput className="input-field" value={pgbp.balanceSheet.otherCurrentAssets || ''} onChange={(e) => deepUpdate('balanceSheet', 'otherCurrentAssets', e.target.value)} /></div>
               </div>
 
               <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'flex-end', fontWeight: 'bold', fontSize: '1.1rem', background: 'var(--row-highlight-bg)', padding: '1rem', borderRadius: 'var(--radius-sm)' }}>
@@ -349,17 +350,17 @@ const PGBP = ({ data, updateData }) => {
             {/* Additions */}
             <div>
               <h4 style={{ marginBottom: '1rem', color: 'var(--danger)', borderBottom: '1px solid var(--input-border)', paddingBottom: '0.5rem' }}>Additions (Inadmissible Expenses)</h4>
-              <div className="input-group"><label className="input-label">Depreciation as per Companies Act (debited in P&L)</label><input type="number" className="input-field" value={pgbp.adjustments.depreciationCompanies || ''} onChange={(e) => deepUpdate('adjustments', 'depreciationCompanies', e.target.value)} /></div>
-              <div className="input-group"><label className="input-label">Disallowances u/s 40(a), 43B, etc.</label><input type="number" className="input-field" value={pgbp.adjustments.disallowances || ''} onChange={(e) => deepUpdate('adjustments', 'disallowances', e.target.value)} /></div>
-              <div className="input-group"><label className="input-label">Personal / Other Inadmissible Expenses</label><input type="number" className="input-field" value={pgbp.adjustments.personalExpenses || ''} onChange={(e) => deepUpdate('adjustments', 'personalExpenses', e.target.value)} /></div>
-              <div className="input-group"><label className="input-label">Any Other Additions</label><input type="number" className="input-field" value={pgbp.adjustments.otherAdditions || ''} onChange={(e) => deepUpdate('adjustments', 'otherAdditions', e.target.value)} /></div>
+              <div className="input-group"><label className="input-label">Depreciation as per Companies Act (debited in P&L)</label><CurrencyInput className="input-field" value={pgbp.adjustments.depreciationCompanies || ''} onChange={(e) => deepUpdate('adjustments', 'depreciationCompanies', e.target.value)} /></div>
+              <div className="input-group"><label className="input-label">Disallowances u/s 40(a), 43B, etc.</label><CurrencyInput className="input-field" value={pgbp.adjustments.disallowances || ''} onChange={(e) => deepUpdate('adjustments', 'disallowances', e.target.value)} /></div>
+              <div className="input-group"><label className="input-label">Personal / Other Inadmissible Expenses</label><CurrencyInput className="input-field" value={pgbp.adjustments.personalExpenses || ''} onChange={(e) => deepUpdate('adjustments', 'personalExpenses', e.target.value)} /></div>
+              <div className="input-group"><label className="input-label">Any Other Additions</label><CurrencyInput className="input-field" value={pgbp.adjustments.otherAdditions || ''} onChange={(e) => deepUpdate('adjustments', 'otherAdditions', e.target.value)} /></div>
             </div>
 
             {/* Deductions */}
             <div>
               <h4 style={{ marginBottom: '1rem', color: 'var(--success)', borderBottom: '1px solid var(--input-border)', paddingBottom: '0.5rem' }}>Deductions (Allowed under IT Act)</h4>
-              <div className="input-group"><label className="input-label">Depreciation allowable u/s 32</label><input type="number" className="input-field" value={pgbp.adjustments.depreciationIT || ''} onChange={(e) => deepUpdate('adjustments', 'depreciationIT', e.target.value)} /></div>
-              <div className="input-group"><label className="input-label">Any Other Deductions / Income considered under other heads</label><input type="number" className="input-field" value={pgbp.adjustments.otherDeductions || ''} onChange={(e) => deepUpdate('adjustments', 'otherDeductions', e.target.value)} /></div>
+              <div className="input-group"><label className="input-label">Depreciation allowable u/s 32</label><CurrencyInput className="input-field" value={pgbp.adjustments.depreciationIT || ''} onChange={(e) => deepUpdate('adjustments', 'depreciationIT', e.target.value)} /></div>
+              <div className="input-group"><label className="input-label">Any Other Deductions / Income considered under other heads</label><CurrencyInput className="input-field" value={pgbp.adjustments.otherDeductions || ''} onChange={(e) => deepUpdate('adjustments', 'otherDeductions', e.target.value)} /></div>
             </div>
           </div>
 

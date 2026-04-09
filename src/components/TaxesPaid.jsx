@@ -1,5 +1,6 @@
 import React from 'react'
 import { ShieldCheck, Info } from 'lucide-react'
+import CurrencyInput from './CurrencyInput'
 
 const TaxesPaid = ({ data, updateData }) => {
   const taxes = data.taxesPaid || { 
@@ -42,13 +43,13 @@ const TaxesPaid = ({ data, updateData }) => {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
           <div className="input-group">
             <label className="input-label">Tax Deducted at Source (TDS)</label>
-            <input type="number" name="tds" className="input-field" value={taxes.tds || ''} onChange={handleChange} placeholder="0" />
+            <CurrencyInput name="tds" className="input-field" value={taxes.tds || ''} onChange={handleChange} placeholder="0" />
             <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.25rem', display: 'block' }}>E.g. TDS on Salary (Form 16), Interest, Rent, etc.</span>
           </div>
           
           <div className="input-group">
             <label className="input-label">Tax Collected at Source (TCS)</label>
-            <input type="number" name="tcs" className="input-field" value={taxes.tcs || ''} onChange={handleChange} placeholder="0" />
+            <CurrencyInput name="tcs" className="input-field" value={taxes.tcs || ''} onChange={handleChange} placeholder="0" />
             <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.25rem', display: 'block' }}>E.g. TCS on Car Purchase, Foreign Remittance (LRS)</span>
           </div>
           
@@ -57,19 +58,19 @@ const TaxesPaid = ({ data, updateData }) => {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
                <div>
                   <label className="input-label" style={{ fontSize: '0.8rem' }}>On or before 15th June (15%)</label>
-                  <input type="number" name="advanceTaxQ1" className="input-field" value={taxes.advanceTaxQ1 || ''} onChange={handleChange} placeholder="0" />
+                  <CurrencyInput name="advanceTaxQ1" className="input-field" value={taxes.advanceTaxQ1 || ''} onChange={handleChange} placeholder="0" />
                </div>
                <div>
                   <label className="input-label" style={{ fontSize: '0.8rem' }}>On or before 15th Sep (45%)</label>
-                  <input type="number" name="advanceTaxQ2" className="input-field" value={taxes.advanceTaxQ2 || ''} onChange={handleChange} placeholder="0" />
+                  <CurrencyInput name="advanceTaxQ2" className="input-field" value={taxes.advanceTaxQ2 || ''} onChange={handleChange} placeholder="0" />
                </div>
                <div>
                   <label className="input-label" style={{ fontSize: '0.8rem' }}>On or before 15th Dec (75%)</label>
-                  <input type="number" name="advanceTaxQ3" className="input-field" value={taxes.advanceTaxQ3 || ''} onChange={handleChange} placeholder="0" />
+                  <CurrencyInput name="advanceTaxQ3" className="input-field" value={taxes.advanceTaxQ3 || ''} onChange={handleChange} placeholder="0" />
                </div>
                <div>
                   <label className="input-label" style={{ fontSize: '0.8rem' }}>On or before 15th Mar (100%)</label>
-                  <input type="number" name="advanceTaxQ4" className="input-field" value={taxes.advanceTaxQ4 || ''} onChange={handleChange} placeholder="0" />
+                  <CurrencyInput name="advanceTaxQ4" className="input-field" value={taxes.advanceTaxQ4 || ''} onChange={handleChange} placeholder="0" />
                </div>
             </div>
             <div style={{ textAlign: 'right', marginTop: '1rem', fontWeight: 'bold' }}>Total Advance Tax: ₹ {advanceTaxTotal.toLocaleString('en-IN')}</div>
@@ -77,7 +78,7 @@ const TaxesPaid = ({ data, updateData }) => {
           
           <div className="input-group">
             <label className="input-label">Self-Assessment Tax Paid</label>
-            <input type="number" name="selfAssessmentTax" className="input-field" value={taxes.selfAssessmentTax || ''} onChange={handleChange} placeholder="0" />
+            <CurrencyInput name="selfAssessmentTax" className="input-field" value={taxes.selfAssessmentTax || ''} onChange={handleChange} placeholder="0" />
             <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.25rem', display: 'block' }}>Paid before filing ITR</span>
           </div>
         </div>

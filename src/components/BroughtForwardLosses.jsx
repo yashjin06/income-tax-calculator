@@ -1,5 +1,6 @@
 import React from 'react'
 import { FileWarning, AlertTriangle } from 'lucide-react'
+import CurrencyInput from './CurrencyInput'
 
 const BroughtForwardLosses = ({ data, updateData }) => {
   const bfl = data.broughtForwardLosses || { houseProperty: 0, business: 0, stcl: 0, ltcl: 0 }
@@ -31,25 +32,25 @@ const BroughtForwardLosses = ({ data, updateData }) => {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
           <div className="input-group">
             <label className="input-label">House Property Loss (Max 8 yrs)</label>
-            <input type="number" className="input-field" value={bfl.houseProperty || ''} onChange={(e) => updateBFL('houseProperty', e.target.value)} placeholder="0" />
+            <CurrencyInput className="input-field" value={bfl.houseProperty || ''} onChange={(e) => updateBFL('houseProperty', e.target.value)} placeholder="0" />
             <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.25rem', display: 'block' }}>Set off only against House Property Income</span>
           </div>
           
           <div className="input-group">
             <label className="input-label">Normal Business Loss (Max 8 yrs)</label>
-            <input type="number" className="input-field" value={bfl.business || ''} onChange={(e) => updateBFL('business', e.target.value)} placeholder="0" />
+            <CurrencyInput className="input-field" value={bfl.business || ''} onChange={(e) => updateBFL('business', e.target.value)} placeholder="0" />
             <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.25rem', display: 'block' }}>Set off only against Business Income (PGBP)</span>
           </div>
           
           <div className="input-group">
             <label className="input-label">Short Term Capital Loss (STCL)</label>
-            <input type="number" className="input-field" value={bfl.stcl || ''} onChange={(e) => updateBFL('stcl', e.target.value)} placeholder="0" />
+            <CurrencyInput className="input-field" value={bfl.stcl || ''} onChange={(e) => updateBFL('stcl', e.target.value)} placeholder="0" />
             <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.25rem', display: 'block' }}>Set off against STCG or LTCG</span>
           </div>
           
           <div className="input-group">
             <label className="input-label">Long Term Capital Loss (LTCL)</label>
-            <input type="number" className="input-field" value={bfl.ltcl || ''} onChange={(e) => updateBFL('ltcl', e.target.value)} placeholder="0" />
+            <CurrencyInput className="input-field" value={bfl.ltcl || ''} onChange={(e) => updateBFL('ltcl', e.target.value)} placeholder="0" />
             <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.25rem', display: 'block' }}>Set off ONLY against LTCG (Long Term Capital Gains)</span>
           </div>
         </div>

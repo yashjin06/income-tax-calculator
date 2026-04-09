@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
+import CurrencyInput from './CurrencyInput'
 
 const Salary = ({ data, updateData }) => {
+  const isNewRegime = data?.personal?.newRegime === 'yes'
   const salData = data.salary || {
     basic: 0,
     da: 0,
@@ -9,6 +11,7 @@ const Salary = ({ data, updateData }) => {
     otherAllowances: 0,
     perquisites: 0,
     profitInLieu: 0,
+    commutedPension: 0,
     pt: 0, // Professional Tax
     entAllow: 0 // Entertainment Allowance (Govt only)
   }
@@ -18,6 +21,9 @@ const Salary = ({ data, updateData }) => {
   const [showHraCalc, setShowHraCalc] = useState(false)
   const [hraInputs, setHraInputs] = useState({ actualHra: 0, rentPaid: 0, isMetro: false })
 
+  const [showCpCalc, setShowCpCalc] = useState(false)
+  const [cpInputs, setCpInputs] = useState({ receivedAmt: '', commutedPercentage: 100, receivesGratuity: false })
+
   const handleChange = (e) => {
     const { name, value } = e.target
     const numValue = value === '' ? '' : parseFloat(value) || 0
@@ -26,6 +32,13 @@ const Salary = ({ data, updateData }) => {
 
   const calculateHRA = () => {
      let actual = parseFloat(hraInputs.actualHra) || 0
+
+     if (isNewRegime) {
+        updateData({ ...data, salary: { ...salData, hra: actual } })
+        setShowHraCalc(false)
+        return
+     }
+
      let rent = parseFloat(hraInputs.rentPaid) || 0
      let basicDA = (parseFloat(salData.basic) || 0) + (parseFloat(salData.da) || 0)
      
@@ -40,8 +53,31 @@ const Salary = ({ data, updateData }) => {
      setShowHraCalc(false)
   }
 
+  const calculateCP = () => {
+     let received = parseFloat(cpInputs.receivedAmt) || 0
+     let percent = parseFloat(cpInputs.commutedPercentage) || 100
+     if (percent <= 0) percent = 100
+
+     let taxable = received
+     let totalPension = received / (percent / 100)
+
+     if (salData.employerType === 'govt') {
+         taxable = 0 // Fully exempt for Govt
+     } else {
+         if (cpInputs.receivesGratuity) {
+             let exempt = totalPension * (1/3)
+             taxable = Math.max(0, received - exempt)
+         } else {
+             let exempt = totalPension * (1/2)
+             taxable = Math.max(0, received - exempt)
+         }
+     }
+     
+     updateData({ ...data, salary: { ...salData, commutedPension: taxable } })
+     setShowCpCalc(false)
+  }
+
   useEffect(() => {
-    const isNewRegime = data?.personal?.newRegime === 'yes'
     const ay = data?.personal?.assessmentYear || '2024-25'
     const isLatestBudget = ay === '2025-26' || ay === '2026-27'
     const maxStandardDeduction = (isNewRegime && isLatestBudget) ? 75000 : 50000
@@ -51,6 +87,7 @@ const Salary = ({ data, updateData }) => {
                   (parseFloat(salData.hra) || 0) + 
                   (parseFloat(salData.lta) || 0) + 
                   (parseFloat(salData.otherAllowances) || 0) + 
+                  (parseFloat(salData.commutedPension) || 0) + 
                   (parseFloat(salData.perquisites) || 0) + 
                   (parseFloat(salData.profitInLieu) || 0)
     
@@ -98,39 +135,43 @@ const Salary = ({ data, updateData }) => {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
           <div className="input-group">
             <label className="input-label">Basic Salary</label>
-            <input type="number" name="basic" className="input-field" value={salData.basic || ''} onChange={handleChange} placeholder="0" />
+            <CurrencyInput name="basic" className="input-field" value={salData.basic || ''} onChange={handleChange} placeholder="0" />
           </div>
           
           <div className="input-group">
             <label className="input-label">Dearness Allowance (DA)</label>
-            <input type="number" name="da" className="input-field" value={salData.da || ''} onChange={handleChange} placeholder="0" />
+            <CurrencyInput name="da" className="input-field" value={salData.da || ''} onChange={handleChange} placeholder="0" />
           </div>
 
           <div className="input-group">
-            <label className="input-label" style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <label className="input-label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
                <span>House Rent Allowance (HRA) (Taxable Portion)</span>
-               <button className="btn btn-sm" style={{ background: 'transparent', color: 'var(--primary)', padding: 0 }} onClick={() => setShowHraCalc(!showHraCalc)}>⚡ Calculate</button>
+               {!isNewRegime && <button type="button" style={{ background: 'transparent', color: 'var(--primary)', padding: '0 0.5rem', border: 'none', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.25rem' }} onClick={() => setShowHraCalc(!showHraCalc)}>⚡ Calculate</button>}
             </label>
-            <input type="number" name="hra" className="input-field" value={salData.hra || ''} onChange={handleChange} placeholder="0" />
+            <CurrencyInput name="hra" className="input-field" value={salData.hra || ''} onChange={handleChange} placeholder="0" disabled={isNewRegime} />
             
-            {showHraCalc && (
-               <div style={{ marginTop: '0.5rem', background: 'var(--glass-bg)', padding: '1rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--primary)' }}>
-                  <h4 className="font-bold text-sm mb-2" style={{ color: 'var(--primary)' }}>Smart HRA Exemption Calculator</h4>
-                  <div style={{ display: 'grid', gap: '0.75rem' }}>
-                    <div>
-                       <label className="text-xs font-bold text-gray-500">Actual HRA Received</label>
-                       <input type="number" className="input-field" value={hraInputs.actualHra || ''} onChange={(e) => setHraInputs({...hraInputs, actualHra: e.target.value})} placeholder="Per Year" />
+            {showHraCalc && !isNewRegime && (
+               <div className="fade-in" style={{ marginTop: '0.75rem', background: 'var(--glass-bg)', padding: '1.25rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--primary)', boxShadow: '0 4px 15px -3px rgba(79, 70, 229, 0.15)' }}>
+                  <h4 style={{ color: 'var(--primary)', fontSize: '1rem', fontWeight: 'bold', marginBottom: '1rem', borderBottom: '1px solid var(--glass-border)', paddingBottom: '0.75rem' }}>Smart HRA Exemption Calculator</h4>
+                  <div style={{ display: 'grid', gap: '1.25rem' }}>
+                    <div className="input-group" style={{ marginBottom: 0 }}>
+                       <label className="input-label">Actual HRA Received</label>
+                       <CurrencyInput className="input-field" value={hraInputs.actualHra || ''} onChange={(e) => setHraInputs({...hraInputs, actualHra: e.target.value})} placeholder="Per Year" />
                     </div>
-                    <div>
-                       <label className="text-xs font-bold text-gray-500">Total Rent Paid</label>
-                       <input type="number" className="input-field" value={hraInputs.rentPaid || ''} onChange={(e) => setHraInputs({...hraInputs, rentPaid: e.target.value})} placeholder="Per Year" />
+                    <div className="input-group" style={{ marginBottom: 0 }}>
+                       <label className="input-label">Total Rent Paid</label>
+                       <CurrencyInput className="input-field" value={hraInputs.rentPaid || ''} onChange={(e) => setHraInputs({...hraInputs, rentPaid: e.target.value})} placeholder="Per Year" />
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                       <input type="checkbox" id="metroCity" checked={hraInputs.isMetro} onChange={(e) => setHraInputs({...hraInputs, isMetro: e.target.checked})} />
-                       <label htmlFor="metroCity" className="text-sm font-bold cursor-pointer">Rented in Metro City? (Delhi, Mumbai, Chennai, Kolkata)</label>
+                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
+                       <input type="checkbox" id="metroCity" checked={hraInputs.isMetro} onChange={(e) => setHraInputs({...hraInputs, isMetro: e.target.checked})} style={{ width: '1.2rem', height: '1.2rem', marginTop: '0.15rem', cursor: 'pointer', accentColor: 'var(--primary)' }} />
+                       <label htmlFor="metroCity" className="input-label" style={{ marginBottom: 0, cursor: 'pointer', lineHeight: '1.4' }}>Rented in Metro City?<br/><span style={{fontWeight: 'normal', fontSize: '0.75rem', color: 'var(--text-muted)'}}>(Delhi, Mumbai, Chennai, Kolkata)</span></label>
                     </div>
-                    <button className="btn btn-primary btn-sm mt-2" onClick={calculateHRA}>Apply Taxable HRA</button>
-                    <p style={{fontSize: '0.7rem', color: 'var(--text-muted)'}}>Uses Basic + DA salary specified above to compute Least of 3 rule.</p>
+                    <button type="button" className="btn btn-primary" style={{ width: '100%', marginTop: '0.25rem' }} onClick={calculateHRA}>Apply Taxable HRA</button>
+                    <p style={{fontSize: '0.75rem', color: 'var(--text-muted)', textAlign: 'center', margin: 0}}>
+                      {data?.personal?.newRegime === 'yes' 
+                        ? <span style={{color: 'var(--danger)'}}>HRA Exemption is not available under the New Tax Regime. The entire amount is taxable.</span>
+                        : 'Uses Basic + DA salary specified above to compute Least of 3 rule.'}
+                    </p>
                   </div>
                </div>
             )}
@@ -138,22 +179,60 @@ const Salary = ({ data, updateData }) => {
 
           <div className="input-group">
             <label className="input-label">Leave Travel Allowance (LTA) (Taxable)</label>
-            <input type="number" name="lta" className="input-field" value={salData.lta || ''} onChange={handleChange} placeholder="0" />
+            <CurrencyInput name="lta" className="input-field" value={salData.lta || ''} onChange={handleChange} placeholder="0" disabled={isNewRegime} />
           </div>
 
           <div className="input-group">
             <label className="input-label">Other Taxable Allowances</label>
-            <input type="number" name="otherAllowances" className="input-field" value={salData.otherAllowances || ''} onChange={handleChange} placeholder="0" />
+            <CurrencyInput name="otherAllowances" className="input-field" value={salData.otherAllowances || ''} onChange={handleChange} placeholder="0" />
+          </div>
+
+          <div className="input-group">
+            <label className="input-label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
+               <span>Commuted Pension (Taxable Portion)</span>
+               <button type="button" style={{ background: 'transparent', color: 'var(--primary)', padding: '0 0.5rem', border: 'none', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.25rem' }} onClick={() => setShowCpCalc(!showCpCalc)}>⚡ Calculate</button>
+            </label>
+            <CurrencyInput name="commutedPension" className="input-field" value={salData.commutedPension || ''} onChange={handleChange} placeholder="0" />
+            
+            {showCpCalc && (
+               <div className="fade-in" style={{ marginTop: '0.75rem', background: 'var(--glass-bg)', padding: '1.25rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--primary)', boxShadow: '0 4px 15px -3px rgba(79, 70, 229, 0.15)' }}>
+                  <h4 style={{ color: 'var(--primary)', fontSize: '1rem', fontWeight: 'bold', marginBottom: '1rem', borderBottom: '1px solid var(--glass-border)', paddingBottom: '0.75rem' }}>Smart Commuted Pension Calculator</h4>
+                  <div style={{ display: 'grid', gap: '1.25rem' }}>
+                    <div className="input-group" style={{ marginBottom: 0 }}>
+                       <label className="input-label">Actual Commuted Pension Received</label>
+                       <CurrencyInput className="input-field" value={cpInputs.receivedAmt || ''} onChange={(e) => setCpInputs({...cpInputs, receivedAmt: e.target.value})} placeholder="0" />
+                    </div>
+                    <div className="input-group" style={{ marginBottom: 0 }}>
+                       <label className="input-label">Commutation Percentage (%)</label>
+                       <CurrencyInput className="input-field" value={cpInputs.commutedPercentage || ''} onChange={(e) => setCpInputs({...cpInputs, commutedPercentage: e.target.value})} placeholder="100" />
+                       <p style={{fontSize: '0.75rem', marginTop: '0.25rem', color: 'var(--text-muted)'}}>Percentage of pension commuted for lump sum.</p>
+                    </div>
+                    {salData.employerType !== 'govt' && (
+                       <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
+                          <input type="checkbox" id="receivesGratuity" checked={cpInputs.receivesGratuity} onChange={(e) => setCpInputs({...cpInputs, receivesGratuity: e.target.checked})} style={{ width: '1.2rem', height: '1.2rem', marginTop: '0.15rem', cursor: 'pointer', accentColor: 'var(--primary)' }} />
+                          <label htmlFor="receivesGratuity" className="input-label" style={{ marginBottom: 0, cursor: 'pointer', lineHeight: '1.4' }}>Are you also receiving Gratuity?</label>
+                       </div>
+                    )}
+                    {salData.employerType === 'govt' && (
+                       <p style={{fontSize: '0.8rem', color: 'var(--primary)', margin: 0, fontWeight: 'bold'}}>Govt Employees: Commuted Pension is 100% Tax Exempt!</p>
+                    )}
+                    <button type="button" className="btn btn-primary" style={{ width: '100%', marginTop: '0.25rem' }} onClick={calculateCP}>Apply Taxable Pension</button>
+                    <p style={{fontSize: '0.75rem', color: 'var(--text-muted)', textAlign: 'center', margin: 0}}>
+                      Uses Sec 10(10A) exemptions based on Employer Type selected above.
+                    </p>
+                  </div>
+               </div>
+            )}
           </div>
 
           <div className="input-group">
             <label className="input-label">Perquisites (Value as per rule 3)</label>
-            <input type="number" name="perquisites" className="input-field" value={salData.perquisites || ''} onChange={handleChange} placeholder="0" />
+            <CurrencyInput name="perquisites" className="input-field" value={salData.perquisites || ''} onChange={handleChange} placeholder="0" />
           </div>
 
           <div className="input-group">
             <label className="input-label">Profit in lieu of Salary</label>
-            <input type="number" name="profitInLieu" className="input-field" value={salData.profitInLieu || ''} onChange={handleChange} placeholder="0" />
+            <CurrencyInput name="profitInLieu" className="input-field" value={salData.profitInLieu || ''} onChange={handleChange} placeholder="0" />
           </div>
         </div>
       </div>
@@ -170,13 +249,13 @@ const Salary = ({ data, updateData }) => {
 
           <div className="input-group">
             <label className="input-label">Entertainment Allowance u/s 16(ii)</label>
-            <input type="number" name="entAllow" className="input-field" value={salData.entAllow || ''} onChange={handleChange} placeholder="0" />
+            <CurrencyInput name="entAllow" className="input-field" value={salData.entAllow || ''} onChange={handleChange} placeholder="0" disabled={isNewRegime} />
             <p style={{fontSize: '0.75rem', marginTop: '0.25rem', color: 'var(--text-muted)'}}>Only for Govt Employees</p>
           </div>
 
           <div className="input-group">
             <label className="input-label">Professional Tax u/s 16(iii)</label>
-            <input type="number" name="pt" className="input-field" value={salData.pt || ''} onChange={handleChange} placeholder="0" />
+            <CurrencyInput name="pt" className="input-field" value={salData.pt || ''} onChange={handleChange} placeholder="0" disabled={isNewRegime} />
           </div>
         </div>
 

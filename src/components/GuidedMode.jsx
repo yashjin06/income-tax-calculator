@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { ArrowLeft, ArrowRight, User, Home, Briefcase, FileText, Activity } from 'lucide-react'
+import CurrencyInput from './CurrencyInput'
 
 const GuidedMode = ({ data, updateData, exitGuidedMode }) => {
   const [step, setStep] = useState(0)
@@ -67,7 +68,7 @@ const GuidedMode = ({ data, updateData, exitGuidedMode }) => {
              <p className="text-sm text-gray-500 mb-4">If yes, enter your total gross basic salary for the year. Standard deduction of ₹50k/75k is automatically applied.</p>
              <div className="input-group mb-4">
                 <label className="input-label">Total Basic Salary (₹)</label>
-                <input type="number" className="input-field" value={data.salary?.basic || ''} onChange={(e) => handleChange('salary', 'basic', parseFloat(e.target.value) || 0)} placeholder="0" />
+                <CurrencyInput className="input-field" value={data.salary?.basic || ''} onChange={(e) => handleChange('salary', 'basic', parseFloat(e.target.value) || 0)} placeholder="0" />
              </div>
           </div>
         )
@@ -78,12 +79,12 @@ const GuidedMode = ({ data, updateData, exitGuidedMode }) => {
              <p className="text-sm text-gray-500 mb-4">Did you invest in LIC, PPF, ELSS Mutual Funds, or pay children's tuition fees? (Max benefit ₹1.5L usually only applies to Old Regime)</p>
              <div className="input-group mb-4">
                 <label className="input-label">Total 80C Investments (₹)</label>
-                <input type="number" className="input-field" value={data.deductions?.sec80c || ''} onChange={(e) => handleChange('deductions', 'sec80c', parseFloat(e.target.value) || 0)} placeholder="e.g. 150000" />
+                <CurrencyInput className="input-field" value={data.deductions?.sec80c || ''} onChange={(e) => handleChange('deductions', 'sec80c', parseFloat(e.target.value) || 0)} placeholder="e.g. 150000" />
              </div>
              <p className="text-sm text-gray-500 mb-4 mt-6">Did you pay health insurance premiums for yourself or your family?</p>
              <div className="input-group mb-4">
                 <label className="input-label">Health Insurance Premium (₹)</label>
-                <input type="number" className="input-field" value={data.deductions?.sec80d_self || ''} onChange={(e) => handleChange('deductions', 'sec80d_self', parseFloat(e.target.value) || 0)} placeholder="e.g. 25000" />
+                <CurrencyInput className="input-field" value={data.deductions?.sec80d_self || ''} onChange={(e) => handleChange('deductions', 'sec80d_self', parseFloat(e.target.value) || 0)} placeholder="e.g. 25000" />
              </div>
           </div>
         )
@@ -93,7 +94,7 @@ const GuidedMode = ({ data, updateData, exitGuidedMode }) => {
              <h3 className="text-xl font-bold mb-6">Do you run a Business or Profession?</h3>
              <div className="input-group mb-4">
                 <label className="input-label">Gross Revenue / Receipts (₹)</label>
-                <input type="number" className="input-field" value={data.business?.pnl?.revenueOperations || ''} onChange={(e) => {
+                <CurrencyInput className="input-field" value={data.business?.pnl?.revenueOperations || ''} onChange={(e) => {
                    updateData({...data, business: {...(data.business || {}), pnl: {...(data.business?.pnl || {}), revenueOperations: parseFloat(e.target.value) || 0}}})
                 }} placeholder="0" />
              </div>
@@ -106,15 +107,15 @@ const GuidedMode = ({ data, updateData, exitGuidedMode }) => {
              <h3 className="text-xl font-bold mb-6">Did you sell any Shares, Mutual Funds, or Crypto?</h3>
              <div className="input-group mb-4">
                 <label className="input-label">Profit from selling shares held LESS than 1 year (STCG) (₹)</label>
-                <input type="number" className="input-field" value={data.capitalGains?.stcg_20 || ''} onChange={(e) => handleChange('capitalGains', 'stcg_20', parseFloat(e.target.value) || 0)} placeholder="0" />
+                <CurrencyInput className="input-field" value={data.capitalGains?.stcg_20 || ''} onChange={(e) => handleChange('capitalGains', 'stcg_20', parseFloat(e.target.value) || 0)} placeholder="0" />
              </div>
              <div className="input-group mb-4">
                 <label className="input-label">Profit from selling shares held MORE than 1 year (LTCG) (₹)</label>
-                <input type="number" className="input-field" value={data.capitalGains?.ltcg_125_equity || ''} onChange={(e) => handleChange('capitalGains', 'ltcg_125_equity', parseFloat(e.target.value) || 0)} placeholder="0" />
+                <CurrencyInput className="input-field" value={data.capitalGains?.ltcg_125_equity || ''} onChange={(e) => handleChange('capitalGains', 'ltcg_125_equity', parseFloat(e.target.value) || 0)} placeholder="0" />
              </div>
              <div className="input-group mb-4">
                 <label className="input-label">Virtual Digital Assets (Crypto) Profit (₹)</label>
-                <input type="number" className="input-field" value={data.crypto?.totalTaxableGain || ''} onChange={(e) => {
+                <CurrencyInput className="input-field" value={data.crypto?.totalTaxableGain || ''} onChange={(e) => {
                    updateData({...data, crypto: {...(data.crypto || {}), totalTaxableGain: parseFloat(e.target.value) || 0}})
                 }} placeholder="0" />
              </div>
@@ -127,11 +128,11 @@ const GuidedMode = ({ data, updateData, exitGuidedMode }) => {
              <p className="text-sm text-gray-500 mb-4">Such as interest from banks or dividend payouts.</p>
              <div className="input-group mb-4">
                 <label className="input-label">Interest from Savings Bank Accounts (₹)</label>
-                <input type="number" className="input-field" value={data.otherSources?.savingsInterest || ''} onChange={(e) => handleChange('otherSources', 'savingsInterest', parseFloat(e.target.value) || 0)} placeholder="0" />
+                <CurrencyInput className="input-field" value={data.otherSources?.savingsInterest || ''} onChange={(e) => handleChange('otherSources', 'savingsInterest', parseFloat(e.target.value) || 0)} placeholder="0" />
              </div>
              <div className="input-group mb-4">
                 <label className="input-label">Interest from Fixed Deposits (FD) (₹)</label>
-                <input type="number" className="input-field" value={data.otherSources?.fdInterest || ''} onChange={(e) => handleChange('otherSources', 'fdInterest', parseFloat(e.target.value) || 0)} placeholder="0" />
+                <CurrencyInput className="input-field" value={data.otherSources?.fdInterest || ''} onChange={(e) => handleChange('otherSources', 'fdInterest', parseFloat(e.target.value) || 0)} placeholder="0" />
              </div>
           </div>
         )
