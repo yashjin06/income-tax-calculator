@@ -2,10 +2,31 @@ import React, { useState } from 'react'
 import { UploadCloud, CheckCircle, AlertCircle, FileText, ArrowRight } from 'lucide-react'
 import * as XLSX from 'xlsx'
 
-const BrokerImport = ({ data, updateData }) => {
+const BrokerImport = ({ data, updateData, textStyle = "professional" }) => {
+  const isGenZ = textStyle === "genz";
   const [fileState, setFileState] = useState('idle') // idle, parsing, success, error
   const [errorMessage, setErrorMessage] = useState('')
   const [parsedData, setParsedData] = useState(null)
+
+  const labels = {
+    title: isGenZ ? "Tradebook Teleport (Excel Import) 🌀" : "Capital Gains Excel Importer",
+    subtitle: isGenZ 
+      ? "Skip the manual data entry. Teleport your trades straight from Excel to our calculator."
+      : "Automatically calculate Short Term and Long Term Capital Gains using the standard multi-sheet Excel format offline.",
+    uploadTitle: isGenZ ? "Drop your Excel Tradebook" : "Upload Excel Tradebook",
+    uploadInstructions: isGenZ
+       ? "We're parsing this locally (Private vibes only). Pro Tip: Just fill the gray cells in the template and we'll do the rest."
+       : "Your data is parsed securely and locally. Instructions: Please only fill the cells that are highlighted in grey in the downloaded template.",
+    downloadBtn: isGenZ ? "Get the Template" : "Download Template",
+    selectBtn: isGenZ ? "Pick the File (.xlsx)" : "Select Excel File (.xlsx)",
+    parsingText: isGenZ ? "Running the numbers..." : "Parsing workbook...",
+    successHeader: isGenZ ? "Trades Parsed! Let's go!" : "Successfully Parsed Trades",
+    mergeBtn: isGenZ ? "Merge into Ledger" : "Merge into Capital Gains",
+    stcgLabel: isGenZ ? "Short Term Gainz (20%)" : "STCG (Sec 111A - Equity 20%)",
+    ltcgLabel: isGenZ ? "Long Term Gainz (12.5%)" : "LTCG (Sec 112A - Equity 12.5%)",
+    tradesLabel: isGenZ ? "Stats Found" : "Transactions Found",
+    cancelBtn: isGenZ ? "Abort" : "Cancel"
+  };
 
   const handleFileUpload = (e) => {
     const file = e.target.files[0]
@@ -184,20 +205,20 @@ const BrokerImport = ({ data, updateData }) => {
   return (
     <div className="fade-in">
       <div style={{ marginBottom: '1.5rem' }}>
-         <h2 className="text-xl font-bold">Capital Gains Excel Importer</h2>
-         <p className="text-sm text-gray-500">Automatically calculate Short Term and Long Term Capital Gains using the standard multi-sheet Excel format offline.</p>
+         <h2 className="text-xl font-bold">{labels.title}</h2>
+         <p className="text-sm text-gray-500">{labels.subtitle}</p>
       </div>
 
       <div className="card p-6 mb-6 slide-up">
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '3rem', border: '2px dashed var(--input-border)', borderRadius: 'var(--radius-lg)', background: 'var(--glass-bg)' }}>
           <UploadCloud size={48} color="var(--primary)" style={{ marginBottom: '1rem' }} />
-          <h3 className="font-bold mb-2">Upload Excel Tradebook</h3>
-          <p className="text-sm text-muted mb-6 text-center max-w-md">Your data is parsed securely and locally. <b>Instructions:</b> Please only fill the cells that are highlighted in grey in the downloaded template.</p>
+          <h3 className="font-bold mb-2">{labels.uploadTitle}</h3>
+          <p className="text-sm text-muted mb-6 text-center max-w-md">{labels.uploadInstructions}</p>
           
           <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
-            <button className="btn btn-secondary" onClick={downloadTemplate}><FileText size={16} /> Download Template</button>
+            <button className="btn btn-secondary" onClick={downloadTemplate}><FileText size={16} /> {labels.downloadBtn}</button>
             <label className="btn btn-primary cursor-pointer">
-              <UploadCloud size={16} /> Select Excel File (.xlsx)
+              <UploadCloud size={16} /> {labels.selectBtn}
               <input type="file" accept=".xlsx, .xls" onChange={handleFileUpload} style={{ display: 'none' }} />
             </label>
           </div>
@@ -213,7 +234,7 @@ const BrokerImport = ({ data, updateData }) => {
         {fileState === 'parsing' && (
           <div className="mt-4 p-4 text-center fade-in">
             <span className="loading-spinner" style={{ display: 'inline-block', width: '20px', height: '20px', border: '2px solid var(--primary)', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></span>
-            <span style={{ marginLeft: '0.75rem' }}>Parsing workbook...</span>
+            <span style={{ marginLeft: '0.75rem' }}>{labels.parsingText}</span>
           </div>
         )}
 
@@ -221,28 +242,28 @@ const BrokerImport = ({ data, updateData }) => {
           <div className="mt-6 slide-up">
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem', color: 'var(--success)' }}>
                <CheckCircle size={24} />
-               <h4 className="font-bold text-lg">Successfully Parsed Trades</h4>
+               <h4 className="font-bold text-lg">{labels.successHeader}</h4>
             </div>
             
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
                <div className="p-4 rounded-md" style={{ background: 'var(--bg-color)', border: '1px solid var(--border-color)' }}>
-                 <div className="text-sm text-muted mb-1">STCG (Sec 111A - Equity 20%)</div>
+                 <div className="text-sm text-muted mb-1">{labels.stcgLabel}</div>
                  <div className="font-bold text-lg" style={{ color: parsedData.stcg_20 >= 0 ? 'var(--text-main)' : 'var(--danger)' }}>₹ {parsedData.stcg_20.toLocaleString('en-IN')}</div>
                </div>
                <div className="p-4 rounded-md" style={{ background: 'var(--bg-color)', border: '1px solid var(--border-color)' }}>
-                 <div className="text-sm text-muted mb-1">LTCG (Sec 112A - Equity 12.5%)</div>
+                 <div className="text-sm text-muted mb-1">{labels.ltcgLabel}</div>
                  <div className="font-bold text-lg" style={{ color: parsedData.ltcg_125_equity >= 0 ? 'var(--text-main)' : 'var(--danger)' }}>₹ {parsedData.ltcg_125_equity.toLocaleString('en-IN')}</div>
                </div>
                <div className="p-4 rounded-md" style={{ background: 'var(--bg-color)', border: '1px solid var(--border-color)' }}>
-                 <div className="text-sm text-muted mb-1">Transactions Found</div>
-                 <div className="font-bold text-lg" style={{ color: 'var(--primary)' }}>{parsedData.stcgTrades + parsedData.ltcgTrades} trades</div>
+                 <div className="text-sm text-muted mb-1">{labels.tradesLabel}</div>
+                 <div className="font-bold text-lg" style={{ color: 'var(--primary)' }}>{parsedData.stcgTrades + parsedData.ltcgTrades} {isGenZ ? "stonks" : "trades"}</div>
                </div>
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', flexWrap: 'wrap' }}>
-               <button className="btn btn-secondary" onClick={() => { setFileState('idle'); setParsedData(null) }}>Cancel</button>
+               <button className="btn btn-secondary" onClick={() => { setFileState('idle'); setParsedData(null) }}>{labels.cancelBtn}</button>
                <button className="btn btn-primary" onClick={applyToCapitalGains}>
-                 Merge into Capital Gains <ArrowRight size={16} />
+                 {labels.mergeBtn} <ArrowRight size={16} />
                </button>
             </div>
           </div>

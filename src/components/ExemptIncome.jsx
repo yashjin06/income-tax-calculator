@@ -18,8 +18,26 @@ const exemptSections = [
   { code: 'OTHER', label: 'Any Other Exempt Income under Section 10' }
 ]
 
-const ExemptIncome = ({ data, updateData }) => {
-  const exemptList = Array.isArray(data.exemptIncome) ? data.exemptIncome : []
+const ExemptIncome = ({ data, updateData, textStyle = "professional" }) => {
+  const isGenZ = textStyle === "genz";
+  const exemptList = Array.isArray(data.exemptIncome) ? data.exemptIncome : [];
+
+  const labels = {
+    title: isGenZ ? "Untouchable Money (Tax-Free Flex) 🛡️" : "Exempt Incomes (For Reporting Purposes Only)",
+    totalLabel: isGenZ ? "Total Tax-Free Cash:" : "Total Exempt Income:",
+    noteHeader: isGenZ ? "Lowkey Rule:" : "Note:",
+    noteText: isGenZ 
+      ? "This money is 100% legal to keep and the govt can't touch it. But you still gotta tell them so they don't think you're Sus. It's for the 'Transparency Vibe'. Basically, flex your tax-free gains here for the record."
+      : "Exempt incomes do not form part of your Gross Total Income and have no tax liability. However, they must be strictly disclosed in the Income Tax Return for transparency and to avoid arbitrary additions by the tax department. Agriculture income influences your tax slab rate theoretically, but we keep it simple here as purely exempt reporting.",
+    emptyText: isGenZ ? "No tax-free flexes found." : "No exempt income disclosed yet.",
+    addBtn: isGenZ ? "+ Add Tax-Free Income" : "+ Add Exempt Income",
+    addAnotherBtn: isGenZ ? "+ Add Another Flex" : "+ Add Another Entry",
+    totalDisplay: isGenZ ? "Net Flex:" : "Total:",
+    sectionHeader: isGenZ ? "Flex Code" : "Section Code",
+    descHeader: isGenZ ? "What's this? (Remark)" : "Description / Remark",
+    amountHeader: isGenZ ? "Amount (₹)" : "Amount (₹)",
+    actionHeader: isGenZ ? "Yeet" : "Action"
+  };
 
   const updateEntry = (index, field, value) => {
     const updated = [...exemptList]
@@ -41,9 +59,9 @@ const ExemptIncome = ({ data, updateData }) => {
   return (
     <div className="fade-in">
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-        <h2 className="text-xl font-bold">Exempt Incomes (For Reporting Purposes Only)</h2>
+        <h2 className="text-xl font-bold">{labels.title}</h2>
         <div style={{ padding: '0.5rem 1rem', borderRadius: 'var(--radius-md)', background: 'rgba(79, 70, 229, 0.1)', color: 'var(--primary)', fontWeight: 'bold', fontSize: '0.9rem', whiteSpace: 'nowrap' }}>
-          Total Exempt Income: ₹ {totalExempt.toLocaleString('en-IN')}
+          {labels.totalLabel} ₹ {totalExempt.toLocaleString('en-IN')}
         </div>
       </div>
 
@@ -51,25 +69,25 @@ const ExemptIncome = ({ data, updateData }) => {
         <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', marginBottom: '1.5rem', background: 'var(--glass-bg)', padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--glass-border)' }}>
            <Shield size={24} color="var(--primary)" />
            <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--text-main)', lineHeight: '1.5' }}>
-             <strong>Note:</strong> Exempt incomes do not form part of your Gross Total Income and have no tax liability. However, they must be strictly disclosed in the Income Tax Return for transparency and to avoid arbitrary additions by the tax department. Agriculture income influences your tax slab rate theoretically, but we keep it simple here as purely exempt reporting.
+             <strong>{labels.noteHeader}</strong> {labels.noteText}
            </p>
         </div>
 
         {exemptList.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '3rem 1rem', border: '2px dashed var(--input-border)', borderRadius: 'var(--radius-md)' }}>
-            <p style={{ color: 'var(--text-muted)', marginBottom: '1rem' }}>No exempt income disclosed yet.</p>
+            <p style={{ color: 'var(--text-muted)', marginBottom: '1rem' }}>{labels.emptyText}</p>
             <button className="btn btn-primary" onClick={addEntry}>
-              <Plus size={16} /> Add Exempt Income
+               {labels.addBtn}
             </button>
           </div>
         ) : (
           <div>
             <div style={{ border: '1px solid var(--input-border)', borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
               <div style={{ display: 'flex', background: 'var(--glass-bg)', color: 'var(--primary)', padding: '1rem', fontWeight: 'bold', borderBottom: '2px solid var(--primary)', fontSize: '0.85rem', textTransform: 'uppercase', borderRadius: 'var(--radius-md) var(--radius-md) 0 0' }}>
-                <div style={{ flex: '1 1 40%' }}>Section Code</div>
-                <div style={{ flex: '1 1 30%' }}>Description / Remark</div>
-                <div style={{ flex: '0 0 150px' }}>Amount (₹)</div>
-                <div style={{ flex: '0 0 50px', textAlign: 'center' }}>Action</div>
+                <div style={{ flex: '1 1 40%' }}>{labels.sectionHeader}</div>
+                <div style={{ flex: '1 1 30%' }}>{labels.descHeader}</div>
+                <div style={{ flex: '0 0 150px' }}>{labels.amountHeader}</div>
+                <div style={{ flex: '0 0 50px', textAlign: 'center' }}>{labels.actionHeader}</div>
               </div>
               
               {exemptList.map((entry, index) => (
@@ -98,10 +116,10 @@ const ExemptIncome = ({ data, updateData }) => {
             
             <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <button className="btn btn-secondary" onClick={addEntry}>
-                <Plus size={16} /> Add Another Entry
+                 {labels.addAnotherBtn}
               </button>
               <div style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>
-                Total: ₹ {totalExempt.toLocaleString('en-IN')}
+                {labels.totalDisplay} ₹ {totalExempt.toLocaleString('en-IN')}
               </div>
             </div>
           </div>

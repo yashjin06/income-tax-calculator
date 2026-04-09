@@ -20,6 +20,7 @@ import RegimeComparison from './components/RegimeComparison'
 import GuidedMode from './components/GuidedMode'
 import { generatePDF } from './exports/pdfExport'
 import { generateWord } from './exports/wordExport'
+import { generateExcel } from './exports/excelExport'
 import './App.css'
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isDarkMode, setIsDarkMode] = useState(false)
   const [isGuidedMode, setIsGuidedMode] = useState(false)
+  const [textStyle, setTextStyle] = useState('professional')
   const [taxData, setTaxData] = useState({
     personal: {
       name: '',
@@ -74,39 +76,39 @@ function App() {
   const renderContent = () => {
     switch (activeTab) {
       case 'personal':
-        return <PersonalInfo data={taxData} updateData={updateData} />
+        return <PersonalInfo data={taxData} updateData={updateData} textStyle={textStyle} />
       case 'taxes-paid':
-        return <TaxesPaid data={taxData} updateData={updateData} />
+        return <TaxesPaid data={taxData} updateData={updateData} textStyle={textStyle} />
       case 'salary':
-        return <Salary data={taxData} updateData={updateData} />
+        return <Salary data={taxData} updateData={updateData} textStyle={textStyle} />
       case 'house':
-        return <HouseProperty data={taxData} updateData={updateData} />
+        return <HouseProperty data={taxData} updateData={updateData} textStyle={textStyle} />
       case 'business':
-        return <PGBP data={taxData} updateData={updateData} />
+        return <PGBP data={taxData} updateData={updateData} textStyle={textStyle} />
       case 'capital':
-        return <CapitalGains data={taxData} updateData={updateData} />
+        return <CapitalGains data={taxData} updateData={updateData} textStyle={textStyle} />
       case 'otherSources':
-        return <OtherSources data={taxData} updateData={updateData} />
+        return <OtherSources data={taxData} updateData={updateData} textStyle={textStyle} />
       case 'bfl':
-        return <BroughtForwardLosses data={taxData} updateData={updateData} />
+        return <BroughtForwardLosses data={taxData} updateData={updateData} textStyle={textStyle} />
       case 'deductions':
-        return <Deductions data={taxData} updateData={updateData} />
+        return <Deductions data={taxData} updateData={updateData} textStyle={textStyle} />
       case 'exemptIncome':
-        return <ExemptIncome data={taxData} updateData={updateData} />
+        return <ExemptIncome data={taxData} updateData={updateData} textStyle={textStyle} />
       case 'summary':
-        return <IncomeSummary data={taxData} />
+        return <IncomeSummary data={taxData} textStyle={textStyle} />
       case 'computation':
-        return <TaxComputation data={taxData} />
+        return <TaxComputation data={taxData} textStyle={textStyle} />
       case 'tax-breakup':
-        return <TaxBreakup data={taxData} />
+        return <TaxBreakup data={taxData} textStyle={textStyle} />
       case 'advance-tax':
-        return <AdvanceTaxWarning data={taxData} />
+        return <AdvanceTaxWarning data={taxData} textStyle={textStyle} />
       case 'broker':
-        return <BrokerImport data={taxData} updateData={updateData} />
+        return <BrokerImport data={taxData} updateData={updateData} textStyle={textStyle} />
       case 'crypto':
-        return <CryptoVDA data={taxData} updateData={updateData} />
+        return <CryptoVDA data={taxData} updateData={updateData} textStyle={textStyle} />
       case 'regime-compare':
-        return <RegimeComparison data={taxData} />
+        return <RegimeComparison data={taxData} textStyle={textStyle} />
       default:
         return <div className="glass-panel p-6 slide-up"><h2>Module coming soon</h2></div>
     }
@@ -118,7 +120,7 @@ function App() {
   }
 
   if (isGuidedMode) {
-    return <GuidedMode data={taxData} updateData={updateData} exitGuidedMode={() => setIsGuidedMode(false)} />
+    return <GuidedMode data={taxData} updateData={updateData} exitGuidedMode={() => setIsGuidedMode(false)} textStyle={textStyle} />
   }
 
   return (
@@ -276,23 +278,61 @@ function App() {
             <h1>Comprehensive Tax Calculator</h1>
             <p>Assessment Year: {taxData.personal.assessmentYear} | Assessee: {taxData.personal.name || 'Not provided'}</p>
           </div>
-          <div style={{display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap'}}>
-             <button className="btn btn-secondary" onClick={toggleDarkMode} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '40px', height: '40px', padding: 0, borderRadius: '50%' }} title="Toggle Dark Mode">
-               {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
-             </button>
-             <button className="btn btn-primary" onClick={() => setIsGuidedMode(true)} style={{ background: '#ec4899', border: 'none', display: 'flex', alignItems: 'center', height: '40px' }}>
-               <PlayCircle size={16} style={{marginRight: '6px'}}/>
-               Guided Setup
-             </button>
-             <button className="btn btn-secondary" onClick={() => generateWord(taxData)} style={{ display: 'flex', alignItems: 'center', height: '40px' }}>
-               <FileText size={16} style={{marginRight: '6px'}}/>
-               Export Word
-             </button>
+          <div className="header-actions-main">
+             {/* Text Tone Toggle Segmented Control */}
+             <div className="tone-toggle-container">
+               <button 
+                 onClick={() => setTextStyle('professional')}
+                 className={`tone-btn ${textStyle === 'professional' ? 'active' : ''}`}
+                 style={{
+                   background: textStyle === 'professional' ? 'var(--primary)' : 'transparent',
+                   color: textStyle === 'professional' ? '#fff' : 'var(--text-muted)',
+                   WebkitTextFillColor: textStyle === 'professional' ? '#fff' : 'var(--text-muted)',
+                   boxShadow: textStyle === 'professional' ? '0 4px 12px rgba(79, 70, 229, 0.25)' : 'none'
+                 }}
+               >
+                 Professional
+               </button>
+               <button 
+                 onClick={() => setTextStyle('genz')}
+                 className={`tone-btn ${textStyle === 'genz' ? 'active' : ''}`}
+                 style={{
+                   background: textStyle === 'genz' ? 'var(--primary)' : 'transparent',
+                   color: textStyle === 'genz' ? '#fff' : 'var(--text-muted)',
+                   WebkitTextFillColor: textStyle === 'genz' ? '#fff' : 'var(--text-muted)',
+                   boxShadow: textStyle === 'genz' ? '0 4px 12px rgba(79, 70, 229, 0.25)' : 'none'
+                 }}
+               >
+                 GenZ
+               </button>
+             </div>
 
-             <button className="btn btn-primary" onClick={() => generatePDF(taxData)} style={{ display: 'flex', alignItems: 'center', height: '40px' }}>
-               <Download size={16} style={{marginRight: '6px'}}/>
-               Export PDF
-             </button>
+             <div className="header-actions-group">
+               <button className="btn btn-secondary hide-mobile" onClick={toggleDarkMode} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '44px', height: '44px', padding: 0, borderRadius: '12px' }} title="Toggle Dark Mode">
+                 {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
+               </button>
+               <button className="btn btn-primary guided-setup-btn" onClick={() => setIsGuidedMode(true)} style={{ background: 'linear-gradient(135deg, #ec4899 0%, #d946ef 100%)', border: 'none', boxShadow: '0 4px 12px rgba(236, 72, 153, 0.3)' }}>
+                 <PlayCircle size={18} style={{marginRight: '8px'}}/>
+                 <span>Guided Setup Mode</span>
+               </button>
+             </div>
+             
+             <div className="header-export-group">
+               <button className="btn btn-secondary export-btn" onClick={() => generateWord(taxData)} title="Export Word">
+                 <FileText size={18} />
+                 <span className="hide-mobile">Word</span>
+               </button>
+
+               <button className="btn btn-secondary export-btn" onClick={() => generateExcel(taxData)} title="Export Excel" style={{ background: 'rgba(16, 185, 129, 0.1)', color: 'var(--success)', WebkitTextFillColor: 'var(--success)', borderColor: 'rgba(16, 185, 129, 0.2)' }}>
+                 <FileSpreadsheet size={18} />
+                 <span className="hide-mobile">Excel</span>
+               </button>
+
+               <button className="btn btn-primary export-btn" onClick={() => generatePDF(taxData)} title="Export PDF">
+                 <Download size={18} />
+                 <span className="hide-mobile">PDF</span>
+               </button>
+             </div>
           </div>
         </header>
 
@@ -301,7 +341,7 @@ function App() {
         </section>
       </main>
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;

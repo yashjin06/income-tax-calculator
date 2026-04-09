@@ -42,7 +42,7 @@ const GuidedMode = ({ data, updateData, exitGuidedMode }) => {
              <h3 className="text-xl font-bold mb-6">Tell us about yourself</h3>
              <div className="input-group mb-4">
                 <label className="input-label">What is your Full Name?</label>
-                <input type="text" className="input-field" value={data.personal?.name || ''} onChange={(e) => handleChange('personal', 'name', e.target.value)} placeholder="e.g. Rahul Sharma" />
+                <input type="text" className="input-field" value={data.personal?.name || ''} onChange={(e) => handleChange('personal', 'name', e.target.value)} placeholder="e.g. Yash Jindal" />
              </div>
              <div className="input-group mb-4">
                 <label className="input-label">What is your Age Category?</label>
