@@ -335,37 +335,41 @@ export const computeTax = (data) => {
   // Rebate u/s 87A
   let rebate = 0
   
-  let eligibleTaxFor87A = totalTaxBeforeRebate
-  if (isNewRegime) {
-     // Under New Regime: STCG 111A, LTCG 112A, LTCG 112, VDA are not eligible.
-     eligibleTaxFor87A = Math.max(0, normalTax + ((parseFloat(os.winnings) || 0) * 0.3))
-  } else {
-     // Under Old Regime: LTCG 112A, LTCG 112, VDA are not eligible. STCG 111A IS eligible.
-     eligibleTaxFor87A = Math.max(0, normalTax + (stcg20 * 0.20) + ((parseFloat(os.winnings) || 0) * 0.3))
-  }
+  const isEligibleFor87A = (personal.category === 'Individual' || !personal.category) && (personal.residentialStatus === 'resident' || !personal.residentialStatus)
 
-  if (isNewRegime) {
-      if (assessmentYear === '2026-27') {
-         if (totalTaxableIncome <= 1200000) {
-            rebate = Math.min(60000, eligibleTaxFor87A)
-         } else if (totalTaxableIncome <= 1270588) {
-            // Marginal Relief for AY 2026-27
-            const incomeAbove12L = totalTaxableIncome - 1200000
-            if (eligibleTaxFor87A > incomeAbove12L) rebate = eligibleTaxFor87A - incomeAbove12L
-         }
-      } else {
-         if (totalTaxableIncome <= 700000) {
-            rebate = Math.min(25000, eligibleTaxFor87A)
-         } else if (totalTaxableIncome <= 727777) {
-            // Marginal relief for previous New Regime (7L)
-            const incomeAbove7L = totalTaxableIncome - 700000
-            if (eligibleTaxFor87A > incomeAbove7L) rebate = eligibleTaxFor87A - incomeAbove7L
-         }
-      }
-  } else {
-      if (totalTaxableIncome <= 500000) {
-         rebate = Math.min(12500, eligibleTaxFor87A) // Max rebate 12.5k
-      }
+  if (isEligibleFor87A) {
+    let eligibleTaxFor87A = totalTaxBeforeRebate
+    if (isNewRegime) {
+       // Under New Regime: STCG 111A, LTCG 112A, LTCG 112, VDA are not eligible.
+       eligibleTaxFor87A = Math.max(0, normalTax + ((parseFloat(os.winnings) || 0) * 0.3))
+    } else {
+       // Under Old Regime: LTCG 112A, LTCG 112, VDA are not eligible. STCG 111A IS eligible.
+       eligibleTaxFor87A = Math.max(0, normalTax + (stcg20 * 0.20) + ((parseFloat(os.winnings) || 0) * 0.3))
+    }
+
+    if (isNewRegime) {
+        if (assessmentYear === '2026-27') {
+           if (totalTaxableIncome <= 1200000) {
+              rebate = Math.min(60000, eligibleTaxFor87A)
+           } else if (totalTaxableIncome <= 1270588) {
+              // Marginal Relief for AY 2026-27
+              const incomeAbove12L = totalTaxableIncome - 1200000
+              if (eligibleTaxFor87A > incomeAbove12L) rebate = eligibleTaxFor87A - incomeAbove12L
+           }
+        } else {
+           if (totalTaxableIncome <= 700000) {
+              rebate = Math.min(25000, eligibleTaxFor87A)
+           } else if (totalTaxableIncome <= 727777) {
+              // Marginal relief for previous New Regime (7L)
+              const incomeAbove7L = totalTaxableIncome - 700000
+              if (eligibleTaxFor87A > incomeAbove7L) rebate = eligibleTaxFor87A - incomeAbove7L
+           }
+        }
+    } else {
+        if (totalTaxableIncome <= 500000) {
+           rebate = Math.min(12500, eligibleTaxFor87A) // Max rebate 12.5k
+        }
+    }
   }
 
   let taxAfterRebate = Math.max(0, totalTaxBeforeRebate - rebate)
