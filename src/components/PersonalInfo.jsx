@@ -24,7 +24,7 @@ const PersonalInfo = ({ data, updateData, textStyle = "professional" }) => {
       ? "Which Year's Mistakes? (Assessment Year)"
       : "Assessment Year",
     category: isGenZ
-      ? "Are you Human or a Company? (Category)"
+      ? "What's your Tax Status? (Category)"
       : "Assessee Category",
     newRegime: isGenZ
       ? "Taking the New 'Shiny' Path (Sec 115BAC)?"
@@ -180,8 +180,6 @@ const PersonalInfo = ({ data, updateData, textStyle = "professional" }) => {
             >
               <option value="Individual">Individual</option>
               <option value="HUF">HUF</option>
-              <option value="Firm">Firm / LLP</option>
-              <option value="Company">Company</option>
             </select>
           </div>
 
