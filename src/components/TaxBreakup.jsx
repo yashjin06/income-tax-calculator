@@ -25,7 +25,13 @@ const TaxBreakup = ({ data, textStyle = "professional" }) => {
     rebateLabel87A: isGenZ ? "Rebate Logic Applied" : "Calculated on applicable income below threshold",
     surchargeLabel: isGenZ ? "Add: Surcharge (The Flex Tax)" : "Add: Surcharge",
     cessLabel: isGenZ ? "Add: Cess (Education Vibes)" : "Add: Health & Education Cess (4%)",
-    grossTaxLabel: isGenZ ? "TOTAL DAMAGE" : "GROSS TAX LIABILITY",
+    grossTaxLabel: isGenZ ? "GROSS TAX (Post-Cess)" : "GROSS TAX LIABILITY",
+    interestHeader: isGenZ ? "Add: Penalties & Interest (The 'Find Out' cost)" : "Add: Interest & Penalties",
+    penaltyA: isGenZ ? "234A (Late Filing Interest)" : "Interest u/s 234A",
+    penaltyB: isGenZ ? "234B (Shortfall Interest)" : "Interest u/s 234B",
+    penaltyC: isGenZ ? "234C (Deferment Interest)" : "Interest u/s 234C",
+    penaltyF: isGenZ ? "234F (Late Filing Fee)" : "Late Filing Fee u/s 234F",
+    totalWithInterest: isGenZ ? "TOTAL DAMAGE (Final)" : "TOTAL TAX LIABILITY (Incl. Interest)",
     paidTaxesHeader: isGenZ ? "Less: Moniez already sent" : "Less: Taxes Already Paid",
     finalPayableLabel: isGenZ ? "THE FINAL BILL" : "FINAL NET TAX PAYABLE",
     refundLabel: isGenZ ? "GOVT OWES YOU (REFUND)" : "REFUND DUE",
@@ -347,6 +353,73 @@ const TaxBreakup = ({ data, textStyle = "professional" }) => {
               display: "flex",
               justifyContent: "space-between",
               padding: "1.25rem",
+              background: "rgba(0,0,0,0.02)",
+              color: "var(--text-main)",
+              borderRadius: "var(--radius-md)",
+              marginTop: "0.5rem",
+              fontWeight: "bold",
+              border: "1px solid var(--input-border)"
+            }}
+          >
+            <span style={{ fontWeight: "bold" }}>{labels.grossTaxLabel}</span>
+            <span style={{ fontWeight: "bold" }}>
+              ₹ {results.totalTaxLiability.toLocaleString("en-IN")}
+            </span>
+          </div>
+
+          {(results.interest234A > 0 || results.interest234B > 0 || results.interest234C > 0 || results.fee234F > 0) && (
+            <div
+              style={{
+                background: "var(--glass-bg)",
+                borderRadius: "var(--radius-md)",
+                border: "1px solid var(--danger)",
+                overflow: "hidden",
+                marginTop: "1rem",
+              }}
+            >
+              <div
+                style={{
+                  padding: "1rem",
+                  borderBottom: "1px solid var(--danger)",
+                  fontWeight: 600,
+                  background: "rgba(239, 68, 68, 0.05)",
+                  color: "var(--danger)"
+                }}
+              >
+                {labels.interestHeader}
+              </div>
+              {results.interest234A > 0 && (
+                <div style={{ display: "flex", justifyContent: "space-between", padding: "0.75rem 1rem", borderBottom: "1px dashed var(--input-border)" }}>
+                  <span>{labels.penaltyA}</span>
+                  <span style={{ color: "var(--danger)" }}>+ ₹ {results.interest234A.toLocaleString("en-IN")}</span>
+                </div>
+              )}
+              {results.interest234B > 0 && (
+                <div style={{ display: "flex", justifyContent: "space-between", padding: "0.75rem 1rem", borderBottom: "1px dashed var(--input-border)" }}>
+                  <span>{labels.penaltyB}</span>
+                  <span style={{ color: "var(--danger)" }}>+ ₹ {results.interest234B.toLocaleString("en-IN")}</span>
+                </div>
+              )}
+              {results.interest234C > 0 && (
+                <div style={{ display: "flex", justifyContent: "space-between", padding: "0.75rem 1rem", borderBottom: "1px dashed var(--input-border)" }}>
+                  <span>{labels.penaltyC}</span>
+                  <span style={{ color: "var(--danger)" }}>+ ₹ {results.interest234C.toLocaleString("en-IN")}</span>
+                </div>
+              )}
+              {results.fee234F > 0 && (
+                <div style={{ display: "flex", justifyContent: "space-between", padding: "0.75rem 1rem" }}>
+                  <span>{labels.penaltyF}</span>
+                  <span style={{ color: "var(--danger)" }}>+ ₹ {results.fee234F.toLocaleString("en-IN")}</span>
+                </div>
+              )}
+            </div>
+          )}
+
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              padding: "1.25rem",
               background: "var(--glass-bg)",
               borderTop: "2px solid var(--primary)",
               color: "var(--primary)",
@@ -356,9 +429,9 @@ const TaxBreakup = ({ data, textStyle = "professional" }) => {
               fontWeight: "bold",
             }}
           >
-            <span style={{ fontWeight: "bold", fontSize: "1.25rem" }}>{labels.grossTaxLabel}</span>
+            <span style={{ fontWeight: "bold", fontSize: "1.25rem" }}>{labels.totalWithInterest}</span>
             <span style={{ fontWeight: "bold", fontSize: "1.25rem" }}>
-              ₹ {results.totalTaxLiability.toLocaleString("en-IN")}
+              ₹ {results.finalTaxPayableWithInterest.toLocaleString("en-IN")}
             </span>
           </div>
 

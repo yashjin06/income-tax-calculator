@@ -45,8 +45,9 @@ const TaxesPaid = ({ data, updateData, textStyle = "professional" }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target
-    const numValue = value === '' ? '' : parseFloat(value) || 0
-    updateData({ ...data, taxesPaid: { ...taxes, [name]: numValue } })
+    // Only parse as float if it's not the date field
+    const finalValue = name === 'actualFilingDate' ? value : (value === '' ? '' : parseFloat(value) || 0)
+    updateData({ ...data, taxesPaid: { ...taxes, [name]: finalValue } })
   }
 
   const advanceTaxTotal = (parseFloat(taxes.advanceTaxQ1) || 0) + (parseFloat(taxes.advanceTaxQ2) || 0) + (parseFloat(taxes.advanceTaxQ3) || 0) + (parseFloat(taxes.advanceTaxQ4) || 0)

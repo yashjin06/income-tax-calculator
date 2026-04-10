@@ -461,64 +461,122 @@ export const computeTax = (data) => {
   const advanceTaxTotal = advanceTaxQ1 + advanceTaxQ2 + advanceTaxQ3 + advanceTaxQ4
   const selfAssessmentTaxPaid = parseFloat(taxesPaidObj.selfAssessmentTax) || 0
 
+  // --- INTEREST AND PENALTIES (Rule 119A Compliance) ---
   let interest234A = 0
   let interest234B = 0
   let interest234C = 0
+  let fee234F = 0
 
   const assessedTaxForPenalty = Math.max(0, totalTaxLiability - tdsPaid)
+  const AY = assessmentYear || "2024-25"
+  const ayYearMatch = AY.match(/^(\d{4})/)
+  const baseYear = ayYearMatch ? parseInt(ayYearMatch[1]) : 2024
+  const dueFilingDate = new Date(`${baseYear}-07-31`)
+  
+  const filingDateStr = taxesPaidObj.actualFilingDate
+  let filingDate = null
+  if (filingDateStr) {
+      filingDate = new Date(filingDateStr)
+  }
+
+  // 1. Fee u/s 234F for late filing
+  if (filingDate && filingDate > dueFilingDate) {
+      if (totalTaxableIncome > 500000) {
+          fee234F = 5000
+      } else if (totalTaxableIncome > 250000 || (isNewRegime && totalTaxableIncome > 0)) { 
+          // Note: If income is below basic exemption limit but filed late, technically no fee.
+          // But usually 1000 is applied if it exceeds basic exemption limit.
+          fee234F = 1000
+      }
+  }
+
+  // Helper for Rule 119A: Round down to nearest 100
+  const roundDown100 = (amt) => Math.floor(amt / 100) * 100
+
+  // 2. Interest u/s 234A (Delay in filing ITR)
+  if (filingDate && filingDate > dueFilingDate) {
+      const netTaxFor234A = totalTaxLiability - (tdsPaid + advanceTaxTotal + selfAssessmentTaxPaid)
+      const baseFor234A = netTaxFor234A // Using unrounded base for consistency
+      
+      if (baseFor234A > 0) {
+          let monthsFor234A = (filingDate.getFullYear() - dueFilingDate.getFullYear()) * 12 + (filingDate.getMonth() - dueFilingDate.getMonth())
+          if (filingDate.getDate() > dueFilingDate.getDate()) monthsFor234A += 1
+          if (monthsFor234A < 1) monthsFor234A = 1
+          
+          interest234A = Math.floor(baseFor234A * 0.01 * monthsFor234A)
+      }
+  }
+
+  // 3. Interest u/s 234B (Default in payment of advance tax)
+  if (assessedTaxForPenalty >= 10000) {
+      if (advanceTaxTotal < assessedTaxForPenalty * 0.90) {
+          const unpaidTaxFor234B = Math.max(0, assessedTaxForPenalty - advanceTaxTotal)
+          const baseFor234B = unpaidTaxFor234B
+          
+          if (baseFor234B > 0) {
+              const april1stOfAY = new Date(`${baseYear}-04-01`)
+              let endDateFor234B = filingDate || new Date()
+              if (endDateFor234B < april1stOfAY) endDateFor234B = april1stOfAY
+              
+              let monthsFor234B = (endDateFor234B.getFullYear() - april1stOfAY.getFullYear()) * 12 + (endDateFor234B.getMonth() - april1stOfAY.getMonth())
+              monthsFor234B += 1 
+              
+              interest234B = Math.floor(baseFor234B * 0.01 * monthsFor234B)
+          }
+      }
+  }
+
+  // 4. Interest u/s 234C (Deferment of advance tax)
+  const isPresumptive = (pgbp.presumptive?.isOpting === 'yes') && (pgbp.presumptive?.nature === '44AD' || pgbp.presumptive?.nature === '44ADA')
+  const interest234CBreakdown = []
 
   if (assessedTaxForPenalty >= 10000) {
-      // 234C: Deferment of Advance Tax
-      const q1Req = assessedTaxForPenalty * 0.15
-      const q2Req = assessedTaxForPenalty * 0.45
-      const q3Req = assessedTaxForPenalty * 0.75
-      const q4Req = assessedTaxForPenalty * 1.00
-
-      if (advanceTaxQ1 < q1Req) interest234C += Math.max(0, q1Req - advanceTaxQ1) * 0.01 * 3
-      let cumulativeQ2 = advanceTaxQ1 + advanceTaxQ2
-      if (cumulativeQ2 < q2Req) interest234C += Math.max(0, q2Req - cumulativeQ2) * 0.01 * 3
-      let cumulativeQ3 = cumulativeQ2 + advanceTaxQ3
-      if (cumulativeQ3 < q3Req) interest234C += Math.max(0, q3Req - cumulativeQ3) * 0.01 * 3
-      let cumulativeQ4 = cumulativeQ3 + advanceTaxQ4
-      if (cumulativeQ4 < q4Req) interest234C += Math.max(0, q4Req - cumulativeQ4) * 0.01 * 1
-
-      // 234B & 234A Temporal Engine
-      const AY = assessmentYear || "2024-25"
-      const ayYearMatch = AY.match(/^(\d{4})/)
-      const baseYear = ayYearMatch ? parseInt(ayYearMatch[1]) : 2024
-      
-      const filingDateStr = taxesPaidObj.actualFilingDate
-      if (filingDateStr) {
-          const filingDate = new Date(filingDateStr)
+      if (isPresumptive) {
+          const q4Shortfall = Math.max(0, (assessedTaxForPenalty * 1.00) - advanceTaxTotal)
+          const q4Interest = Math.floor(q4Shortfall * 0.01 * 1)
+          if (q4Shortfall > 0) interest234C += q4Interest
           
-          const april1stOfAY = new Date(`${baseYear}-04-01`)
-          if (advanceTaxTotal < assessedTaxForPenalty * 0.90) {
-              if (filingDate > april1stOfAY) {
-                  let monthsFor234B = (filingDate.getFullYear() - april1stOfAY.getFullYear()) * 12 + (filingDate.getMonth() - april1stOfAY.getMonth()) + (filingDate.getDate() > april1stOfAY.getDate() ? 1 : 0)
-                  if (monthsFor234B === 0) monthsFor234B = 1
-                  interest234B = Math.max(0, assessedTaxForPenalty - advanceTaxTotal) * 0.01 * monthsFor234B
-              }
-          }
-          
-          const dueFilingDate = new Date(`${baseYear}-07-31`)
-          if (filingDate > dueFilingDate) {
-              let monthsFor234A = (filingDate.getFullYear() - dueFilingDate.getFullYear()) * 12 + (filingDate.getMonth() - dueFilingDate.getMonth()) + (filingDate.getDate() > dueFilingDate.getDate() ? 1 : 0)
-              if (monthsFor234A === 0) monthsFor234A = 1
-              interest234A = Math.max(0, totalTaxLiability - tdsPaid - advanceTaxTotal) * 0.01 * monthsFor234A
-          }
+          interest234CBreakdown.push({
+            id: 'Q4',
+            label: 'March 15',
+            required: Math.round(assessedTaxForPenalty * 1.00),
+            period: '1 Month',
+            interest: q4Interest,
+            calculation: `${Math.round(assessedTaxForPenalty * 1.00).toLocaleString('en-IN')} x 1% x 1`
+          })
       } else {
-         // Fallback if Date is omitted
-         if (advanceTaxTotal < assessedTaxForPenalty * 0.90) {
-             interest234B = Math.round(Math.max(0, assessedTaxForPenalty - advanceTaxTotal) * 0.01 * 4) // Approx up to July 31
-         }
+          // Q1: 15%
+          const q1Req = Math.round(assessedTaxForPenalty * 0.15)
+          const q1Int = (advanceTaxQ1 < (assessedTaxForPenalty * 0.12)) ? Math.floor(Math.max(0, q1Req - advanceTaxQ1) * 0.01 * 3) : 0
+          interest234C += q1Int
+          interest234CBreakdown.push({ id: 'Q1', label: 'June 15', required: q1Req, period: '3 Months', interest: q1Int, calculation: `${q1Req.toLocaleString('en-IN')} x 1% x 3` })
+
+          // Q2: 45%
+          const q2Req = Math.round(assessedTaxForPenalty * 0.45)
+          const q2Int = ((advanceTaxQ1 + advanceTaxQ2) < (assessedTaxForPenalty * 0.36)) ? Math.floor(Math.max(0, q2Req - (advanceTaxQ1 + advanceTaxQ2)) * 0.01 * 3) : 0
+          interest234C += q2Int
+          interest234CBreakdown.push({ id: 'Q2', label: 'Sept 15', required: q2Req, period: '3 Months', interest: q2Int, calculation: `${q2Req.toLocaleString('en-IN')} x 1% x 3` })
+
+          // Q3: 75%
+          const q3Req = Math.round(assessedTaxForPenalty * 0.75)
+          const q3Int = Math.floor(Math.max(0, q3Req - (advanceTaxQ1 + advanceTaxQ2 + advanceTaxQ3)) * 0.01 * 3)
+          interest234C += q3Int
+          interest234CBreakdown.push({ id: 'Q3', label: 'Dec 15', required: q3Req, period: '3 Months', interest: q3Int, calculation: `${q3Req.toLocaleString('en-IN')} x 1% x 3` })
+
+          // Q4: 100%
+          const q4Req = Math.round(assessedTaxForPenalty * 1.00)
+          const q4Int = Math.floor(Math.max(0, q4Req - (advanceTaxQ1 + advanceTaxQ2 + advanceTaxQ3 + advanceTaxQ4)) * 0.01 * 1)
+          interest234C += q4Int
+          interest234CBreakdown.push({ id: 'Q4', label: 'March 15', required: q4Req, period: '1 Month', interest: q4Int, calculation: `${q4Req.toLocaleString('en-IN')} x 1% x 1` })
       }
   }
 
   interest234A = Math.round(interest234A)
   interest234B = Math.round(interest234B)
   interest234C = Math.round(interest234C)
+  fee234F = Math.round(fee234F)
   
-  const penalInterest = interest234A + interest234B + interest234C
+  const penalInterest = interest234A + interest234B + interest234C + fee234F
   const finalTaxPayableWithInterest = totalTaxLiability + penalInterest
 
   const netTaxPayable = finalTaxPayableWithInterest - (tdsPaid + advanceTaxTotal + selfAssessmentTaxPaid)
@@ -556,6 +614,8 @@ export const computeTax = (data) => {
     interest234A,
     interest234B,
     interest234C,
+    interest234CBreakdown,
+    fee234F,
     penalInterest,
     finalTaxPayableWithInterest,
     netTaxPayable,

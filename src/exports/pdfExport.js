@@ -211,7 +211,11 @@ export const generatePDF = (data) => {
     ['Tax & Surcharge After Marginal Relief', (results.totalTaxBeforeRebate - results.rebate + results.surcharge).toLocaleString('en-IN')],
     ['Add: Health and Education Cess @ 4%', results.cess.toLocaleString('en-IN')],
     [{ content: 'Total Tax and Cess Payable', styles: { fontStyle: 'bold' } }, { content: results.totalTaxLiability.toLocaleString('en-IN'), styles: { fontStyle: 'bold' } }],
-    ['Less: Relief u/s 89 (Arrears of Salary)', '0'],
+    ['Add: Interest u/s 234A (Late Filing)', (results.interest234A || 0).toLocaleString('en-IN')],
+    ['Add: Interest u/s 234B (Adv. Tax Default)', (results.interest234B || 0).toLocaleString('en-IN')],
+    ['Add: Interest u/s 234C (Adv. Tax Deferment)', (results.interest234C || 0).toLocaleString('en-IN')],
+    ['Add: Late Filing Fee u/s 234F', (results.fee234F || 0).toLocaleString('en-IN')],
+    [{ content: 'Total Tax Liability (Incl. Interest)', styles: { fontStyle: 'bold', fillColor: [248, 250, 252] } }, { content: results.finalTaxPayableWithInterest.toLocaleString('en-IN'), styles: { fontStyle: 'bold', fillColor: [248, 250, 252] } }],
     ['Less: Taxes Deducted at Source (TDS/TCS)', results.tdsPaid > 0 ? `(${(results.tdsPaid || 0).toLocaleString('en-IN')})` : '0'],
     ['Less: Advance Tax Paid', results.advanceTaxPaid > 0 ? `(${(results.advanceTaxPaid || 0).toLocaleString('en-IN')})` : '0'],
     ['Less: Self Assessment Tax Paid', results.selfAssessmentTaxPaid > 0 ? `(${(results.selfAssessmentTaxPaid || 0).toLocaleString('en-IN')})` : '0'],
@@ -247,55 +251,29 @@ export const generatePDF = (data) => {
      })
   }
 
-  // --- 7. ANNEXURE: ADVANCE TAX DUES ---
-  if (results.totalTaxLiability >= 10000) {
-     const isPresumptiveOpted = data.business?.presumptive?.isOpting === 'yes'
-     const presumptiveNature = data.business?.presumptive?.nature
-     const isEligiblePresumptive = isPresumptiveOpted && (presumptiveNature === '44AD' || presumptiveNature === '44ADA')
+  // --- 7. ANNEXURE: ADVANCE TAX DUES & INTEREST ---
+  if (results.totalTaxLiability >= 10000 || results.interest234C > 0) {
+      const advanceTaxBody = results.interest234CBreakdown.map(row => [
+          row.label,
+          row.required.toLocaleString('en-IN'),
+          row.period,
+          row.interest.toLocaleString('en-IN'),
+          row.calculation
+      ]);
 
-     let presumptiveTax = 0;
-     let otherTax = results.totalTaxLiability;
-     
-     if (isEligiblePresumptive && results.grossTotalIncome > 0) {
-         const ratio = Math.max(0, Math.min(1, (results.presumptiveIncome || 0) / results.grossTotalIncome));
-         presumptiveTax = Math.round(results.totalTaxLiability * ratio);
-         otherTax = Math.max(0, results.totalTaxLiability - presumptiveTax);
-     }
-
-     let advanceTaxBody = [];
-     if (isEligiblePresumptive && presumptiveTax > 0) {
-         if (otherTax > 0) {
-             advanceTaxBody = [
-                ['15% of Non-Presumptive', '15th June', Math.round(otherTax * 0.15).toLocaleString('en-IN')],
-                ['45% of Non-Presumptive', '15th September', Math.round(otherTax * 0.45).toLocaleString('en-IN')],
-                ['75% of Non-Presumptive', '15th December', Math.round(otherTax * 0.75).toLocaleString('en-IN')],
-                ['100% of Total Tax', '15th March', (Math.round(otherTax * 1.0) + presumptiveTax).toLocaleString('en-IN')],
-             ];
-         } else {
-             advanceTaxBody = [
-                ['100% of Total Tax', '15th March', presumptiveTax.toLocaleString('en-IN')]
-             ];
-         }
-     } else {
-         advanceTaxBody = [
-            ['15% of Tax Liability', '15th June', Math.round(results.totalTaxLiability * 0.15).toLocaleString('en-IN')],
-            ['45% of Tax Liability', '15th September', Math.round(results.totalTaxLiability * 0.45).toLocaleString('en-IN')],
-            ['75% of Tax Liability', '15th December', Math.round(results.totalTaxLiability * 0.75).toLocaleString('en-IN')],
-            ['100% of Tax Liability', '15th March', Math.round(results.totalTaxLiability * 1.00).toLocaleString('en-IN')]
-         ];
-     }
-
-     autoTable(doc, {
-       startY: doc.lastAutoTable.finalY + 15,
-       head: [['Annexure 2: Advance Tax Installment Schedule (Sec 234C)', 'Due Date', 'Amount (Rs.)']],
-       body: advanceTaxBody,
-       ...tableStyles,
-       columnStyles: { 
-         0: { cellWidth: 200, halign: 'left' }, 
-         1: { cellWidth: 150, halign: 'center' },
-         2: { cellWidth: 165, halign: 'right' } 
-       }
-     })
+      autoTable(doc, {
+        startY: doc.lastAutoTable.finalY + 15,
+        head: [['Annexure 2: Adv. Tax Schedule & Sec 234C Interest', 'Required (Rs.)', 'Period', 'Interest (Rs.)', 'Calculation']],
+        body: advanceTaxBody,
+        ...tableStyles,
+        columnStyles: { 
+          0: { cellWidth: 120, halign: 'left' }, 
+          1: { cellWidth: 100, halign: 'right' },
+          2: { cellWidth: 80, halign: 'center' },
+          3: { cellWidth: 100, halign: 'right' },
+          4: { cellWidth: 115, halign: 'right' } 
+        }
+      })
   }
 
   // Authorized Signatory Block

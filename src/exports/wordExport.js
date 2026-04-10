@@ -218,6 +218,11 @@ export const generateWord = async (data) => {
             createRow("Tax & Surcharge After Marginal Relief", results.totalTaxBeforeRebate - results.rebate + results.surcharge),
             createRow("Add: Health & Education Cess @ 4%", results.cess, false, "+ "),
             createRow("Total Tax and Cess Payable", results.totalTaxLiability, true, "₹ "),
+            createRow("Add: Interest u/s 234A (Late Filing)", results.interest234A || 0, false, "+ "),
+            createRow("Add: Interest u/s 234B (Adv. Tax Default)", results.interest234B || 0, false, "+ "),
+            createRow("Add: Interest u/s 234C (Adv. Tax Deferment)", results.interest234C || 0, false, "+ "),
+            createRow("Add: Late Filing Fee u/s 234F", results.fee234F || 0, false, "+ "),
+            createRow("TOTAL TAX LIABILITY (INCL. INTEREST)", results.finalTaxPayableWithInterest, true, "₹ "),
             createRow("Less: Relief u/s 89 (Arrears of Salary)", 0, false, "- "),
             createRow("Less: Taxes Deducted at Source (TDS/TCS)", results.tdsPaid || 0, false, "- "),
             createRow("Less: Advance Tax Paid", results.advanceTaxPaid || 0, false, "- "),
@@ -249,52 +254,38 @@ export const generateWord = async (data) => {
            return []
         })(),
 
-        // --- 7. ANNEXURE: ADVANCE TAX ---
+        // --- 7. ANNEXURE: ADVANCE TAX & INTEREST ---
         ...(() => {
-           if (results.totalTaxLiability >= 10000) {
-              const isPresumptiveOpted = data.business?.presumptive?.isOpting === 'yes'
-              const presumptiveNature = data.business?.presumptive?.nature
-              const isEligiblePresumptive = isPresumptiveOpted && (presumptiveNature === '44AD' || presumptiveNature === '44ADA')
+           if (results.totalTaxLiability >= 10000 || results.interest234C > 0) {
+              const headerRow = new TableRow({
+                 children: [
+                    createCell("Instalment", true, AlignmentType.LEFT, "F1F5F9"),
+                    createCell("Required", true, AlignmentType.RIGHT, "F1F5F9"),
+                    createCell("Period", true, AlignmentType.CENTER, "F1F5F9"),
+                    createCell("Interest", true, AlignmentType.RIGHT, "F1F5F9"),
+                    createCell("Calculation", true, AlignmentType.RIGHT, "F1F5F9")
+                 ]
+              });
 
-              let presumptiveTax = 0;
-              let otherTax = results.totalTaxLiability;
-              
-              if (isEligiblePresumptive && results.grossTotalIncome > 0) {
-                  const ratio = Math.max(0, Math.min(1, (results.presumptiveIncome || 0) / results.grossTotalIncome));
-                  presumptiveTax = Math.round(results.totalTaxLiability * ratio);
-                  otherTax = Math.max(0, results.totalTaxLiability - presumptiveTax);
-              }
-
-              let rows = [];
-              if (isEligiblePresumptive && presumptiveTax > 0) {
-                  if (otherTax > 0) {
-                      rows = [
-                         createRow("15% of Non-Presumptive by 15th Jun", Math.round(otherTax * 0.15)),
-                         createRow("45% of Non-Presumptive by 15th Sep", Math.round(otherTax * 0.45)),
-                         createRow("75% of Non-Presumptive by 15th Dec", Math.round(otherTax * 0.75)),
-                         createRow("100% of Total Tax by 15th Mar", Math.round(otherTax * 1.0) + presumptiveTax)
-                      ];
-                  } else {
-                      rows = [
-                         createRow("100% by 15th March", presumptiveTax)
-                      ];
-                  }
-              } else {
-                  rows = [
-                     createRow("15% by 15th June", Math.round(results.totalTaxLiability * 0.15)),
-                     createRow("45% by 15th September", Math.round(results.totalTaxLiability * 0.45)),
-                     createRow("75% by 15th December", Math.round(results.totalTaxLiability * 0.75)),
-                     createRow("100% by 15th March", Math.round(results.totalTaxLiability * 1.00))
-                  ];
-              }
+              const bodyRows = results.interest234CBreakdown.map(row => (
+                 new TableRow({
+                    children: [
+                       createCell(row.label),
+                       createCell(row.required.toLocaleString('en-IN'), false, AlignmentType.RIGHT),
+                       createCell(row.period, false, AlignmentType.CENTER),
+                       createCell(row.interest.toLocaleString('en-IN'), true, AlignmentType.RIGHT),
+                       createCell(row.calculation, false, AlignmentType.RIGHT)
+                    ]
+                 })
+              ));
 
               return [
                 new Paragraph({ text: "", spacing: { before: 400 } }),
-                createTitle("7. Annexure: Advance Tax Schedule (Sec 234C)", HeadingLevel.HEADING_2, "0F172A"),
+                createTitle("7. Annexure: Adv. Tax & Sec 234C Interest Breakdown", HeadingLevel.HEADING_2, "0F172A"),
                 new Table({
                   width: { size: 100, type: WidthType.PERCENTAGE },
                   borders: { top: { style: BorderStyle.SINGLE, size: 4, color: "000000" }, bottom: { style: BorderStyle.SINGLE, size: 4, color: "000000" }, insideHorizontal: { style: BorderStyle.SINGLE, size: 2, color: "000000" }, left: { style: BorderStyle.SINGLE, size: 4, color: "000000" }, right: { style: BorderStyle.SINGLE, size: 4, color: "000000" }, insideVertical: { style: BorderStyle.SINGLE, size: 2, color: "000000" } },
-                  rows: rows
+                  rows: [headerRow, ...bodyRows]
                 })
               ]
            }

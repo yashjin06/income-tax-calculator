@@ -324,6 +324,14 @@ export const generateExcel = async (data) => {
   const rLiab = sheetTax.addRow(['', '   Total Tax and Cess Payable', '', results.totalTaxLiability])
   applyStyle(sheetTax, rLiab, STYLES.TOTAL_ORANGE)
 
+  applyStyle(sheetTax, sheetTax.addRow(['', '   Add: Interest u/s 234A (Late Filing)', '', results.interest234A || 0]), STYLES.NORMAL)
+  applyStyle(sheetTax, sheetTax.addRow(['', '   Add: Interest u/s 234B (Adv. Tax Default)', '', results.interest234B || 0]), STYLES.NORMAL)
+  applyStyle(sheetTax, sheetTax.addRow(['', '   Add: Interest u/s 234C (Adv. Tax Deferment)', '', results.interest234C || 0]), STYLES.NORMAL)
+  applyStyle(sheetTax, sheetTax.addRow(['', '   Add: Late Filing Fee u/s 234F', '', results.fee234F || 0]), STYLES.NORMAL)
+
+  const rLiabTot = sheetTax.addRow(['', '   Total Tax Liability (Incl. Interest)', '', results.finalTaxPayableWithInterest])
+  applyStyle(sheetTax, rLiabTot, STYLES.BOLD)
+
   if (results.tdsPaid > 0) { const r = sheetTax.addRow(['', '   Less: Taxes Deducted at Source (TDS/TCS)', '', -results.tdsPaid]); applyStyle(sheetTax, r, STYLES.NORMAL) }
   if (results.advanceTaxPaid > 0) { const r = sheetTax.addRow(['', '   Less: Advance Tax Paid', '', -results.advanceTaxPaid]); applyStyle(sheetTax, r, STYLES.NORMAL) }
   if (results.selfAssessmentTaxPaid > 0) { const r = sheetTax.addRow(['', '   Less: Self Assessment Tax Paid', '', -results.selfAssessmentTaxPaid]); applyStyle(sheetTax, r, STYLES.NORMAL) }
@@ -332,33 +340,15 @@ export const generateExcel = async (data) => {
   applyStyle(sheetTax, rNet, (results.netTaxPayable < 0) ? STYLES.NET_REFUND : STYLES.NET_PAYABLE)
   sheetTax.addRow([])
 
-  if (results.totalTaxLiability >= 10000) {
-      applyStyle(sheetTax, sheetTax.addRow(['2', 'Advance Tax Installment Schedule (Sec 234C)', '', '']), STYLES.SECTION_HEADER)
-      const isPresumptiveOpted = data.business?.presumptive?.isOpting === 'yes'
-      const presumptiveNature = data.business?.presumptive?.nature
-      const isEligiblePresumptive = isPresumptiveOpted && (presumptiveNature === '44AD' || presumptiveNature === '44ADA')
-      let presumptiveTax = 0;
-      let otherTax = results.totalTaxLiability;
-      if (isEligiblePresumptive && results.grossTotalIncome > 0) {
-          const ratio = Math.max(0, Math.min(1, (results.presumptiveIncome || 0) / results.grossTotalIncome));
-          presumptiveTax = Math.round(results.totalTaxLiability * ratio);
-          otherTax = Math.max(0, results.totalTaxLiability - presumptiveTax);
-      }
-      if (isEligiblePresumptive && presumptiveTax > 0) {
-          if (otherTax > 0) {
-             applyStyle(sheetTax, sheetTax.addRow(['', '   15% of Non-Presumptive', '15th June', Math.round(otherTax * 0.15)]), STYLES.NORMAL, false)
-             applyStyle(sheetTax, sheetTax.addRow(['', '   45% of Non-Presumptive', '15th Sept', Math.round(otherTax * 0.45)]), STYLES.NORMAL, false)
-             applyStyle(sheetTax, sheetTax.addRow(['', '   75% of Non-Presumptive', '15th Dec', Math.round(otherTax * 0.75)]), STYLES.NORMAL, false)
-             applyStyle(sheetTax, sheetTax.addRow(['', '   100% of Total Tax', '15th March', Math.round(otherTax * 1.0) + presumptiveTax]), STYLES.BOLD, false)
-          } else {
-             applyStyle(sheetTax, sheetTax.addRow(['', '   100% of Total Tax', '15th March', presumptiveTax]), STYLES.BOLD, false)
-          }
-      } else {
-          applyStyle(sheetTax, sheetTax.addRow(['', '   15% of Tax Liability', '15th June', Math.round(results.totalTaxLiability * 0.15)]), STYLES.NORMAL, false)
-          applyStyle(sheetTax, sheetTax.addRow(['', '   45% of Tax Liability', '15th Sept', Math.round(results.totalTaxLiability * 0.45)]), STYLES.NORMAL, false)
-          applyStyle(sheetTax, sheetTax.addRow(['', '   75% of Tax Liability', '15th Dec', Math.round(results.totalTaxLiability * 0.75)]), STYLES.NORMAL, false)
-          applyStyle(sheetTax, sheetTax.addRow(['', '   100% of Tax Liability', '15th March', Math.round(results.totalTaxLiability * 1.00)]), STYLES.BOLD, false)
-      }
+  if (results.totalTaxLiability >= 10000 || results.interest234C > 0) {
+      applyStyle(sheetTax, sheetTax.addRow(['2', 'Advance Tax Dues & Sec 234C Breakdown', '', '']), STYLES.SECTION_HEADER)
+      const rH = sheetTax.addRow(['', 'Instalment', 'Period', 'Interest', 'Calculation'])
+      applyStyle(sheetTax, rH, STYLES.TABLE_HEADER, false)
+
+      results.interest234CBreakdown.forEach(row => {
+          const r = sheetTax.addRow(['', row.label, row.period, row.interest, row.calculation])
+          applyStyle(sheetTax, r, STYLES.NORMAL, false)
+      })
   }
 
   // ==============================================================================
