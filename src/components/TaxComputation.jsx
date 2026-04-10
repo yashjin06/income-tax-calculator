@@ -500,13 +500,16 @@ const TaxComputation = ({ data, textStyle = "professional" }) => {
         </div>
       </div>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-          gap: "2rem",
-        }}
-      >
+        {/* Filing Date Disclaimer */}
+        {!data.taxesPaid?.actualFilingDate && (
+          <div style={{ gridColumn: '1 / -1', background: 'rgba(245, 158, 11, 0.1)', color: 'var(--warning)', padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid rgba(245, 158, 11, 0.2)', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <span role="img" aria-label="warning" style={{ fontSize: '1.25rem' }}>⚠️</span>
+            <p style={{ margin: 0, fontWeight: 500, fontSize: '0.9rem' }}>
+              Expected ITR filing date is not selected to calculate the actual taxes.
+            </p>
+          </div>
+        )}
+
         {/* Income Sources Summary */}
         <div className="card p-6 slide-up" style={{ animationDelay: "0.1s" }}>
           <h3
@@ -836,7 +839,6 @@ const TaxComputation = ({ data, textStyle = "professional" }) => {
             </div>
           </div>
         </div>
-      </div>
 
       {/* High Income Schedule AL Disclosure Warning */}
       {results.totalTaxableIncome > 5000000 && (

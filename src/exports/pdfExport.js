@@ -211,16 +211,24 @@ export const generatePDF = (data) => {
     ['Tax & Surcharge After Marginal Relief', (results.totalTaxBeforeRebate - results.rebate + results.surcharge).toLocaleString('en-IN')],
     ['Add: Health and Education Cess @ 4%', results.cess.toLocaleString('en-IN')],
     [{ content: 'Total Tax and Cess Payable', styles: { fontStyle: 'bold' } }, { content: results.totalTaxLiability.toLocaleString('en-IN'), styles: { fontStyle: 'bold' } }],
-    ['Add: Interest u/s 234A (Late Filing)', (results.interest234A || 0).toLocaleString('en-IN')],
-    ['Add: Interest u/s 234B (Adv. Tax Default)', (results.interest234B || 0).toLocaleString('en-IN')],
-    ['Add: Interest u/s 234C (Adv. Tax Deferment)', (results.interest234C || 0).toLocaleString('en-IN')],
-    ['Add: Late Filing Fee u/s 234F', (results.fee234F || 0).toLocaleString('en-IN')],
+  ]
+
+  if (!data.taxesPaid?.actualFilingDate) {
+      taxBody.push([{ content: 'Note: Expected ITR filing date is not selected to calculate the actual taxes. Interest u/s 234A/B/C and Fee 234F are not computed.', colSpan: 2, styles: { fontSize: 9, fontStyle: 'italic', textColor: [100, 116, 139] } }])
+  } else {
+      taxBody.push(['Add: Interest u/s 234A (Late Filing)', (results.interest234A || 0).toLocaleString('en-IN')])
+      taxBody.push(['Add: Interest u/s 234B (Adv. Tax Default)', (results.interest234B || 0).toLocaleString('en-IN')])
+      taxBody.push(['Add: Interest u/s 234C (Adv. Tax Deferment)', (results.interest234C || 0).toLocaleString('en-IN')])
+      taxBody.push(['Add: Late Filing Fee u/s 234F', (results.fee234F || 0).toLocaleString('en-IN')])
+  }
+
+  taxBody.push(
     [{ content: 'Total Tax Liability (Incl. Interest)', styles: { fontStyle: 'bold', fillColor: [248, 250, 252] } }, { content: results.finalTaxPayableWithInterest.toLocaleString('en-IN'), styles: { fontStyle: 'bold', fillColor: [248, 250, 252] } }],
     ['Less: Taxes Deducted at Source (TDS/TCS)', results.tdsPaid > 0 ? `(${(results.tdsPaid || 0).toLocaleString('en-IN')})` : '0'],
     ['Less: Advance Tax Paid', results.advanceTaxPaid > 0 ? `(${(results.advanceTaxPaid || 0).toLocaleString('en-IN')})` : '0'],
     ['Less: Self Assessment Tax Paid', results.selfAssessmentTaxPaid > 0 ? `(${(results.selfAssessmentTaxPaid || 0).toLocaleString('en-IN')})` : '0'],
     [{ content: 'NET TAX PAYABLE / (REFUND DUE)', styles: { fontStyle: 'bold', fillColor: [226, 232, 240], textColor: [15, 23, 42] } }, { content: results.netTaxPayable < 0 ? `(${Math.abs(results.netTaxPayable).toLocaleString('en-IN')})` : results.netTaxPayable.toLocaleString('en-IN'), styles: { fontStyle: 'bold', fillColor: [226, 232, 240], textColor: [15, 23, 42] } }]
-  ]
+  )
 
   autoTable(doc, {
     startY: doc.lastAutoTable.finalY + 10,

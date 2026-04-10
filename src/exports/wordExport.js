@@ -218,10 +218,27 @@ export const generateWord = async (data) => {
             createRow("Tax & Surcharge After Marginal Relief", results.totalTaxBeforeRebate - results.rebate + results.surcharge),
             createRow("Add: Health & Education Cess @ 4%", results.cess, false, "+ "),
             createRow("Total Tax and Cess Payable", results.totalTaxLiability, true, "₹ "),
-            createRow("Add: Interest u/s 234A (Late Filing)", results.interest234A || 0, false, "+ "),
-            createRow("Add: Interest u/s 234B (Adv. Tax Default)", results.interest234B || 0, false, "+ "),
-            createRow("Add: Interest u/s 234C (Adv. Tax Deferment)", results.interest234C || 0, false, "+ "),
-            createRow("Add: Late Filing Fee u/s 234F", results.fee234F || 0, false, "+ "),
+            ...(!data.taxesPaid?.actualFilingDate ? [
+               new TableRow({
+                  children: [
+                    new TableCell({
+                      columnSpan: 2,
+                      margins: { top: 100, bottom: 100, left: 150, right: 150 },
+                      children: [
+                        new Paragraph({
+                          alignment: AlignmentType.LEFT,
+                          children: [new TextRun({ font: "Meiryo", text: "Note: Expected ITR filing date is not selected to calculate the actual taxes. Interest u/s 234A/B/C and Fee 234F are not computed.", italics: true, color: "64748B", size: 20 })]
+                        })
+                      ]
+                    })
+                  ]
+               })
+            ] : [
+               createRow("Add: Interest u/s 234A (Late Filing)", results.interest234A || 0, false, "+ "),
+               createRow("Add: Interest u/s 234B (Adv. Tax Default)", results.interest234B || 0, false, "+ "),
+               createRow("Add: Interest u/s 234C (Adv. Tax Deferment)", results.interest234C || 0, false, "+ "),
+               createRow("Add: Late Filing Fee u/s 234F", results.fee234F || 0, false, "+ ")
+            ]),
             createRow("TOTAL TAX LIABILITY (INCL. INTEREST)", results.finalTaxPayableWithInterest, true, "₹ "),
             createRow("Less: Relief u/s 89 (Arrears of Salary)", 0, false, "- "),
             createRow("Less: Taxes Deducted at Source (TDS/TCS)", results.tdsPaid || 0, false, "- "),

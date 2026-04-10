@@ -284,13 +284,14 @@ export const generateExcel = async (data) => {
   const sheetTax = workbook.addWorksheet('Tax Computation', { views: [{ showGridLines: false }] })
   sheetTax.columns = [
     { key: 'col1', width: 5 },
-    { key: 'particulars', width: 75 },
+    { key: 'particulars', width: 50 },
     { key: 'ref', width: 20 },
-    { key: 'amount', width: 25 }
+    { key: 'amount', width: 25 },
+    { key: 'calculation', width: 35 }
   ]
 
   const rt_1 = sheetTax.addRow(['', 'TAX LIABILITY COMPUTATION', '', ''])
-  sheetTax.mergeCells(`B${rt_1.number}:D${rt_1.number}`); rt_1.getCell(2).alignment = { horizontal: 'center' }
+  sheetTax.mergeCells(`B${rt_1.number}:E${rt_1.number}`); rt_1.getCell(2).alignment = { horizontal: 'center' }
   applyStyle(sheetTax, rt_1, STYLES.MAIN_TITLE, false)
   sheetTax.addRow([])
   
@@ -324,10 +325,19 @@ export const generateExcel = async (data) => {
   const rLiab = sheetTax.addRow(['', '   Total Tax and Cess Payable', '', results.totalTaxLiability])
   applyStyle(sheetTax, rLiab, STYLES.TOTAL_ORANGE)
 
-  applyStyle(sheetTax, sheetTax.addRow(['', '   Add: Interest u/s 234A (Late Filing)', '', results.interest234A || 0]), STYLES.NORMAL)
-  applyStyle(sheetTax, sheetTax.addRow(['', '   Add: Interest u/s 234B (Adv. Tax Default)', '', results.interest234B || 0]), STYLES.NORMAL)
-  applyStyle(sheetTax, sheetTax.addRow(['', '   Add: Interest u/s 234C (Adv. Tax Deferment)', '', results.interest234C || 0]), STYLES.NORMAL)
-  applyStyle(sheetTax, sheetTax.addRow(['', '   Add: Late Filing Fee u/s 234F', '', results.fee234F || 0]), STYLES.NORMAL)
+  if (!data.taxesPaid?.actualFilingDate) {
+      const rNote = sheetTax.addRow(['', 'Note: Expected ITR filing date is not selected to calculate the actual taxes.', '', ''])
+      sheetTax.mergeCells(`B${rNote.number}:E${rNote.number}`)
+      applyStyle(sheetTax, rNote, { font: { italic: true, size: 10, color: { argb: 'FF64748B' }, name: customFont } }, false)
+      const rNote2 = sheetTax.addRow(['', 'Interest u/s 234A/B/C and Fee 234F are not computed.', '', ''])
+      sheetTax.mergeCells(`B${rNote2.number}:E${rNote2.number}`)
+      applyStyle(sheetTax, rNote2, { font: { italic: true, size: 10, color: { argb: 'FF64748B' }, name: customFont } }, false)
+  } else {
+      applyStyle(sheetTax, sheetTax.addRow(['', '   Add: Interest u/s 234A (Late Filing)', '', results.interest234A || 0]), STYLES.NORMAL)
+      applyStyle(sheetTax, sheetTax.addRow(['', '   Add: Interest u/s 234B (Adv. Tax Default)', '', results.interest234B || 0]), STYLES.NORMAL)
+      applyStyle(sheetTax, sheetTax.addRow(['', '   Add: Interest u/s 234C (Adv. Tax Deferment)', '', results.interest234C || 0]), STYLES.NORMAL)
+      applyStyle(sheetTax, sheetTax.addRow(['', '   Add: Late Filing Fee u/s 234F', '', results.fee234F || 0]), STYLES.NORMAL)
+  }
 
   const rLiabTot = sheetTax.addRow(['', '   Total Tax Liability (Incl. Interest)', '', results.finalTaxPayableWithInterest])
   applyStyle(sheetTax, rLiabTot, STYLES.BOLD)
@@ -566,6 +576,34 @@ export const generateExcel = async (data) => {
   addInputRow('TDS / TCS Paid', parseFloat(data.taxesPaid?.tds)||0)
   addInputRow('Advance Tax Paid', parseFloat(data.taxesPaid?.advanceTax)||0)
   addInputRow('Self Assessment Tax Paid', parseFloat(data.taxesPaid?.selfAssessmentTax)||0)
+
+  // Final adjustment for all sheets to ensure content fits (Autofit)
+  const autoFit = (sheet) => {
+    sheet.columns.forEach((column) => {
+      let maxColumnLength = 0
+      column.eachCell({ includeEmpty: true }, (cell) => {
+        if (cell.isMerged && cell.address !== cell.master.address) return // Skip non-master merged cells
+        
+        let cellValue = ''
+        if (cell.value && typeof cell.value === 'object' && cell.value.result !== undefined) {
+           cellValue = cell.value.result.toString()
+        } else if (cell.value) {
+           cellValue = cell.value.toString()
+        }
+        
+        const columnLength = cellValue.length
+        if (columnLength > maxColumnLength) {
+          maxColumnLength = columnLength
+        }
+      })
+      // More generous padding for Meiryo font and bold text
+      column.width = Math.min(100, Math.max(column.width || 12, maxColumnLength + 6))
+    })
+  }
+
+  [sheet1, sheetTax, sheet2, sheet3, sheet4].forEach(sheet => {
+    if (sheet) autoFit(sheet)
+  })
 
   const buffer = await workbook.xlsx.writeBuffer()
   const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })

@@ -26,7 +26,7 @@ const TaxesPaid = ({ data, updateData, textStyle = "professional" }) => {
     selfAssessmentLabel: isGenZ ? "Self-Assessment (Solving it Yourself)" : "Self-Assessment Tax Paid",
     selfAssessmentHint: isGenZ ? "Paid right before filing your return" : "Paid before filing ITR",
     filingHeader: isGenZ ? "ITR Filing Deets (Avoid Penalties)" : "Filing Configuration (Required for Sec 234A)",
-    filingDateLabel: isGenZ ? "When did you actually File?" : "Actual Date of ITR Filing",
+    filingDateLabel: isGenZ ? "When do you expect to File?" : "Expected Date of ITR Filing",
     filingDateHint: isGenZ
       ? "Late filing makes the govt cranky (and charges 1% interest)."
       : "Used to calculate late filing interest. Due date is typically 31st July of the Assessment Year."

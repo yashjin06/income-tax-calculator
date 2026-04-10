@@ -96,26 +96,34 @@ const AdvanceTaxWarning = ({ data, textStyle = "professional" }) => {
                <h4 className="font-bold text-lg mb-2" style={{ color: 'var(--danger)' }}>{labels.penaltyTitle}</h4>
                <p style={{ color: 'var(--text-main)', marginBottom: '1rem', opacity: 0.9 }}>{labels.penaltyText}</p>
                
-               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.25rem' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.95rem' }}>
-                     <span style={{ color: 'var(--text-main)' }}>Sec 234A (Delay in filing)</span>
-                     <span style={{ fontWeight: 600 }}>₹ {result.interest234A.toLocaleString('en-IN')}</span>
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.95rem' }}>
-                     <span style={{ color: 'var(--text-main)' }}>Sec 234B (Non-payment of Advance Tax)</span>
-                     <span style={{ fontWeight: 600 }}>₹ {result.interest234B.toLocaleString('en-IN')}</span>
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.95rem' }}>
-                     <span style={{ color: 'var(--text-main)' }}>Sec 234C (Shortfall in Installments)</span>
-                     <span style={{ fontWeight: 600 }}>₹ {result.interest234C.toLocaleString('en-IN')}</span>
-                  </div>
-                  {result.fee234F > 0 && (
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.95rem' }}>
-                       <span style={{ color: 'var(--text-main)' }}>Sec 234F (Late Filing Fee)</span>
-                       <span style={{ fontWeight: 600 }}>₹ {result.fee234F.toLocaleString('en-IN')}</span>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.25rem' }}>
+                  {!data.taxesPaid?.actualFilingDate ? (
+                    <div style={{ padding: '0.75rem', background: 'rgba(245, 158, 11, 0.1)', color: 'var(--warning)', borderRadius: 'var(--radius-sm)', fontSize: '0.85rem', marginBottom: '1rem', border: '1px dashed rgba(245, 158, 11, 0.3)' }}>
+                      <strong>Note:</strong> Interest calculations (Sec 234A/B/C/F) will appear once an expected filing date is selected in the "Taxes Paid" section.
                     </div>
+                  ) : (
+                    <>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.95rem' }}>
+                         <span style={{ color: 'var(--text-main)' }}>Sec 234A (Delay in filing)</span>
+                         <span style={{ fontWeight: 600 }}>₹ {result.interest234A.toLocaleString('en-IN')}</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.95rem' }}>
+                         <span style={{ color: 'var(--text-main)' }}>Sec 234B (Non-payment of Advance Tax)</span>
+                         <span style={{ fontWeight: 600 }}>₹ {result.interest234B.toLocaleString('en-IN')}</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.95rem' }}>
+                         <span style={{ color: 'var(--text-main)' }}>Sec 234C (Shortfall in Installments)</span>
+                         <span style={{ fontWeight: 600 }}>₹ {result.interest234C.toLocaleString('en-IN')}</span>
+                      </div>
+                      {result.fee234F > 0 && (
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.95rem' }}>
+                           <span style={{ color: 'var(--text-main)' }}>Sec 234F (Late Filing Fee)</span>
+                           <span style={{ fontWeight: 600 }}>₹ {result.fee234F.toLocaleString('en-IN')}</span>
+                        </div>
+                      )}
+                    </>
                   )}
-               </div>
+                </div>
 
                <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--danger)', borderTop: '1px solid rgba(239, 68, 68, 0.2)', paddingTop: '0.75rem', marginBottom: '1.5rem' }}>
                   {labels.penaltyResult} ₹ {penaltyTotal.toLocaleString('en-IN')}
